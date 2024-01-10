@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>케미컬 계산기 V.1</title>
+		<link rel="stylesheet" href="src/assets/css/common.css">
+	</head>
+
+	<body>
+		<div id="wrap">
+			<div id="contents">
+				<div class="form">
+					<dl>
+						<dt><label for="waterVolume"><sup>물 용량(ml)</sup></label></dt>
+						<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량 입력"></dd>
+					</dl>
+					<dl>
+						<dt><label for="dilutionRatio"><sup>희석 비율 (1:30일 경우 30 입력)</sup></label></dt>
+						<dd><input type="tel" id="dilutionRatio" step="0.1" placeholder="희석 비율 입력"></dd>
+					</dl>
+					<button onclick="calculateChemicalVolume()" type="button" class="btn-calculate">계산</button>
+				</div>
+
+				<div class="graph-container">
+					<div class="graph-item">
+						<dl>
+							<dt>
+								물 용량
+							</dt>
+							<dd class="water-result">0ml</dd>
+						</dl>
+						<div class="graph-bg">
+							<div class="water-bar" id="waterBar"></div>
+						</div>
+					</div>
+					<div class="graph-item">
+						<dl>
+							<dt>케미컬 용량</dt>
+							<dd class="chemical-result">0ml</dd>
+						</dl>
+						<div class="graph-bg">
+							<div class="chemical-bar" id="chemicalBar"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="copyright">
+					tenziro.net, All rights reserved.
+				</div>
+			</div>
+		</div>
+		<script src="src/assets/js/common.js"></script>
+	</body>
+
+</html>

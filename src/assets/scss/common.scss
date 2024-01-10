@@ -1,0 +1,246 @@
+@charset "UTF-8";
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--base-color: #111;
+		--base-color-sub: #999;
+		--bg-opacity: rgba(255, 255, 255, 50%);
+		--bg-contents: #fff;
+		--bg-check-input: #000;
+		--bg-check-input-label: #fff;
+		--graph-border: #e1e1e1;
+		--graph-bg-gradient1: #fafafa;
+		--graph-bg-gradient2: #f1f1f1;
+		--bg-water-bar: #f9f9f9;
+		--bg-chemical-bar: #ff6600;
+		--btn: #ff6600;
+		--btn-text: #ffffff;
+		--bg-form: #fff;
+		--bg-form-inner: #f9f9f9;
+		--placeholder: #ccc;
+		--copyright: #c1c1c1;
+	}
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--base-color: #fff;
+		--base-color-sub: #bbb;
+		--bg-opacity: rgba(0, 0, 0, 50%);
+		--bg-contents: #1c1c1c;
+		--graph-border: #393939;
+		--graph-bg-gradient1: #1c1c1c;
+		--graph-bg-gradient2: #111;
+		--bg-water-bar: #e1e1e1;
+		--bg-chemical-bar: #ff6600;
+		--btn: #ff6600;
+		--btn-text: #ffffff;
+		--bg-form: #393939;
+		--bg-form-inner: #151515;
+		--placeholder: #393939;
+		--copyright: #333;
+	}
+}
+* {
+	margin: 0;
+	padding: 0;
+	color: inherit;
+	font: inherit;
+	letter-spacing: -0.3px;
+	box-sizing: border-box;
+	&:after,
+	&:before {
+		box-sizing: border-box;
+		pointer-events: none;
+	}
+}
+body,
+html {
+	-webkit-text-size-adjust: none;
+	-webkit-font-smoothing: antialiased;
+}
+html {
+	height: 100%;
+	scroll-behavior: smooth;
+}
+body {
+	font: {
+		family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+		feature-settings: 'tnum';
+		variant-numeric: tabular-nums;
+	}
+}
+
+sup {
+	&:after {
+		content: "*";
+		margin-left: 3px;
+		color: #ff0000;
+	}
+}
+
+#wrap {
+	position: relative;
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: {
+		image: url('../images/bg.jpg');
+		position: 50% 50%;
+		size: cover;
+	}
+	&:before {
+		content: "";
+		position: fixed;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		background: {
+			color: var(--bg-opacity);
+		}
+		backdrop-filter: blur(10px);
+	}
+}
+#contents {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	max-width: 1024px;
+	border-radius: 24px;
+	background-color: var(--bg-contents);
+	padding: 30px;
+	height: 50vh;
+	min-height: 600px;
+	display: flex;
+	flex-direction: column;
+}
+
+.form {
+	flex: none;
+	display: flex;
+	align-items: stretch;
+	background-color: var(--bg-form);
+	flex-wrap: wrap;
+	gap: 2px;
+	border-radius: 10px;
+	overflow: hidden;
+	dl {
+		flex: 1 1;
+		background-color: var(--bg-form-inner);
+		padding: 20px;
+		dt {
+			color: var(--base-color);
+			font: {
+				weight: 600;
+				size: 14px;
+			}
+			margin-bottom: 10px;
+		}
+		dd {
+			input {
+				border: 0;
+				background-color: transparent;
+				outline: 0;
+				width: 100%;
+				font: {
+					size: 40px;
+					weight: 700;
+				}
+				color: var(--base-color);
+				&::placeholder {
+					color: var(--placeholder);
+				}
+			}
+		}
+	}
+	.btn-calculate {
+		flex: 0 0 100%;
+		padding: 20px;
+		outline: 0;
+		border: 0;
+		font: {
+			size: 30px;
+			weight: 600;
+		}
+		&:disabled {
+			cursor: not-allowed;
+			color: var(--placeholder);
+			background-color: var(--bg-form-inner);
+		}
+		&:not(:disabled) {
+			background-color: var(--btn);
+			color: var(--btn-text);
+		}
+	}
+}
+
+.graph-container {
+	flex: 1 1;
+	width: 100%;
+	margin-top: 30px;
+	display: flex;
+	height: 300px;
+	gap: 20px;
+}
+.graph-item {
+	flex: 1 1;
+	display: flex;
+	flex-direction: column;
+	padding-top: 30px;
+	border-top: 1px solid var(--graph-border);
+	dl {
+		margin-bottom: 20px;
+		padding: 0 20px;
+		dt {
+			color: var(--base-color);
+			font: {
+				weight: 600;
+				size: 14px;
+			}
+		}
+		dd {
+			color: var(--base-color);
+			font: {
+				weight: 700;
+				size: 72px;
+			}
+		}
+	}
+}
+.graph-bg {
+	background: repeating-linear-gradient(-55deg,
+			var(--graph-bg-gradient1),
+			var(--graph-bg-gradient1) 2px,
+			var(--graph-bg-gradient2) 2px,
+			var(--graph-bg-gradient2) 4px);
+	flex: 1 1;
+	border-radius: 10px;
+	display: flex;
+	align-items: flex-end;
+	padding-top: 20px;
+}
+
+.water-bar, .chemical-bar {
+	border-radius: 10px;
+	transition: height 1200ms cubic-bezier(.06, .38, .13, 1);
+	flex: 1;
+	height: 0;
+}
+.water-bar {
+	background-color: #f9f9f9;
+}
+.chemical-bar {
+	background-color: #ff6600;
+}
+
+.copyright {
+	text-align: center;
+	color: var(--copyright);
+	margin-top: 20px;
+	font-size: 12px;
+}
+
+@media screen and (min-width: 1024px) {}
