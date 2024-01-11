@@ -131,19 +131,19 @@ sup {
 			}
 		}
 	}
-	.btn-calculate {
-		flex: 0 0 100%;
-		outline: 0;
-		border: 0;
-		&:disabled {
-			cursor: not-allowed;
-			color: var(--placeholder);
-			background-color: var(--bg-form-inner);
-		}
-		&:not(:disabled) {
-			background-color: var(--btn);
-			color: var(--btn-text);
-		}
+}
+
+.btn-reset {
+	outline: 0;
+	border: 0;
+	&:disabled {
+		cursor: not-allowed;
+		color: var(--placeholder);
+		background-color: var(--bg-form-inner);
+	}
+	&:not(:disabled) {
+		background-color: var(--btn);
+		color: var(--btn-text);
 	}
 }
 
@@ -158,6 +158,13 @@ sup {
 			flex: none;
 		}
 	}
+}
+
+.btn-area {
+	flex: 1 1 auto;
+	display: flex;
+	align-items: stretch;
+	gap: 2px;
 }
 
 .graph-container {
@@ -247,7 +254,12 @@ sup {
 	.form {
 		gap: 2px;
 		dl {
-			flex: 1 1;
+			&:nth-of-type(1) {
+				flex: 0 0 50%;
+			}
+			&:not(:nth-of-type(1)) {
+				flex: 1 1;
+			}
 			padding: 20px;
 			dd {
 				input {
@@ -258,12 +270,12 @@ sup {
 				}
 			}
 		}
-		.btn-calculate {
-			padding: 20px;
-			font: {
-				size: 28px;
-				weight: 600;
-			}
+	}
+	.btn-reset {
+		padding: 20px 30px;
+		font: {
+			size: 24px;
+			weight: 600;
 		}
 	}
 	.graph-container {
@@ -272,9 +284,9 @@ sup {
 	.graph-bg {
 		background: repeating-linear-gradient(-55deg,
 				var(--graph-bg-gradient1),
-				var(--graph-bg-gradient1) 2px,
-				var(--graph-bg-gradient2) 2px,
-				var(--graph-bg-gradient2) 4px);
+				var(--graph-bg-gradient1) 4px,
+				var(--graph-bg-gradient2) 4px,
+				var(--graph-bg-gradient2) 8px);
 		flex: 1 1;
 	}
 	.graph-item {
@@ -329,12 +341,13 @@ sup {
 				}
 			}
 		}
-		.btn-calculate {
-			padding: 16px;
-			font: {
-				size: 22px;
-				weight: 600;
-			}
+	}
+	.btn-reset {
+		flex: 0 0 100%;
+		padding: 16px;
+		font: {
+			size: 20px;
+			weight: 600;
 		}
 	}
 	.graph-bg {
@@ -415,12 +428,12 @@ sup {
 				}
 			}
 		}
-		.btn-calculate {
-			padding: 16px;
-			font: {
-				size: 18px;
-				weight: 600;
-			}
+	}
+	.btn-reset {
+		padding: 16px;
+		font: {
+			size: 18px;
+			weight: 600;
 		}
 	}
 	.notice {
