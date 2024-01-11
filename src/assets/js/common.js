@@ -6,6 +6,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	registerInputEvents(dilutionRatioInput, waterVolumeInput, btnReset);
 	btnReset.addEventListener("click", resetAll);
+
+	// .btn-modal-close를 클릭하면 .modal에서 .active를 제거한다.
+	document.querySelector('.btn-modal-close').addEventListener('click', function () {
+		const modal = document.querySelector('.modal');
+		modal.classList.remove('active');
+	});
+
+	// .btn-information을 클릭하면 .modal에 .active를 추가한다.
+	document.querySelector('.btn-information').addEventListener('click', function () {
+		const modal = document.querySelector('.modal');
+		modal.classList.add('active');
+	});
 });
 
 function registerInputEvents(dilutionRatioInput, waterVolumeInput, btnReset) {

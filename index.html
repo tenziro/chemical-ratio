@@ -1,87 +1,109 @@
 <!DOCTYPE html>
 <html lang="ko">
 
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-title" content="희석비 계산기">
-		<link rel="apple-touch-icon" href="src/assets/images/ico-ratio-1024.png">
-		<link rel="apple-touch-icon" sizes="152x152" href="src/assets/images/ico-ratio-152.png">
-		<link rel="apple-touch-icon" sizes="180x180" href="src/assets/images/ico-ratio-180.png">
-		<link rel="apple-touch-icon" sizes="167x167" href="src/assets/images/ico-ratio-180.png">
-		<title>텐지로닷넷 :: 케미컬 희석비 계산기</title>
-		<meta name="title" content="텐지로닷넷 :: 케미컬 희석비 계산기" />
-		<meta name="description" content="세차할때 케미컬 희석비 계산이 번거로우셨나요? 희석비 계산을 쉽게 할 수 있도록 도와드립니다." />
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content="https://ratio.tenziro.net/" />
-		<meta property="og:title" content="텐지로닷넷 :: 케미컬 희석비 계산기" />
-		<meta property="og:description" content="세차할때 케미컬 희석비 계산이 번거로우셨나요? 희석비 계산을 쉽게 할 수 있도록 도와드립니다." />
-		<meta property="og:image" content="https://ratio.tenziro.net/src/assets/images/img-meta.png" />
-		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content="https://ratio.tenziro.net/" />
-		<meta property="twitter:title" content="텐지로닷넷 :: 케미컬 희석비 계산기" />
-		<meta property="twitter:description" content="세차할때 케미컬 희석비 계산이 번거로우셨나요? 희석비 계산을 쉽게 할 수 있도록 도와드립니다." />
-		<meta property="twitter:image" content="https://ratio.tenziro.net/src/assets/images/img-meta.png" />
-		<link rel="stylesheet" href="src/assets/css/common.css">
-		<link rel="icon" type="image/png" sizes="32x32" href="src/assets/images/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="src/assets/images/favicon-16x16.png">
-	</head>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="희석비 계산기">
+	<link rel="apple-touch-icon" href="src/assets/images/ico-ratio-1024.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="src/assets/images/ico-ratio-152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="src/assets/images/ico-ratio-180.png">
+	<link rel="apple-touch-icon" sizes="167x167" href="src/assets/images/ico-ratio-180.png">
+	<title>텐지로닷넷 :: 케미컬 희석비 계산기</title>
+	<meta name="title" content="텐지로닷넷 :: 케미컬 희석비 계산기" />
+	<meta name="description" content="세차할때 케미컬 희석비 계산이 번거로우셨나요? 희석비 계산을 쉽게 할 수 있도록 도와드립니다." />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://ratio.tenziro.net/" />
+	<meta property="og:title" content="텐지로닷넷 :: 케미컬 희석비 계산기" />
+	<meta property="og:description" content="세차할때 케미컬 희석비 계산이 번거로우셨나요? 희석비 계산을 쉽게 할 수 있도록 도와드립니다." />
+	<meta property="og:image" content="https://ratio.tenziro.net/src/assets/images/img-meta.png" />
+	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="twitter:url" content="https://ratio.tenziro.net/" />
+	<meta property="twitter:title" content="텐지로닷넷 :: 케미컬 희석비 계산기" />
+	<meta property="twitter:description" content="세차할때 케미컬 희석비 계산이 번거로우셨나요? 희석비 계산을 쉽게 할 수 있도록 도와드립니다." />
+	<meta property="twitter:image" content="https://ratio.tenziro.net/src/assets/images/img-meta.png" />
+	<link rel="stylesheet" href="src/assets/css/common.css">
+	<link rel="icon" type="image/png" sizes="32x32" href="src/assets/images/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="src/assets/images/favicon-16x16.png">
+</head>
 
-	<body>
-		<div id="wrap">
-			<div id="contents">
-				<div class="form">
+<body>
+	<div id="wrap">
+		<main id="contents">
+			<div class="header">
+				<button type="button" class="btn-information">
+					<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-circle" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+						<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+						<path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+						<path d="M12 8v4" />
+						<path d="M12 16h.01" />
+					</svg>
+					<span>안내사항</span>
+				</button>
+			</div>
+			<div class="form">
+				<dl>
+					<dt><label for="dilutionRatio"><sup>희석 비율</sup></label></dt>
+					<dd><input type="tel" id="dilutionRatio" step="0.1" placeholder="희석 비율 입력" maxlength="4"></dd>
+				</dl>
+				<dl>
+					<dt><label for="waterVolume"><sup>물 용량</sup></label></dt>
+					<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량(ml) 입력" maxlength="7"></dd>
+				</dl>
+				<button type="button" class="btn-reset" disabled>초기화</button>
+			</div>
+
+			<div class="graph-container">
+				<div class="graph-item">
 					<dl>
-						<dt><label for="dilutionRatio"><sup>희석 비율</sup></label></dt>
-						<dd><input type="tel" id="dilutionRatio" step="0.1" placeholder="희석 비율 입력" maxlength="4"></dd>
+						<dt>케미컬 용량</dt>
+						<dd class="chemical-result">0ml</dd>
 					</dl>
+					<div class="graph-bg">
+						<div class="chemical-bar" id="chemicalBar"></div>
+					</div>
+				</div>
+				<div class="graph-item">
 					<dl>
-						<dt><label for="waterVolume"><sup>물 용량</sup></label></dt>
-						<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량(ml) 입력" maxlength="7"></dd>
+						<dt>
+							물 용량
+						</dt>
+						<dd class="water-result">0ml</dd>
 					</dl>
-					<button type="button" class="btn-reset" disabled>초기화</button>
-				</div>
-
-				<div class="graph-container">
-					<div class="graph-item">
-						<dl>
-							<dt>케미컬 용량</dt>
-							<dd class="chemical-result">0ml</dd>
-						</dl>
-						<div class="graph-bg">
-							<div class="chemical-bar" id="chemicalBar"></div>
-						</div>
-					</div>
-					<div class="graph-item">
-						<dl>
-							<dt>
-								물 용량
-							</dt>
-							<dd class="water-result">0ml</dd>
-						</dl>
-						<div class="graph-bg">
-							<div class="water-bar" id="waterBar"></div>
-						</div>
+					<div class="graph-bg">
+						<div class="water-bar" id="waterBar"></div>
 					</div>
 				</div>
+			</div>
 
-				<details class="accordion">
-					<summary>안내사항 보기</summary>
+			<div class="copyright">
+				tenziro.net, All rights reserved.
+			</div>
+		</main>
+
+		<div class="modal">
+			<div class="modal-container">
+				<button class="btn-modal-close">
+					<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+						<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+						<path d="M18 6l-12 12" />
+						<path d="M6 6l12 12" />
+					</svg>
+				</button>
+				<div class="modal-contents">
+					<h1>안내사항 👋🏻</h1>
 					<ul class="notice">
 						<li><span>희석 비율이 1:30일 경우 "30"을 입력합니다.</span></li>
 						<li>물과 함께 희석할 케미컬의 용량을 쉽게 계산할 수 있습니다.</li>
 						<li>희석 비율과 물 용량 입력시 숫자만 입력해 주세요.</li>
 						<li>희석 비율과 물 용량을 모두 입력하면 케미컬 용량이 자동 계산됩니다.</li>
 					</ul>
-				</details>
-
-				<div class="copyright">
-					tenziro.net, All rights reserved.
 				</div>
 			</div>
 		</div>
-		<script src="src/assets/js/common.js"></script>
-	</body>
+	</div>
+	<script src="src/assets/js/common.js"></script>
+</body>
 
 </html>
