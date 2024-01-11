@@ -1,9 +1,48 @@
 // * 페이지가 로드될 때 또는 DOM이 준비되었을 때 실행될 초기 함수
 document.addEventListener("DOMContentLoaded", function () {
-	// input 필드에 change 이벤트 리스너 추가
-	document.querySelector("#dilutionRatio").addEventListener("input", calculateChemicalVolume);
-	document.querySelector("#waterVolume").addEventListener("input", calculateChemicalVolume);
+	const dilutionRatioInput = document.querySelector("#dilutionRatio");
+	const waterVolumeInput = document.querySelector("#waterVolume");
+	const btnReset = document.querySelector(".btn-reset");
+
+	registerInputEvents(dilutionRatioInput, waterVolumeInput, btnReset);
+	btnReset.addEventListener("click", resetAll);
 });
+
+function registerInputEvents(dilutionRatioInput, waterVolumeInput, btnReset) {
+	dilutionRatioInput.addEventListener("input", handleInput);
+	waterVolumeInput.addEventListener("input", handleInput);
+
+	[dilutionRatioInput, waterVolumeInput].forEach(input => {
+		input.addEventListener("input", updateResetButtonState);
+	});
+}
+
+function handleInput() {
+	calculateChemicalVolume();
+}
+
+function updateResetButtonState() {
+	const hasValue = [document.querySelector("#dilutionRatio").value, document.querySelector("#waterVolume").value].some(value => value.trim() !== "");
+	document.querySelector(".btn-reset").disabled = !hasValue;
+}
+
+function resetAll() {
+	const inputs = ["#dilutionRatio", "#waterVolume"];
+	const bars = ["#waterBar", "#chemicalBar"];
+
+	inputs.forEach(selector => {
+		document.querySelector(selector).value = "";
+	});
+
+	bars.forEach(selector => {
+		document.querySelector(selector).style.height = '0%';
+	});
+
+	document.querySelector(".chemical-result").innerText = "0ml";
+	document.querySelector('.water-result').innerText = "0ml";
+
+	document.querySelector(".btn-reset").disabled = true;
+}
 
 // * 입력된 값으로 계산
 function calculateChemicalVolume() {
@@ -100,36 +139,4 @@ document.querySelector("#waterVolume").addEventListener('input', function (e) {
 		// 3자리마다 쉼표를 추가하여 화면에 표시
 		e.target.value = formatNumberWithCommas(value);
 	}
-});
-
-// * 초기화
-document.addEventListener("DOMContentLoaded", function () {
-	const inputDilutionRatio = document.querySelector("#dilutionRatio");
-	const inputWaterVolume = document.querySelector("#waterVolume");
-	const btnReset = document.querySelector(".btn-reset");
-	// 초기 상태에서 .btn-reset 버튼을 비활성화(disabled)
-	btnReset.disabled = true;
-	// inputDilutionRatio 또는 inputWaterVolume 값이 변경될 때마다 이벤트 리스너를 추가
-	[inputDilutionRatio, inputWaterVolume].forEach(input => {
-		input.addEventListener("input", function () {
-			// #d 또는 #wa 중 하나라도 값이 존재하면 .btn-reset의 disabled를 제거합니다.
-			if (inputDilutionRatio.value.trim() !== "" || inputWaterVolume.value.trim() !== "") {
-				btnReset.disabled = false;
-			} else {
-				btnReset.disabled = true;
-			}
-		});
-	});
-	// .btn-reset 버튼을 클릭했을 때 이벤트 리스너를 추가
-	btnReset.addEventListener("click", function () {
-		// #d와 #wa의 값을 초기화합니다.
-		inputDilutionRatio.value = "";
-		inputWaterVolume.value = "";
-		// .btn-reset을 다시 비활성화(disabled)
-		btnReset.disabled = true;
-		document.querySelector("#waterBar").style.height = '0%';
-		document.querySelector("#chemicalBar").style.height = '0%';
-		document.querySelector(".chemical-result").innerText = `0ml`;
-		document.querySelector('.water-result').innerText = `0ml`;
-	});
 });

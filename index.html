@@ -33,21 +33,15 @@
 			<div id="contents">
 				<div class="form">
 					<dl>
-						<dt><label for="dilutionRatio"><sup>희석 비율 (1:30일 경우 30 입력)</sup></label></dt>
+						<dt><label for="dilutionRatio"><sup>희석 비율</sup></label></dt>
 						<dd><input type="tel" id="dilutionRatio" step="0.1" placeholder="희석 비율 입력" maxlength="4"></dd>
 					</dl>
 					<dl>
-						<dt><label for="waterVolume"><sup>물 용량(ml)</sup></label></dt>
-						<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량 입력" maxlength="7"></dd>
+						<dt><label for="waterVolume"><sup>물 용량</sup></label></dt>
+						<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량(ml) 입력" maxlength="7"></dd>
 					</dl>
 					<button type="button" class="btn-reset" disabled>초기화</button>
 				</div>
-
-				<ul class="notice">
-					<li>물과 함께 희석할 케미컬의 용량을 쉽게 계산할 수 있습니다.</li>
-					<li>희석 비율과 물 용량 입력시 숫자만 입력해 주세요.</li>
-					<li>희석 비율과 물 용량을 모두 입력하면 자동으로 케미컬 용량이 계산됩니다.</li>
-				</ul>
 
 				<div class="graph-container">
 					<div class="graph-item">
@@ -71,6 +65,16 @@
 						</div>
 					</div>
 				</div>
+
+				<details class="accordion">
+					<summary>안내사항 보기</summary>
+					<ul class="notice">
+						<li><span>희석 비율이 1:30일 경우 "30"을 입력합니다.</span></li>
+						<li>물과 함께 희석할 케미컬의 용량을 쉽게 계산할 수 있습니다.</li>
+						<li>희석 비율과 물 용량 입력시 숫자만 입력해 주세요.</li>
+						<li>희석 비율과 물 용량을 모두 입력하면 케미컬 용량이 자동 계산됩니다.</li>
+					</ul>
+				</details>
 
 				<div class="copyright">
 					tenziro.net, All rights reserved.

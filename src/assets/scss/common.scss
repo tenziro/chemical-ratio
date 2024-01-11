@@ -15,13 +15,15 @@
 		--graph-bg-gradient2: #f1f1f1;
 		--bg-water-bar: #ccc;
 		--bg-chemical-bar: #ff6600;
-		--btn: #ff6600;
-		--btn-text: #ffffff;
-		--bg-form: #fff;
+		--btn: #333;
+		--btn-text: #fff;
+		--bg-form: #f1f1f1;
 		--bg-form-inner: #f9f9f9;
 		--placeholder: #ccc;
 		--copyright: #c1c1c1;
 		--notice-text: #666;
+		--line-color: #ff0000;
+		--accordion-border: #e1e1e1;
 	}
 }
 @media (prefers-color-scheme: dark) {
@@ -33,15 +35,17 @@
 		--graph-border: #393939;
 		--graph-bg-gradient1: #1c1c1c;
 		--graph-bg-gradient2: #111;
-		--bg-water-bar: #e1e1e1;
+		--bg-water-bar: #b1b1b1;
 		--bg-chemical-bar: #ff6600;
-		--btn: #ff6600;
-		--btn-text: #ffffff;
+		--btn: #000;
+		--btn-text: #fff;
 		--bg-form: #393939;
 		--bg-form-inner: #151515;
 		--placeholder: #393939;
 		--copyright: #333;
 		--notice-text: #777;
+		--line-color: #fd1e1e;
+		--accordion-border: #393939;
 	}
 }
 * {
@@ -86,6 +90,16 @@ sup {
 	}
 }
 
+summary {
+	display: list-item;
+	cursor: pointer;
+	&::marker,
+	&::-webkit-details-marker {
+		display: none;
+		content: none;
+	}
+}
+
 #contents {
 	position: relative;
 	z-index: 1;
@@ -112,7 +126,6 @@ sup {
 				weight: 600;
 				size: 14px;
 			}
-			margin-bottom: 10px;
 		}
 		dd {
 			input {
@@ -147,6 +160,19 @@ sup {
 	}
 }
 
+.accordion {
+	border-radius: 10px;
+	border: 1px solid var(--accordion-border);
+	summary {
+		color: var(--notice-text);
+	}
+	&[open] {
+		.notice {
+			border-top: 1px dashed var(--accordion-border);
+		}
+	}
+}
+
 .notice {
 	list-style: none;
 	li {
@@ -156,6 +182,12 @@ sup {
 		&:before {
 			content: "-";
 			flex: none;
+		}
+		span {
+			color: var(--line-color);
+			text-decoration: underline;
+			text-decoration-color: var(--line-color);
+			text-underline-offset: 3px;
 		}
 	}
 }
@@ -261,6 +293,9 @@ sup {
 				flex: 1 1;
 			}
 			padding: 20px;
+			dt {
+				margin-bottom: 5px;
+			}
 			dd {
 				input {
 					font: {
@@ -306,9 +341,18 @@ sup {
 			}
 		}
 	}
-	.notice {
+	.accordion {
 		margin-top: 15px;
-		padding-left: 20px;
+		summary {
+			padding: 20px;
+			font: {
+				size: 13px;
+				weight: 600;
+			}
+		}
+	}
+	.notice {
+		padding: 20px;
 		li {
 			&:before {
 				margin-right: 5px;
@@ -318,7 +362,7 @@ sup {
 				weight: 400;
 			}
 			+ li {
-				margin-top: 3px;
+				margin-top: 5px;
 			}
 		}
 	}
@@ -332,6 +376,9 @@ sup {
 		dl {
 			flex: 0 0 100%;
 			padding: 20px;
+			dt {
+				margin-bottom: 5px;
+			}
 			dd {
 				input {
 					font: {
@@ -379,9 +426,18 @@ sup {
 			}
 		}
 	}
-	.notice {
+	.accordion {
 		margin-top: 15px;
-		padding-left: 20px;
+		summary {
+			padding: 20px;
+			font: {
+				size: 13px;
+				weight: 600;
+			}
+		}
+	}
+	.notice {
+		padding: 20px;
 		li {
 			&:before {
 				margin-right: 5px;
@@ -391,7 +447,7 @@ sup {
 				weight: 400;
 			}
 			+ li {
-				margin-top: 3px;
+				margin-top: 5px;
 			}
 		}
 	}
@@ -416,7 +472,6 @@ sup {
 		}
 	}
 	.form {
-		gap: 1px;
 		dl {
 			padding: 16px;
 			dd {
@@ -436,9 +491,18 @@ sup {
 			weight: 600;
 		}
 	}
+	.accordion {
+		margin-top: 15px;
+		summary {
+			padding: 16px;
+			font: {
+				size: 12px;
+				weight: 600;
+			}
+		}
+	}
 	.notice {
-		margin-top: 16px;
-		padding-left: 16px;
+		padding: 16px;
 		li {
 			&:before {
 				margin-right: 2px;
