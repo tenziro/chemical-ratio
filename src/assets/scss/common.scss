@@ -70,6 +70,10 @@ body {
 		feature-settings: 'tnum';
 		variant-numeric: tabular-nums;
 	}
+	min-height: 100dvh;
+	background: {
+		color: var(--bg-contents);
+	}
 }
 
 sup {
@@ -80,40 +84,12 @@ sup {
 	}
 }
 
-#wrap {
-	position: relative;
-	min-height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: {
-		image: url('../images/bg.jpg');
-		position: 50% 50%;
-		size: cover;
-	}
-	&:before {
-		content: "";
-		position: fixed;
-		top: 0;
-		left: 0;
-		bottom: 0;
-		right: 0;
-		background: {
-			color: var(--bg-opacity);
-		}
-		backdrop-filter: blur(10px);
-	}
-}
 #contents {
 	position: relative;
 	z-index: 1;
 	width: 100%;
 	max-width: 1024px;
-	border-radius: 24px;
 	background-color: var(--bg-contents);
-	padding: 30px;
-	height: 50vh;
-	min-height: 600px;
 	display: flex;
 	flex-direction: column;
 }
@@ -128,7 +104,6 @@ sup {
 	border-radius: 10px;
 	overflow: hidden;
 	dl {
-		flex: 1 1;
 		background-color: var(--bg-form-inner);
 		padding: 20px;
 		dt {
@@ -182,15 +157,11 @@ sup {
 	width: 100%;
 	margin-top: 30px;
 	display: flex;
+	flex-wrap: wrap;
 	height: 300px;
 	gap: 20px;
 }
 .graph-item {
-	flex: 1 1;
-	display: flex;
-	flex-direction: column;
-	padding-top: 30px;
-	border-top: 1px solid var(--graph-border);
 	dl {
 		margin-bottom: 20px;
 		padding: 0 20px;
@@ -211,12 +182,6 @@ sup {
 	}
 }
 .graph-bg {
-	background: repeating-linear-gradient(-55deg,
-			var(--graph-bg-gradient1),
-			var(--graph-bg-gradient1) 2px,
-			var(--graph-bg-gradient2) 2px,
-			var(--graph-bg-gradient2) 4px);
-	flex: 1 1;
 	border-radius: 10px;
 	display: flex;
 	align-items: flex-end;
@@ -243,4 +208,101 @@ sup {
 	font-size: 12px;
 }
 
-@media screen and (min-width: 1024px) {}
+@media screen and (min-width: 1024px) {
+	#wrap {
+		position: relative;
+		min-height: 100dvh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: {
+			image: url('../images/bg.jpg');
+			position: 50% 50%;
+			size: cover;
+		}
+		&:before {
+			content: "";
+			position: fixed;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			background: {
+				color: var(--bg-opacity);
+			}
+			backdrop-filter: blur(10px);
+		}
+	}
+	#contents {
+		border-radius: 24px;
+		padding: 30px;
+		height: 50vh;
+		min-height: 600px;
+	}
+	.form {
+		dl {
+			flex: 1 1;
+		}
+	}
+	.graph-bg {
+		background: repeating-linear-gradient(-55deg,
+				var(--graph-bg-gradient1),
+				var(--graph-bg-gradient1) 2px,
+				var(--graph-bg-gradient2) 2px,
+				var(--graph-bg-gradient2) 4px);
+		flex: 1 1;
+	}
+	.graph-item {
+		flex: 1 1;
+		padding-top: 30px;
+		border-top: 1px solid var(--graph-border);
+	}
+}
+@media screen and (max-width: 1024px) {
+	#contents {
+		padding: 30px;
+	}
+	.form {
+		dl {
+			flex: 0 0 100%;
+		}
+	}
+	.graph-bg {
+		background: repeating-linear-gradient(-55deg,
+				var(--graph-bg-gradient1),
+				var(--graph-bg-gradient1) 3px,
+				var(--graph-bg-gradient2) 3px,
+				var(--graph-bg-gradient2) 6px);
+		flex: 1 1;
+		height: 300px;
+	}
+	.graph-item {
+		flex: 0 0 100%;
+		&:first-child {
+			padding-top: 30px;
+			border-top: 1px solid var(--graph-border);
+		}
+		&:nth-child(2) {
+			margin-top: 20px;
+		}
+	}
+}
+@media screen and (max-width: 574px) {
+	#contents {
+		padding: 26px 16px;
+	}
+	.graph-bg {
+		flex: 1 1;
+		height: 200px;
+	}
+	.graph-item {
+		&:first-child {
+			display: none;
+		}
+		&:nth-child(2) {
+			padding-top: 30px;
+			margin-top: 0;
+			border-top: 1px solid var(--graph-border);
+		}
+	}
+}
