@@ -40,7 +40,7 @@ function updateResetButtonState() {
 
 function resetAll() {
 	const inputs = ["#dilutionRatio", "#waterVolume"];
-	const bars = ["#waterBar", "#chemicalBar"];
+	const bars = ["#totalBar", "#chemicalBar"];
 
 	inputs.forEach(selector => {
 		document.querySelector(selector).value = "";
@@ -51,8 +51,9 @@ function resetAll() {
 	});
 
 	document.querySelector(".chemical-result").innerText = "0ml";
-	document.querySelector('.water-result').innerText = "0ml";
-
+	document.querySelector('.total-result').innerText = "0ml";
+	document.querySelector(".chemical-ratio").innerText = ``;
+	document.querySelector(".water-ratio").innerText = ``;
 	document.querySelector(".btn-reset").disabled = true;
 }
 
@@ -81,19 +82,23 @@ function calculateChemicalVolume() {
 
 	// 케미컬의 용량 계산
 	const chemicalVolume = waterVolumeValue / dilutionRatioValue;
+	const totalVolume = chemicalVolume + waterVolumeValue;
 
 	// 소수점 첫째자리까지 반올림
 	const roundedChemicalVolume = Math.round(chemicalVolume * 10) / 10;
 
 	// 결과값을 숫자로 변환한 후 3자리마다 쉼표 추가하여 표시
+	const formattedRoundedChemicalInput = dilutionRatioValue.toLocaleString('en-US', { maximumFractionDigits: 1 })
 	const formattedRoundedChemicalVolume = roundedChemicalVolume.toLocaleString('en-US', { maximumFractionDigits: 1 });
 	const formattedWaterVolume = waterVolumeValue.toLocaleString('en-US', { maximumFractionDigits: 1 });
+	const formattedTotalVolume = totalVolume.toLocaleString('en-US', { maximumFractionDigits: 1 });
 
 	// 그래프 표시
 	displayGraph(waterVolumeValue, roundedChemicalVolume);
-
+	document.querySelector(".chemical-ratio").innerText = `(1:${formattedRoundedChemicalInput})`;
+	document.querySelector(".water-ratio").innerText = `(물 용량:${formattedWaterVolume}ml)`;
 	document.querySelector(".chemical-result").innerText = `${formattedRoundedChemicalVolume}ml`;
-	document.querySelector('.water-result').innerText = `${formattedWaterVolume}ml`;
+	document.querySelector('.total-result').innerText = `${formattedTotalVolume}ml`;
 }
 
 // * 숫자 확인 함수
@@ -104,17 +109,17 @@ function isNumber(value) {
 // * 물 그래프 그리기
 function displayGraph(waterVolume, chemicalVolume) {
 	// 물의 양을 100%로 설정
-	const waterPercentage = 100;
+	const totalPercentage = 100;
 	// 케미컬 양에 따른 % 계산
 	const chemicalPercentage = (chemicalVolume / waterVolume) * 100;
 
 	// 그래프 바의 높이 초기화
-	document.querySelector("#waterBar").style.height = '0%';
+	document.querySelector("#totalBar").style.height = '0%';
 	document.querySelector("#chemicalBar").style.height = '0%';
 
 	// 높이 값을 다시 설정
 	setTimeout(() => {
-		document.querySelector("#waterBar").style.height = `${waterPercentage}%`;
+		document.querySelector("#totalBar").style.height = `${totalPercentage}%`;
 		document.querySelector("#chemicalBar").style.height = `${chemicalPercentage}%`;
 	}, 100)
 }

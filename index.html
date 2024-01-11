@@ -30,8 +30,9 @@
 
 <body>
 	<div id="wrap">
-		<main id="contents">
+		<div id="container">
 			<div class="header">
+				<h1>케미컬 희석비 계산기</h1>
 				<button type="button" class="btn-information">
 					<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-circle" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
 						<path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -42,45 +43,71 @@
 					<span>안내사항</span>
 				</button>
 			</div>
-			<div class="form">
-				<dl>
-					<dt><label for="dilutionRatio"><sup>희석 비율</sup></label></dt>
-					<dd><input type="tel" id="dilutionRatio" step="0.1" placeholder="희석 비율 입력" maxlength="4"></dd>
-				</dl>
-				<dl>
-					<dt><label for="waterVolume"><sup>물 용량</sup></label></dt>
-					<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량(ml) 입력" maxlength="7"></dd>
-				</dl>
-				<button type="button" class="btn-reset" disabled>초기화</button>
-			</div>
-
-			<div class="graph-container">
-				<div class="graph-item">
+			<main id="contents">
+				<div class="form">
 					<dl>
-						<dt>케미컬 용량</dt>
-						<dd class="chemical-result">0ml</dd>
+						<dt><label for="dilutionRatio"><sup>희석 비율</sup></label></dt>
+						<dd><input type="tel" id="dilutionRatio" step="0.1" placeholder="희석 비율 입력" maxlength="4"></dd>
 					</dl>
-					<div class="graph-bg">
-						<div class="chemical-bar" id="chemicalBar"></div>
+					<dl>
+						<dt><label for="waterVolume"><sup>물 용량</sup></label></dt>
+						<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량(ml) 입력" maxlength="7"></dd>
+					</dl>
+					<button type="button" class="btn-reset" disabled>초기화</button>
+				</div>
+
+				<div class="graph-container">
+					<div class="graph-item">
+						<dl>
+							<dt>케미컬 용량 <span class="chemical-ratio"></span></dt>
+							<dd class="chemical-result">0ml</dd>
+						</dl>
+						<div class="graph-bg">
+							<div class="chemical-bar" id="chemicalBar"></div>
+						</div>
+					</div>
+					<div class="graph-item">
+						<dl>
+							<dt>
+								전체 용량 <span class="water-ratio"></span>
+							</dt>
+							<dd class="total-result">0ml</dd>
+						</dl>
+						<div class="graph-bg">
+							<div class="total-bar" id="totalBar"></div>
+						</div>
 					</div>
 				</div>
-				<div class="graph-item">
-					<dl>
-						<dt>
-							물 용량
-						</dt>
-						<dd class="water-result">0ml</dd>
-					</dl>
-					<div class="graph-bg">
-						<div class="water-bar" id="waterBar"></div>
-					</div>
-				</div>
-			</div>
 
-			<div class="copyright">
-				tenziro.net, All rights reserved.
-			</div>
-		</main>
+				<div class="copyright">
+					<ul>
+						<li>
+							<a href="https://www.instagram.com/tenziro.official" target="_blank">
+								<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-instagram" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" />
+									<path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+									<path d="M16.5 7.5l0 .01" />
+								</svg>
+								<span>개발자 인스타그램</span>
+							</a>
+						</li>
+						<li>
+							<a href="https://www.tenziro.net">
+								<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M9 15l6 -6" />
+									<path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464" />
+									<path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463" />
+								</svg>
+								<span>개발자 홈페이지</span>
+							</a>
+						</li>
+						<li>Copyright&copy;tenziro.net, All rights reserved.</li>
+					</ul>
+				</div>
+			</main>
+		</div>
 
 		<div class="modal">
 			<div class="modal-container">
