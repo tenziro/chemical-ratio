@@ -242,7 +242,7 @@ sup {
 		border-radius: 24px;
 		padding: 30px;
 		height: 50vh;
-		min-height: 600px;
+		min-height: 700px;
 	}
 	.form {
 		gap: 2px;
@@ -313,7 +313,7 @@ sup {
 }
 @media screen and (max-width: 1024px) {
 	#contents {
-		padding: 30px;
+		padding: 24px;
 	}
 	.form {
 		gap: 1px;
@@ -323,16 +323,16 @@ sup {
 			dd {
 				input {
 					font: {
-						size: 40px;
+						size: 28px;
 						weight: 700;
 					}
 				}
 			}
 		}
 		.btn-calculate {
-			padding: 20px;
+			padding: 16px;
 			font: {
-				size: 28px;
+				size: 22px;
 				weight: 600;
 			}
 		}
@@ -344,7 +344,7 @@ sup {
 				var(--graph-bg-gradient2) 3px,
 				var(--graph-bg-gradient2) 6px);
 		flex: 1 1;
-		height: 300px;
+		height: 200px;
 	}
 	.graph-item {
 		flex: 0 0 100%;
@@ -354,6 +354,16 @@ sup {
 		}
 		&:nth-child(2) {
 			margin-top: 20px;
+		}
+		dl {
+			margin-bottom: 5px;
+			padding: 0 20px;
+			dd {
+				font: {
+					weight: 700;
+					size: 60px;
+				}
+			}
 		}
 	}
 	.notice {
