@@ -581,12 +581,13 @@ summary {
 			border-top: 1px solid var(--graph-border);
 		}
 		&:nth-child(2) {
-			margin-top: 20px;
+			margin-top: 30px;
 		}
 		dl {
 			margin-bottom: 5px;
 			padding: 0 20px;
 			dd {
+				margin-top: 5px;
 				font: {
 					weight: 700;
 					size: 60px;
@@ -639,7 +640,7 @@ summary {
 	}
 	.graph-item {
 		dl {
-			margin-bottom: 5px;
+			margin-bottom: 10px;
 			padding: 0 10px;
 			dd {
 				font: {

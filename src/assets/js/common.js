@@ -95,8 +95,8 @@ function calculateChemicalVolume() {
 
 	// 그래프 표시
 	displayGraph(waterVolumeValue, roundedChemicalVolume);
-	document.querySelector(".chemical-ratio").innerText = `(1:${formattedRoundedChemicalInput})`;
-	document.querySelector(".water-ratio").innerText = `(물 용량:${formattedWaterVolume}ml)`;
+	document.querySelector(".chemical-ratio").innerText = `(희석비 - 1:${formattedRoundedChemicalInput})`;
+	document.querySelector(".water-ratio").innerText = `(물 용량 - ${formattedWaterVolume}ml)`;
 	document.querySelector(".chemical-result").innerText = `${formattedRoundedChemicalVolume}ml`;
 	document.querySelector('.total-result').innerText = `${formattedTotalVolume}ml`;
 }
