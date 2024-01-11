@@ -13,17 +13,31 @@
 			<div id="contents">
 				<div class="form">
 					<dl>
-						<dt><label for="waterVolume"><sup>물 용량(ml)</sup></label></dt>
-						<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량 입력"></dd>
-					</dl>
-					<dl>
 						<dt><label for="dilutionRatio"><sup>희석 비율 (1:30일 경우 30 입력)</sup></label></dt>
 						<dd><input type="tel" id="dilutionRatio" step="0.1" placeholder="희석 비율 입력"></dd>
 					</dl>
-					<button onclick="calculateChemicalVolume()" type="button" class="btn-calculate">계산</button>
+					<dl>
+						<dt><label for="waterVolume"><sup>물 용량(ml)</sup></label></dt>
+						<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량 입력"></dd>
+					</dl>
+					<button onclick="calculateChemicalVolume()" type="button" class="btn-calculate" disabled>계산</button>
 				</div>
 
+				<ul class="notice">
+					<li>희석 비율과 물 용량 입력시 숫자만 입력해 주세요.</li>
+					<li>희석 비율과 물 용량을 모두 입력해야 계산 버튼이 활성화 됩니다.</li>
+				</ul>
+
 				<div class="graph-container">
+					<div class="graph-item">
+						<dl>
+							<dt>케미컬 용량</dt>
+							<dd class="chemical-result">0ml</dd>
+						</dl>
+						<div class="graph-bg">
+							<div class="chemical-bar" id="chemicalBar"></div>
+						</div>
+					</div>
 					<div class="graph-item">
 						<dl>
 							<dt>
@@ -33,15 +47,6 @@
 						</dl>
 						<div class="graph-bg">
 							<div class="water-bar" id="waterBar"></div>
-						</div>
-					</div>
-					<div class="graph-item">
-						<dl>
-							<dt>케미컬 용량</dt>
-							<dd class="chemical-result">0ml</dd>
-						</dl>
-						<div class="graph-bg">
-							<div class="chemical-bar" id="chemicalBar"></div>
 						</div>
 					</div>
 				</div>

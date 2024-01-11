@@ -6,14 +6,14 @@
 	:root {
 		--base-color: #111;
 		--base-color-sub: #999;
-		--bg-opacity: rgba(255, 255, 255, 50%);
+		--bg-opacity: rgba(25, 25, 25, 50%);
 		--bg-contents: #fff;
 		--bg-check-input: #000;
 		--bg-check-input-label: #fff;
 		--graph-border: #e1e1e1;
 		--graph-bg-gradient1: #fafafa;
 		--graph-bg-gradient2: #f1f1f1;
-		--bg-water-bar: #f9f9f9;
+		--bg-water-bar: #ccc;
 		--bg-chemical-bar: #ff6600;
 		--btn: #ff6600;
 		--btn-text: #ffffff;
@@ -21,6 +21,7 @@
 		--bg-form-inner: #f9f9f9;
 		--placeholder: #ccc;
 		--copyright: #c1c1c1;
+		--notice-text: #666;
 	}
 }
 @media (prefers-color-scheme: dark) {
@@ -40,6 +41,7 @@
 		--bg-form-inner: #151515;
 		--placeholder: #393939;
 		--copyright: #333;
+		--notice-text: #777;
 	}
 }
 * {
@@ -100,12 +102,10 @@ sup {
 	align-items: stretch;
 	background-color: var(--bg-form);
 	flex-wrap: wrap;
-	gap: 2px;
 	border-radius: 10px;
 	overflow: hidden;
 	dl {
 		background-color: var(--bg-form-inner);
-		padding: 20px;
 		dt {
 			color: var(--base-color);
 			font: {
@@ -133,13 +133,8 @@ sup {
 	}
 	.btn-calculate {
 		flex: 0 0 100%;
-		padding: 20px;
 		outline: 0;
 		border: 0;
-		font: {
-			size: 30px;
-			weight: 600;
-		}
 		&:disabled {
 			cursor: not-allowed;
 			color: var(--placeholder);
@@ -152,6 +147,19 @@ sup {
 	}
 }
 
+.notice {
+	list-style: none;
+	li {
+		display: flex;
+		align-items: flex-start;
+		color: var(--notice-text);
+		&:before {
+			content: "-";
+			flex: none;
+		}
+	}
+}
+
 .graph-container {
 	flex: 1 1;
 	width: 100%;
@@ -159,12 +167,9 @@ sup {
 	display: flex;
 	flex-wrap: wrap;
 	height: 300px;
-	gap: 20px;
 }
 .graph-item {
 	dl {
-		margin-bottom: 20px;
-		padding: 0 20px;
 		dt {
 			color: var(--base-color);
 			font: {
@@ -240,9 +245,29 @@ sup {
 		min-height: 600px;
 	}
 	.form {
+		gap: 2px;
 		dl {
 			flex: 1 1;
+			padding: 20px;
+			dd {
+				input {
+					font: {
+						size: 40px;
+						weight: 700;
+					}
+				}
+			}
 		}
+		.btn-calculate {
+			padding: 20px;
+			font: {
+				size: 28px;
+				weight: 600;
+			}
+		}
+	}
+	.graph-container {
+		gap: 20px;
 	}
 	.graph-bg {
 		background: repeating-linear-gradient(-55deg,
@@ -253,9 +278,37 @@ sup {
 		flex: 1 1;
 	}
 	.graph-item {
+		display: flex;
+		flex-direction: column;
 		flex: 1 1;
 		padding-top: 30px;
 		border-top: 1px solid var(--graph-border);
+		dl {
+			margin-bottom: 10px;
+			padding: 0 20px;
+			dd {
+				font: {
+					weight: 700;
+					size: 72px;
+				}
+			}
+		}
+	}
+	.notice {
+		margin-top: 15px;
+		padding-left: 20px;
+		li {
+			&:before {
+				margin-right: 5px;
+			}
+			font: {
+				size: 13px;
+				weight: 400;
+			}
+			+ li {
+				margin-top: 3px;
+			}
+		}
 	}
 }
 @media screen and (max-width: 1024px) {
@@ -263,8 +316,25 @@ sup {
 		padding: 30px;
 	}
 	.form {
+		gap: 1px;
 		dl {
 			flex: 0 0 100%;
+			padding: 20px;
+			dd {
+				input {
+					font: {
+						size: 40px;
+						weight: 700;
+					}
+				}
+			}
+		}
+		.btn-calculate {
+			padding: 20px;
+			font: {
+				size: 28px;
+				weight: 600;
+			}
 		}
 	}
 	.graph-bg {
@@ -286,23 +356,77 @@ sup {
 			margin-top: 20px;
 		}
 	}
+	.notice {
+		margin-top: 15px;
+		padding-left: 20px;
+		li {
+			&:before {
+				margin-right: 5px;
+			}
+			font: {
+				size: 13px;
+				weight: 400;
+			}
+			+ li {
+				margin-top: 3px;
+			}
+		}
+	}
 }
 @media screen and (max-width: 574px) {
 	#contents {
 		padding: 26px 16px;
 	}
 	.graph-bg {
-		flex: 1 1;
-		height: 200px;
+		height: 150px;
 	}
 	.graph-item {
-		&:first-child {
-			display: none;
+		dl {
+			margin-bottom: 5px;
+			padding: 0 10px;
+			dd {
+				font: {
+					weight: 700;
+					size: 42px;
+				}
+			}
 		}
-		&:nth-child(2) {
-			padding-top: 30px;
-			margin-top: 0;
-			border-top: 1px solid var(--graph-border);
+	}
+	.form {
+		gap: 1px;
+		dl {
+			padding: 16px;
+			dd {
+				input {
+					font: {
+						size: 22px;
+						weight: 700;
+					}
+				}
+			}
+		}
+		.btn-calculate {
+			padding: 16px;
+			font: {
+				size: 18px;
+				weight: 600;
+			}
+		}
+	}
+	.notice {
+		margin-top: 16px;
+		padding-left: 16px;
+		li {
+			&:before {
+				margin-right: 2px;
+			}
+			font: {
+				size: 12px;
+				weight: 400;
+			}
+			+ li {
+				margin-top: 3px;
+			}
 		}
 	}
 }
