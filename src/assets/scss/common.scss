@@ -159,6 +159,7 @@ summary {
 	flex-wrap: wrap;
 	border-radius: 10px;
 	overflow: hidden;
+	gap: 1px;
 	dl {
 		background-color: var(--bg-form-inner);
 		dt {
@@ -306,6 +307,7 @@ summary {
 	a {
 		display: inline-flex;
 		text-decoration: none;
+		align-items: center;
 		.icon {
 			flex: none;
 			width: 14px;
@@ -425,7 +427,6 @@ summary {
 		min-height: 700px;
 	}
 	.form {
-		gap: 2px;
 		dl {
 			&:nth-of-type(1) {
 				flex: 0 0 50%;
@@ -470,7 +471,7 @@ summary {
 		flex-direction: column;
 		flex: 1 1;
 		padding-top: 30px;
-		border-top: 1px solid var(--graph-border);
+		border-top: 1px dashed var(--graph-border);
 		dl {
 			margin-bottom: 10px;
 			padding: 0 20px;
@@ -540,7 +541,6 @@ summary {
 		}
 	}
 	.form {
-		gap: 1px;
 		dl {
 			flex: 0 0 100%;
 			padding: 20px;
@@ -578,7 +578,7 @@ summary {
 		flex: 0 0 100%;
 		&:first-child {
 			padding-top: 30px;
-			border-top: 1px solid var(--graph-border);
+			border-top: 1px dashed var(--graph-border);
 		}
 		&:nth-child(2) {
 			margin-top: 30px;
@@ -640,7 +640,7 @@ summary {
 	}
 	.graph-item {
 		dl {
-			margin-bottom: 10px;
+			margin-bottom: 6px;
 			padding: 0 10px;
 			dd {
 				font: {
