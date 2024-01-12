@@ -44,39 +44,92 @@
 				</button>
 			</div>
 			<main id="contents">
-				<div class="form">
-					<dl>
-						<dt><label for="dilutionRatio"><sup>희석 비율</sup></label></dt>
-						<dd><input type="tel" id="dilutionRatio" step="0.1" placeholder="희석 비율 입력" maxlength="4"></dd>
-					</dl>
-					<dl>
-						<dt><label for="waterVolume"><sup>물 용량</sup></label></dt>
-						<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량(ml) 입력" maxlength="7"></dd>
-					</dl>
-					<button type="button" class="btn-reset" disabled>초기화</button>
+
+				<div class="tab-header" style="display: none;">
+					<label class="radio-label" for="contents-tab1" onclick="showTab()">
+						<input type="radio" name="calculation" id="contents-tab1" checked>
+						<span class="control-text">물 용량 대비 계산하기</span>
+					</label>
+					<label class="radio-label" for="contents-tab2" onclick="showTab()">
+						<input type="radio" name="calculation" id="contents-tab2">
+						<span class="control-text">전체 용량 대비 계산하기</span></label>
+					<div class="tab-line"></div>
 				</div>
 
-				<div class="graph-container">
-					<div class="graph-item">
+				<div class="tab-body" id="tab1">
+					<div class="form">
 						<dl>
-							<dt>
-								🧪 케미컬 용량 <span class="chemical-ratio"></span>
-							</dt>
-							<dd class="chemical-result">0ml</dd>
+							<dt><label for="dilutionRatio"><sup>희석 비율</sup></label></dt>
+							<dd><input type="tel" id="dilutionRatio" step="0.1" placeholder="희석 비율 입력" maxlength="4"></dd>
 						</dl>
-						<div class="graph-bg">
-							<div class="chemical-bar" id="chemicalBar"></div>
+						<dl>
+							<dt><label for="waterVolume"><sup>물 용량</sup></label></dt>
+							<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량(ml) 입력" maxlength="7"></dd>
+						</dl>
+						<button type="button" class="btn-reset" disabled>초기화</button>
+					</div>
+
+					<div class="graph-container">
+						<div class="graph-item">
+							<dl>
+								<dt>
+									🧪 케미컬 용량 <span class="chemical-ratio"></span>
+								</dt>
+								<dd class="chemical-result">0ml</dd>
+							</dl>
+							<div class="graph-bg">
+								<div class="chemical-bar"></div>
+							</div>
+						</div>
+						<div class="graph-item">
+							<dl>
+								<dt>
+									🥛 전체 용량 <span class="water-ratio"></span>
+								</dt>
+								<dd class="total-result">0ml</dd>
+							</dl>
+							<div class="graph-bg">
+								<div class="total-bar"></div>
+							</div>
 						</div>
 					</div>
-					<div class="graph-item">
+				</div>
+				<div class="tab-body" id="tab2">
+					<div class="form">
 						<dl>
-							<dt>
-								🥛 전체 용량 <span class="water-ratio"></span>
-							</dt>
-							<dd class="total-result">0ml</dd>
+							<dt><label for="dilutionRatio2"><sup>희석 비율</sup></label></dt>
+							<dd><input type="tel" id="dilutionRatio2" step="0.1" placeholder="희석 비율 입력" maxlength="4"></dd>
 						</dl>
-						<div class="graph-bg">
-							<div class="total-bar" id="totalBar"></div>
+						<dl>
+							<dt><label for="totalCapacity"><sup>전체 용량</sup></label></dt>
+							<dd><input type="tel" id="totalCapacity" step="0.1" placeholder="전체 용량(ml) 입력" maxlength="7"></dd>
+						</dl>
+						<button type="button" class="btn-reset" disabled>초기화</button>
+					</div>
+
+					<div class="graph-container">
+						<div class="graph-item">
+							<dl>
+								<dt>
+									🧪 케미컬 용량 <span class="chemical-ratio"></span>
+								</dt>
+								<dd class="chemical-result">0ml</dd>
+							</dl>
+							<div class="graph-bg">
+								<div class="chemical-bar"></div>
+							</div>
+						</div>
+						<div class="graph-item">
+							<dl>
+								<dt>
+									🥛 전체 용량 <span class="total-ratio"></span>
+								</dt>
+								<dd class="total-result">0ml</dd>
+							</dl>
+							<div class="graph-bg">
+								<div class="chemical-bar2"></div>
+								<div class="water-bar"></div>
+							</div>
 						</div>
 					</div>
 				</div>

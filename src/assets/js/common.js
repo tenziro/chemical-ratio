@@ -40,7 +40,7 @@ function updateResetButtonState() {
 
 function resetAll() {
 	const inputs = ["#dilutionRatio", "#waterVolume"];
-	const bars = ["#totalBar", "#chemicalBar"];
+	const bars = ["#tab1 .total-bar", "#tab1 .chemical-bar"];
 
 	inputs.forEach(selector => {
 		document.querySelector(selector).value = "";
@@ -50,10 +50,10 @@ function resetAll() {
 		document.querySelector(selector).style.height = '0%';
 	});
 
-	document.querySelector(".chemical-result").innerText = "0ml";
-	document.querySelector('.total-result').innerText = "0ml";
-	document.querySelector(".chemical-ratio").innerText = ``;
-	document.querySelector(".water-ratio").innerText = ``;
+	document.querySelector("#tab1 .chemical-result").innerText = "0ml";
+	document.querySelector('#tab1 .total-result').innerText = "0ml";
+	document.querySelector("#tab1 .chemical-ratio").innerText = ``;
+	document.querySelector("#tab1 .water-ratio").innerText = ``;
 	document.querySelector(".btn-reset").disabled = true;
 }
 
@@ -114,13 +114,13 @@ function displayGraph(waterVolume, chemicalVolume) {
 	const chemicalPercentage = (chemicalVolume / waterVolume) * 100;
 
 	// 그래프 바의 높이 초기화
-	document.querySelector("#totalBar").style.height = '0%';
-	document.querySelector("#chemicalBar").style.height = '0%';
+	document.querySelector("#tab1 .total-bar").style.height = '0%';
+	document.querySelector("#tab1 .chemical-bar").style.height = '0%';
 
 	// 높이 값을 다시 설정
 	setTimeout(() => {
-		document.querySelector("#totalBar").style.height = `${totalPercentage}%`;
-		document.querySelector("#chemicalBar").style.height = `${chemicalPercentage}%`;
+		document.querySelector("#tab1 .total-bar").style.height = `${totalPercentage}%`;
+		document.querySelector("#tab1 .chemical-bar").style.height = `${chemicalPercentage}%`;
 	}, 100)
 }
 
@@ -157,3 +157,60 @@ document.querySelector("#waterVolume").addEventListener('input', function (e) {
 		e.target.value = formatNumberWithCommas(value);
 	}
 });
+
+// * tab
+const showTab = () => {
+	const tabRadio = document.querySelector("#contents-tab1");
+	const tab1 = document.querySelector("#tab1");
+	const tab2 = document.querySelector("#tab2");
+	const tabLine = document.querySelector(".tab-line");
+
+	if (tabRadio.checked) {
+		tab1.style.display = "flex";
+		tab2.style.display = "none";
+		tabLine.style.transform = "translateX(0%)";
+	} else {
+		tab1.style.display = "none";
+		tab2.style.display = "flex";
+		tabLine.style.transform = "translateX(100%)";
+	}
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+	document.querySelector('#dilutionRatio2').addEventListener('input', updateValues);
+	document.querySelector('#totalCapacity').addEventListener('input', updateValues);
+});
+
+function updateValues() {
+	let ratio = parseFloat(document.querySelector('#dilutionRatio2').value) || 0;
+	let total = parseFloat(document.querySelector('#totalCapacity').value.replace(/,/g, '')) || 0;
+
+	let chemicalAmount = (total / (ratio + 1)).toFixed(1);
+	let waterAmount = (total - chemicalAmount).toFixed(1);
+
+	document.querySelector('#tab2 .chemical-result').innerText = numberWithCommas(chemicalAmount) + ' ml';
+	document.querySelector('#tab2 .total-result').innerText = numberWithCommas(total.toFixed(1)) + ' ml';
+	// document.querySelector('#tab2 .waterAmount').innerText = numberWithCommas(waterAmount) + ' ml';
+
+	let graph1ChemicalHeight = (chemicalAmount / total) * 100;
+	document.querySelector('#tab2 .chemical-bar').style.height = graph1ChemicalHeight + '%';
+
+	let graph2ChemicalHeight = (chemicalAmount / total) * 100;
+	let graph2WaterHeight = (waterAmount / total) * 100;
+	document.querySelector('#tab2 .chemical-bar2').style.height = graph2ChemicalHeight + '%';
+	document.querySelector('#tab2 .water-bar').style.height = graph2WaterHeight + '%';
+}
+
+function resetValues() {
+	document.querySelector('#dilutionRatio2').value = '';
+	document.querySelector('#totalCapacity').value = '';
+	document.querySelector('#tab2 .chemical-result').innerText = '0 ml';
+	document.querySelector('#tab2 .total-result').innerText = '0 ml';
+	document.querySelector('#tab2 .chemical-bar').style.height = '0%';
+	document.querySelector('#tab2 .chemical-bar2').style.height = '0%';
+	document.querySelector('#tab2 .water-bar').style.height = '0%';
+}
+
+function numberWithCommas(x) {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
