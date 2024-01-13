@@ -45,7 +45,7 @@
 			</div>
 			<main id="contents">
 
-				<div class="tab-header" style="display: none;">
+				<div class="tab-header">
 					<label class="radio-label" for="contents-tab1" onclick="showTab()">
 						<input type="radio" name="calculation" id="contents-tab1" checked>
 						<span class="control-text">물 용량 대비 계산하기</span>
@@ -60,11 +60,11 @@
 					<div class="form">
 						<dl>
 							<dt><label for="dilutionRatio"><sup>희석 비율</sup></label></dt>
-							<dd><input type="tel" id="dilutionRatio" step="0.1" placeholder="희석 비율 입력" maxlength="4"></dd>
+							<dd><input type="tel" id="dilutionRatio" step="0.1" placeholder="희석 비율 입력" maxlength="2"></dd>
 						</dl>
 						<dl>
 							<dt><label for="waterVolume"><sup>물 용량</sup></label></dt>
-							<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량(ml) 입력" maxlength="7"></dd>
+							<dd><input type="tel" id="waterVolume" step="0.1" placeholder="물 용량(ml) 입력" maxlength="6"></dd>
 						</dl>
 						<button type="button" class="btn-reset" disabled>초기화</button>
 					</div>
@@ -98,11 +98,11 @@
 					<div class="form">
 						<dl>
 							<dt><label for="dilutionRatio2"><sup>희석 비율</sup></label></dt>
-							<dd><input type="tel" id="dilutionRatio2" step="0.1" placeholder="희석 비율 입력" maxlength="4"></dd>
+							<dd><input type="tel" id="dilutionRatio2" step="0.1" placeholder="희석 비율 입력" maxlength="2"></dd>
 						</dl>
 						<dl>
 							<dt><label for="totalCapacity"><sup>전체 용량</sup></label></dt>
-							<dd><input type="tel" id="totalCapacity" step="0.1" placeholder="전체 용량(ml) 입력" maxlength="7"></dd>
+							<dd><input type="tel" id="totalCapacity" step="0.1" placeholder="전체 용량(ml) 입력" maxlength="6"></dd>
 						</dl>
 						<button type="button" class="btn-reset" disabled>초기화</button>
 					</div>
@@ -127,8 +127,8 @@
 								<dd class="total-result">0ml</dd>
 							</dl>
 							<div class="graph-bg">
-								<div class="chemical-bar2"></div>
 								<div class="water-bar"></div>
+								<div class="chemical-bar2"></div>
 							</div>
 						</div>
 					</div>
