@@ -62,6 +62,10 @@ function toggleModal() {
 function resetAll() {
 	resetAllTab1();
 	resetAllTab2();
+	window.scrollTo({
+		top: 0,
+		behavior: 'smooth' // 부드러운 스크롤 효과를 위해 추가
+	});
 }
 
 function resetAllTab1() {
@@ -177,6 +181,11 @@ function showTab() {
 	tabToShow.style.display = "flex";
 	tabToHide.style.display = "none";
 	tabLine.style.transform = tabRadio.checked ? "translateX(0%)" : "translateX(100%)";
+
+	window.scrollTo({
+		top: 0,
+		behavior: 'smooth' // 부드러운 스크롤 효과를 위해 추가
+	});
 }
 
 function calculateChemicalVolume() {
