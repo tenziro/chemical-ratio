@@ -1,9 +1,8 @@
-document.addEventListener("DOMContentLoaded", function () {
-	// 탭 헤더와 리셋 버튼 등을 가져오기
+document.addEventListener("DOMContentLoaded", () => {
+	// * DOM 요소 선택
 	const tabHeaderItem = document.querySelector(".tab-header .radio-label");
 	const btnReset = document.querySelector(".btn-reset");
 
-	// 탭1 입력 필드와 탭2 입력 필드 구조 정의
 	const inputsTab1 = {
 		dilutionRatio: document.querySelector("#dilutionRatio"),
 		waterVolume: document.querySelector("#waterVolume"),
@@ -14,29 +13,27 @@ document.addEventListener("DOMContentLoaded", function () {
 		totalVolume: document.querySelector("#totalCapacity"),
 	};
 
-	// 입력 이벤트 등록 함수 호출
+	// * 각 탭에 대한 입력 이벤트 등록
 	registerInputEventsTab(inputsTab1, calculateChemicalVolume, btnReset);
 	registerInputEventsTab(inputsTab2, calculateTotalVolume, btnReset);
 
-	// 리셋 버튼 및 탭 헤더 클릭 이벤트 등록
+	// * 이벤트 리스너 추가
 	btnReset.addEventListener("click", resetAll);
 	tabHeaderItem.addEventListener("click", resetAll);
 
-	// 모달 열기/닫기 이벤트 등록
 	document.querySelector('.btn-modal-close').addEventListener('click', toggleModal);
 	document.querySelector('.btn-information').addEventListener('click', toggleModal);
 
-	// 탭1, 탭2 리셋 버튼 클릭 이벤트 등록
-	document.addEventListener('click', function (event) {
+	document.addEventListener('click', (event) => {
+		// * 탭 내 재설정 버튼 클릭 시 모두 재설정
 		if (event.target.matches('#tab1 .btn-reset') || event.target.matches('#tab2 .btn-reset')) {
 			resetAll();
 		}
 	});
 
-	// 탭 변경 이벤트 등록
 	tabRadio.addEventListener('change', showTab);
 
-	// 입력 필드 이벤트 등록 함수
+	// 특정 탭의 입력 이벤트 등록 함수
 	function registerInputEventsTab(inputs, calculateFunction, btnReset) {
 		Object.values(inputs).forEach(input => {
 			input.addEventListener("input", handleInput);
@@ -45,48 +42,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		btnReset.addEventListener("click", resetAll);
 
-		// 입력 값 변경 시 계산 함수 호출
+		// 입력 이벤트 처리 함수
 		function handleInput() {
 			calculateFunction();
 		}
 	}
 });
 
-// 리셋 버튼 상태 업데이트 함수
+// * 입력 값에 따라 재설정 버튼 활성/비활성화 함수
 function updateResetButtonState() {
-	// 탭1과 탭2의 입력 필드 및 리셋 버튼 선택
 	const tab1Inputs = [document.querySelector("#dilutionRatio"), document.querySelector("#waterVolume")];
 	const tab2Inputs = [document.querySelector("#dilutionRatio2"), document.querySelector("#totalCapacity")];
 	const tab1ResetButton = document.querySelector("#tab1 .btn-reset");
 	const tab2ResetButton = document.querySelector("#tab2 .btn-reset");
 
-	// 리셋 버튼 비활성화 조건 확인 및 적용
 	tab1ResetButton.disabled = !tab1Inputs.some(input => input.value.trim() !== "");
 	tab2ResetButton.disabled = !tab2Inputs.some(input => input.value.trim() !== "");
 }
 
-// 모달 열기/닫기 함수
+// * 모달 표시 함수
 function toggleModal() {
 	const modal = document.querySelector('.modal');
 	modal.classList.toggle('active');
 }
 
-// 전체 리셋 함수
+// * 모든 입력과 결과 재설정 함수
 function resetAll() {
 	resetAllTab1();
 	resetAllTab2();
 }
 
-// 탭1 리셋 함수
+// * 탭 1의 입력과 결과 재설정 함수
 function resetAllTab1() {
-	// 탭1 입력 필드, 바, 텍스트, 결과, 리셋 버튼 선택
 	const inputs = ["#dilutionRatio", "#waterVolume"];
 	const bars = ["#tab1 .total-bar", "#tab1 .chemical-bar"];
 	const texts = ["#tab1 .chemical-ratio", "#tab1 .total-ratio"];
 	const results = ["#tab1 .chemical-result", "#tab1 .water-result"];
 	const resets = ["#tab1 .btn-reset"];
 
-	// 선택된 요소들 초기화
 	inputs.forEach(selector => {
 		document.querySelector(selector).value = "";
 	});
@@ -108,16 +101,14 @@ function resetAllTab1() {
 	});
 }
 
-// 탭2 리셋 함수
+// * 탭 2의 입력과 결과 재설정 함수
 function resetAllTab2() {
-	// 탭2 입력 필드, 바, 텍스트, 결과, 리셋 버튼 선택
 	const inputs = ["#dilutionRatio2", "#totalCapacity"];
 	const bars = ["#tab2 .chemical-bar", "#tab2 .chemical-bar2", "#tab2 .water-bar"];
 	const texts = ["#tab2 .total-ratio", "#tab2 .chemical-ratio"];
 	const results = ["#tab2 .chemical-result", "#tab2 .total-result"];
 	const resets = ["#tab2 .btn-reset"];
 
-	// 선택된 요소들 초기화
 	inputs.forEach(selector => {
 		document.querySelector(selector).value = "";
 	});
@@ -139,50 +130,30 @@ function resetAllTab2() {
 	});
 }
 
-// 숫자 확인 함수
+// * 숫자 확인 함수
 function isNumber(value) {
 	return !isNaN(value) && isFinite(value);
 }
 
-// 입력 필드에 콤마 추가 및 계산 함수
+// * 입력 값을 콤마와 함께 포맷하는 함수
 function formatInput(element) {
 	const value = element.value.replace(/,/g, '');
 	element.value = value.toLocaleString();
 	calculateChemicalVolume();
 }
 
-// 숫자에 3자리마다 쉼표를 추가하는 함수
+// * 숫자를 콤마와 함께 포맷하는 함수
 function formatNumberWithCommas(num) {
 	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-// 숫자 표시
-document.querySelector("#dilutionRatio").addEventListener('input', function (e) {
-	let value = parseFloat(e.target.value.replace(/,/g, ''));
-	if (!isNaN(value)) {
-		e.target.value = formatNumberWithCommas(value);
-	}
-});
-document.querySelector("#waterVolume").addEventListener('input', function (e) {
-	let value = parseFloat(e.target.value.replace(/,/g, ''));
-	if (!isNaN(value)) {
-		e.target.value = formatNumberWithCommas(value);
-	}
-});
-document.querySelector("#dilutionRatio2").addEventListener('input', function (e) {
-	let value = parseFloat(e.target.value.replace(/,/g, ''));
-	if (!isNaN(value)) {
-		e.target.value = formatNumberWithCommas(value);
-	}
-});
-document.querySelector("#totalCapacity").addEventListener('input', function (e) {
-	let value = parseFloat(e.target.value.replace(/,/g, ''));
-	if (!isNaN(value)) {
-		e.target.value = formatNumberWithCommas(value);
-	}
-});
+// * 입력 값에 콤마 추가하는 이벤트 리스너
+document.querySelector("#dilutionRatio").addEventListener('input', formatInput);
+document.querySelector("#waterVolume").addEventListener('input', formatInput);
+document.querySelector("#dilutionRatio2").addEventListener('input', formatInput);
+document.querySelector("#totalCapacity").addEventListener('input', formatInput);
 
-// 탭 관련 코드
+// * 탭 전환을 위한 변수
 const tabRadio = document.querySelector("#contents-tab1");
 const tabs = {
 	tab1: document.querySelector("#tab1"),
@@ -190,9 +161,7 @@ const tabs = {
 };
 const tabLine = document.querySelector(".tab-line");
 
-tabRadio.addEventListener('change', showTab);
-
-// 탭 전환 함수
+// * 선택한 탭을 표시하는 함수
 function showTab() {
 	const tabToShow = tabRadio.checked ? tabs.tab1 : tabs.tab2;
 	const tabToHide = tabRadio.checked ? tabs.tab2 : tabs.tab1;
@@ -202,7 +171,7 @@ function showTab() {
 	tabLine.style.transform = tabRadio.checked ? "translateX(0%)" : "translateX(100%)";
 }
 
-// 탭1 케미컬 용량 계산 함수
+// * 탭 1에서 화합물 부피를 계산하는 함수
 function calculateChemicalVolume() {
 	const dilutionRatioInput = document.querySelector("#dilutionRatio");
 	const waterVolumeInput = document.querySelector("#waterVolume");
@@ -239,7 +208,7 @@ function calculateChemicalVolume() {
 	document.querySelector('#tab1 .water-result').innerText = `${formattedWaterVolume}ml`;
 }
 
-// 탭1 물 그래프 표시 함수
+// * 탭 1에서 그래프를 표시하는 함수
 function displayGraphTab1(waterVolume, chemicalVolume) {
 	const totalPercentage = 100;
 	const chemicalPercentage = (chemicalVolume / waterVolume) * 100;
@@ -253,7 +222,7 @@ function displayGraphTab1(waterVolume, chemicalVolume) {
 	}, 100)
 }
 
-// 탭2 전체 용량 계산 함수
+// * 탭 2에서 전체 용량을 계산하는 함수
 function calculateTotalVolume() {
 	const dilutionRatioInput = document.querySelector("#dilutionRatio2");
 	const totalVolumeInput = document.querySelector("#totalCapacity");
@@ -291,7 +260,7 @@ function calculateTotalVolume() {
 	document.querySelector('#tab2 .total-ratio').innerText = `(물 용량 - ${formattedWaterVolume}ml)`;
 }
 
-// 탭2 물 그래프 표시 함수
+// * 탭 2에서 그래프를 표시하는 함수
 function displayGraphTab2(chemicalAmount, totalVolumeValue, waterAmount) {
 	const graph1ChemicalHeight = (chemicalAmount / totalVolumeValue) * 100;
 	const graph2ChemicalHeight = (chemicalAmount / totalVolumeValue) * 100;
