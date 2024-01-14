@@ -56,7 +56,9 @@ function updateResetButtonState() {
 
 function toggleModal() {
 	const modal = document.querySelector('.modal');
+	const body = document.body;
 	modal.classList.toggle('active');
+	body.classList.toggle('stop-scroll');
 }
 
 function resetAll() {

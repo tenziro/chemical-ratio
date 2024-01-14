@@ -92,6 +92,7 @@ body {
 	background: {
 		color: var(--bg-contents);
 	}
+	letter-spacing: -0.5px;
 	min-width: 320px;
 }
 
@@ -119,6 +120,10 @@ summary {
 		display: none;
 		content: none;
 	}
+}
+
+.stop-scroll {
+	overflow-y: hidden;
 }
 
 #container {
@@ -190,10 +195,6 @@ summary {
 				background-color: transparent;
 				outline: 0;
 				width: 100%;
-				font: {
-					size: 40px;
-					weight: 700;
-				}
 				color: var(--base-color);
 				&::placeholder {
 					color: var(--placeholder);
@@ -261,10 +262,6 @@ summary {
 		}
 		dd {
 			color: var(--base-color);
-			font: {
-				weight: 700;
-				size: 72px;
-			}
 		}
 	}
 }
@@ -530,6 +527,7 @@ summary {
 			}
 			dd {
 				input {
+					height: 36px;
 					font: {
 						size: 36px;
 						weight: 700;
@@ -539,10 +537,10 @@ summary {
 		}
 	}
 	.btn-reset {
-		padding: 20px 30px;
+		padding: 30px;
 		font: {
-			size: 24px;
-			weight: 600;
+			size: 20px;
+			weight: 800;
 		}
 	}
 	.graph-container {
@@ -568,7 +566,7 @@ summary {
 			dd {
 				font: {
 					weight: 700;
-					size: 72px;
+					size: 62px;
 				}
 			}
 		}
@@ -649,10 +647,10 @@ summary {
 	}
 	.btn-reset {
 		flex: 0 0 100%;
-		padding: 16px;
+		padding: 20px;
 		font: {
 			size: 20px;
-			weight: 600;
+			weight: 800;
 		}
 	}
 	.graph-bg {
@@ -680,7 +678,7 @@ summary {
 				margin-top: 5px;
 				font: {
 					weight: 700;
-					size: 60px;
+					size: 54px;
 				}
 			}
 		}
@@ -756,8 +754,8 @@ summary {
 	.btn-reset {
 		padding: 16px;
 		font: {
-			size: 18px;
-			weight: 600;
+			size: 16px;
+			weight: 800;
 		}
 	}
 	.notice {
