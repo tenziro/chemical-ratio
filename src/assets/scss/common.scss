@@ -221,6 +221,7 @@ summary {
 		display: flex;
 		align-items: flex-start;
 		color: var(--notice-text);
+		line-height: 160%;
 		&:before {
 			content: "-";
 			flex: none;
@@ -354,7 +355,7 @@ summary {
 	right: 0;
 	left: 0;
 	bottom: 0;
-	z-index: 10;
+	z-index: 100;
 	&.active {
 		display: flex;
 		.modal-container {
@@ -581,7 +582,7 @@ summary {
 				weight: 400;
 			}
 			+ li {
-				margin-top: 10px;
+				margin-top: 5px;
 			}
 		}
 	}
@@ -693,7 +694,7 @@ summary {
 				weight: 400;
 			}
 			+ li {
-				margin-top: 10px;
+				margin-top: 3px;
 			}
 		}
 	}
@@ -709,7 +710,7 @@ summary {
 	}
 	.header {
 		align-items: center;
-		z-index: 2;
+		z-index: 10;
 		h1 {
 			&:after {
 				right: -28px;
@@ -768,7 +769,7 @@ summary {
 				weight: 400;
 			}
 			+ li {
-				margin-top: 8px;
+				margin-top: 2px;
 			}
 		}
 	}
