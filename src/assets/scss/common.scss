@@ -44,7 +44,7 @@
 		--graph-bg-gradient1: #1c1c1c;
 		--graph-bg-gradient2: #111;
 		--bg-total-bar: #b1b1b1;
-		--bg-water-bar: #fafafa;
+		--bg-water-bar: #c1c1c1;
 		--bg-chemical-bar: #ff6600;
 		--btn: #fff;
 		--btn-text: #151515;
@@ -422,6 +422,7 @@ summary {
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			transition: color var(--tab-speed);
 			font: {
 				size: 14px;
 				weight: 600;

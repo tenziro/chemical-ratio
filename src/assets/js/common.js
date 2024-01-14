@@ -82,8 +82,8 @@ function resetAllTab1() {
 	// 탭1 입력 필드, 바, 텍스트, 결과, 리셋 버튼 선택
 	const inputs = ["#dilutionRatio", "#waterVolume"];
 	const bars = ["#tab1 .total-bar", "#tab1 .chemical-bar"];
-	const texts = ["#tab1 .chemical-ratio", "#tab1 .water-ratio"];
-	const results = ["#tab1 .chemical-result", "#tab1 .total-result"];
+	const texts = ["#tab1 .chemical-ratio", "#tab1 .total-ratio"];
+	const results = ["#tab1 .chemical-result", "#tab1 .water-result"];
 	const resets = ["#tab1 .btn-reset"];
 
 	// 선택된 요소들 초기화
@@ -234,9 +234,9 @@ function calculateChemicalVolume() {
 
 	displayGraphTab1(waterVolumeValue, roundedChemicalVolume);
 	document.querySelector("#tab1 .chemical-ratio").innerText = `(희석비 - 1:${formattedRoundedChemicalInput})`;
-	document.querySelector("#tab1 .water-ratio").innerText = `(물 용량 - ${formattedWaterVolume}ml)`;
+	document.querySelector("#tab1 .total-ratio").innerText = `(전체 용량 - ${formattedTotalVolume}ml)`;
 	document.querySelector("#tab1 .chemical-result").innerText = `${formattedRoundedChemicalVolume}ml`;
-	document.querySelector('#tab1 .total-result').innerText = `${formattedTotalVolume}ml`;
+	document.querySelector('#tab1 .water-result').innerText = `${formattedWaterVolume}ml`;
 }
 
 // 탭1 물 그래프 표시 함수
