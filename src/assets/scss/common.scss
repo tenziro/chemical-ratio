@@ -12,6 +12,7 @@
 		--base-color-sub: #999;
 		--bg-opacity: rgba(25, 25, 25, 50%);
 		--bg-contents: #fff;
+		--bg-contents-rgb: 255, 255, 255;
 		--bg-check-input: #000;
 		--bg-check-input-label: #fff;
 		--graph-border: #e1e1e1;
@@ -40,6 +41,7 @@
 		--base-color-sub: #bbb;
 		--bg-opacity: rgba(0, 0, 0, 50%);
 		--bg-contents: #1c1c1c;
+		--bg-contents-rgb: 0, 0, 0;
 		--graph-border: #393939;
 		--graph-bg-gradient1: #1c1c1c;
 		--graph-bg-gradient2: #111;
@@ -130,7 +132,6 @@ summary {
 	max-width: 1024px;
 	position: relative;
 	z-index: 1;
-	background-color: var(--bg-contents);
 }
 
 #contents {
@@ -504,6 +505,7 @@ summary {
 	#container {
 		border-radius: 24px;
 		padding: 30px;
+		background-color: rgba(var(--bg-contents-rgb), 90%);
 	}
 	#contents {
 		height: 50vh;
@@ -703,6 +705,9 @@ summary {
 	}
 }
 @media screen and (max-width: 574px) {
+	#container {
+		background-color: var(--bg-contents);
+	}
 	#contents {
 		padding: 26px 16px 36px;
 	}
