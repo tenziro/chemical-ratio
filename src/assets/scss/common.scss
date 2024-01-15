@@ -27,7 +27,7 @@
 		--placeholder: #ccc;
 		--copyright: #c1c1c1;
 		--notice-text: #111;
-		--line-color: #ff0000;
+		--line-color: #ff6600;
 		--bg-tab: #f9f9f9;
 		--tab-default-text: #ccc;
 		--tab-active-text: #fff;
@@ -226,6 +226,7 @@ summary {
 			content: "-";
 			flex: none;
 		}
+		a,
 		span {
 			color: var(--line-color);
 			text-decoration: underline;
