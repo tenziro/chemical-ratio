@@ -234,8 +234,8 @@ function displayGraphTab1(waterVolume, chemicalVolume) {
 	document.querySelector("#tab1 .chemical-bar").style.height = '0%';
 
 	setTimeout(() => {
-		document.querySelector("#tab1 .total-bar").style.height = `${totalPercentage}%`;
-		document.querySelector("#tab1 .chemical-bar").style.height = `${chemicalPercentage}%`;
+		document.querySelector("#tab1 .total-bar").style.height = totalPercentage + '%';
+		document.querySelector("#tab1 .chemical-bar").style.height = chemicalPercentage + 10 + '%';
 	}, 100)
 }
 
@@ -286,8 +286,8 @@ function displayGraphTab2(chemicalAmount, totalVolumeValue, waterAmount) {
 	document.querySelector("#tab2 .water-bar").style.height = '0%';
 
 	setTimeout(() => {
-		document.querySelector('#tab2 .chemical-bar').style.height = graph1ChemicalHeight + '%';
-		document.querySelector('#tab2 .chemical-bar2').style.height = graph2ChemicalHeight + '%';
-		document.querySelector('#tab2 .water-bar').style.height = graph2WaterHeight + '%';
+		document.querySelector('#tab2 .chemical-bar').style.height = graph1ChemicalHeight + 10 + '%';
+		document.querySelector('#tab2 .chemical-bar2').style.height = graph2ChemicalHeight + 10 + '%';
+		document.querySelector('#tab2 .water-bar').style.height = graph2WaterHeight - 10 + '%';
 	}, 100)
 }
