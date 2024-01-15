@@ -397,6 +397,7 @@ summary {
 		align-items: center;
 		justify-content: center;
 		flex: 1 1;
+		cursor: pointer;
 		input[type="radio"] {
 			display: none;
 			&:checked {
