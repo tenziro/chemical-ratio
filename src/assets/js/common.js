@@ -288,6 +288,6 @@ function displayGraphTab2(chemicalAmount, totalVolumeValue, waterAmount) {
 	setTimeout(() => {
 		document.querySelector('#tab2 .chemical-bar').style.height = graph1ChemicalHeight + '%';
 		document.querySelector('#tab2 .chemical-bar2').style.height = graph2ChemicalHeight + '%';
-		document.querySelector('#tab2 .water-bar').style.height = graph2WaterHeight - '%';
+		document.querySelector('#tab2 .water-bar').style.height = graph2WaterHeight + '%';
 	}, 100)
 }
