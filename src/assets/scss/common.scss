@@ -26,7 +26,7 @@
 		--bg-form: #f1f1f1;
 		--bg-form-inner: #f9f9f9;
 		--placeholder: #ccc;
-		--copyright: #c1c1c1;
+		--copyright: #a1a1a1;
 		--notice-text: #111;
 		--line-color: #ff6600;
 		--bg-tab: #f9f9f9;
@@ -296,6 +296,7 @@ summary {
 	background-color: var(--bg-chemical-bar);
 }
 
+// * Footer
 .copyright {
 	color: var(--copyright);
 	margin-top: 20px;
@@ -341,6 +342,7 @@ summary {
 	}
 }
 
+// * Modal
 .modal {
 	display: none;
 	align-items: center;
@@ -388,6 +390,7 @@ summary {
 	}
 }
 
+// * Tab
 .tab-header {
 	display: flex;
 	border-radius: 10px;
@@ -438,7 +441,6 @@ summary {
 		transition: transform var(--tab-speed);
 	}
 }
-
 .tab-body {
 	flex: 1 1;
 	display: flex;
