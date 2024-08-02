@@ -44,7 +44,7 @@
 		--bg-contents-rgb: 31, 31, 31;
 		--graph-border: #303134;
 		--graph-bg-gradient1: #303134;
-		--graph-bg-gradient2: #151515;
+		--graph-bg-gradient2: transparent;
 		--bg-total-bar: #1984ff;
 		--bg-water-bar: #1984ff;
 		--bg-chemical-bar: #ff5e19;
@@ -532,8 +532,9 @@ summary {
 			dd {
 				input {
 					height: 36px;
+					letter-spacing: -0.0375em;
 					font: {
-						size: 36px;
+						size: 32px;
 						weight: 700;
 					}
 				}
