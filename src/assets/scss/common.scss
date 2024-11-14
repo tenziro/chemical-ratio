@@ -29,7 +29,7 @@
 		--copyright: #aaa;
 		--notice-text: #111;
 		--line-color: #ff2119;
-		--bg-tab: #fafafa;
+		--bg-tab: #f1f1f1;
 		--tab-default-text: #ccc;
 		--tab-active-text: #fff;
 		--tab-line: #151515;
@@ -508,7 +508,7 @@ summary {
 	#container {
 		border-radius: 24px;
 		padding: 30px;
-		background-color: rgba(var(--bg-contents-rgb), 90%);
+		background-color: rgba(var(--bg-contents-rgb), 100%);
 	}
 	#contents {
 		height: 65vh;
