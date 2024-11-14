@@ -16,7 +16,7 @@
 		--bg-check-input: #000;
 		--bg-check-input-label: #fff;
 		--graph-border: #eee;
-		--graph-bg-gradient1: #f1f1f1;
+		--graph-bg-gradient1: #fafafa;
 		--graph-bg-gradient2: transparent;
 		--bg-total-bar: #1984ff8b;
 		--bg-water-bar: #1984ff8b;
@@ -29,7 +29,7 @@
 		--copyright: #aaa;
 		--notice-text: #111;
 		--line-color: #ff2119;
-		--bg-tab: #f1f1f1;
+		--bg-tab: #fafafa;
 		--tab-default-text: #ccc;
 		--tab-active-text: #fff;
 		--tab-line: #151515;
@@ -60,15 +60,6 @@
 		--tab-default-text: #a1a1a1;
 		--tab-active-text: #151515;
 		--tab-line: #fff;
-	}
-}
-
-#bmc-wbtn {
-	width: 32px !important;
-	height: 32px !important;
-	> img {
-		width: 16px !important;
-		height: 16px !important;
 	}
 }
 * {
@@ -580,7 +571,7 @@ summary {
 			dd {
 				font: {
 					weight: 700;
-					size: 62px;
+					size: 52px;
 				}
 			}
 		}
