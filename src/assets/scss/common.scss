@@ -231,6 +231,8 @@ summary {
 		a,
 		span {
 			color: var(--line-color);
+		}
+		a {
 			text-decoration: underline;
 			text-decoration-color: var(--line-color);
 			text-underline-offset: 3px;
