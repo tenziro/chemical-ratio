@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	});
 
 	tabRadio.addEventListener('change', showTab);
-
+	// * 탭별 이벤트 등록
 	const registerInputEventsTab = (inputs, calculateFunction, btnReset) => {
 		Object.values(inputs).forEach(input => {
 			input.addEventListener("input", () => {
@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	registerInputEventsTab(inputsTab2, calculateTotalVolume, btnReset);
 });
 
+// * 리셋 버튼 활성화
 const updateResetButtonState = () => {
 	const tab1Inputs = [document.querySelector("#dilutionRatio"), document.querySelector("#waterVolume")];
 	const tab2Inputs = [document.querySelector("#dilutionRatio2"), document.querySelector("#totalCapacity")];
@@ -50,6 +51,7 @@ const updateResetButtonState = () => {
 	tab2ResetButton.disabled = !tab2Inputs.some(input => input.value.trim() !== "");
 };
 
+// * 모달창 제어
 const toggleModal = () => {
 	const modal = document.querySelector('.modal');
 	const body = document.body;
@@ -89,6 +91,7 @@ const resetTab = (tabId, inputSelectors, barSelectors, textSelectors, resultSele
 		document.querySelector(selector).disabled = true;
 	});
 };
+// * 탭별 리셋 함수
 const resetAllTab1 = () => {
 	resetTab("#tab1", ["#dilutionRatio", "#waterVolume"], ["#tab1 .total-bar", "#tab1 .chemical-bar"], ["#tab1 .chemical-ratio", "#tab1 .total-ratio"], ["#tab1 .chemical-result", "#tab1 .water-result"], ["#tab1 .btn-reset"]);
 };
@@ -121,7 +124,6 @@ const tabs = {
 	tab2: document.querySelector("#tab2"),
 };
 const tabLine = document.querySelector(".tab-line");
-
 const showTab = () => {
 	const isTab1Checked = tabRadio.checked;
 	tabs.tab1.style.display = isTab1Checked ? "flex" : "none";
@@ -151,6 +153,7 @@ const animateGraph = (selectors, heights) => {
 		});
 	}, 100);
 };
+// * 케미컬 용량 계산
 const calculateChemicalVolume = () => {
 	const dilutionRatioValue = getInputValue("#dilutionRatio");
 	const waterVolumeValue = getInputValue("#waterVolume");
@@ -167,6 +170,7 @@ const calculateChemicalVolume = () => {
 	updateTextContent("#tab1 .chemical-result", `${formatNumber(chemicalVolume)}ml`);
 	updateTextContent("#tab1 .water-result", `${formatNumber(waterVolumeValue)}ml`);
 };
+// * 전체 용량 계산
 const calculateTotalVolume = () => {
 	const dilutionRatioValue = getInputValue("#dilutionRatio2");
 	const totalVolumeValue = getInputValue("#totalCapacity");
