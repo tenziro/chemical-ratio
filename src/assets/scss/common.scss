@@ -795,7 +795,7 @@ summary {
 	.modal-container {
 		position: relative;
 		max-width: 100%;
-		padding: 24px;
+		padding: 24px 24px calc(24px + env(safe-area-inset-bottom));
 		border-radius: 16px 16px 0 0;
 		.btn-modal-close {
 			top: 23px;
