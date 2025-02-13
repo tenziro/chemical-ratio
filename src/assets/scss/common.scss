@@ -707,7 +707,7 @@ summary {
 		background-color: var(--bg-contents);
 	}
 	#contents {
-		padding: 16px 16px 20px;
+		padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
 	}
 	.header {
 		align-items: center;
