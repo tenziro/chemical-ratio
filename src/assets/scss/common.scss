@@ -227,7 +227,10 @@ summary {
 		color: var(--notice-text);
 		line-height: 160%;
 		&:before {
-			content: "-";
+			content: "\b7";
+			font: {
+				weight: 700;
+			}
 			flex: none;
 		}
 		a,
