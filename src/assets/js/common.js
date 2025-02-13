@@ -23,8 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
 			resetAll();
 		}
 	});
-
 	tabRadio.addEventListener('change', showTab);
+
 	// * 탭별 이벤트 등록
 	const registerInputEventsTab = (inputs, calculateFunction, btnReset) => {
 		Object.values(inputs).forEach(input => {

@@ -30,9 +30,9 @@
 		--notice-text: #111;
 		--line-color: #ff2119;
 		--bg-tab: #fafafa;
-		--tab-default-text: #ccc;
+		--tab-default-text: #aaa;
 		--tab-active-text: #fff;
-		--tab-line: #151515;
+		--tab-line: #1f1f1f;
 	}
 }
 @media (prefers-color-scheme: dark) {
@@ -250,10 +250,8 @@ summary {
 .graph-container {
 	flex: 1 1;
 	width: 100%;
-	margin-top: 30px;
 	display: flex;
 	flex-wrap: wrap;
-	height: 300px;
 }
 .graph-item {
 	dl {
@@ -345,54 +343,6 @@ summary {
 	}
 }
 
-// * Modal
-.modal {
-	display: none;
-	align-items: center;
-	justify-content: center;
-	height: 100vh;
-	position: fixed;
-	background-color: rgba(0, 0, 0, 50%);
-	backdrop-filter: blur(10px);
-	top: 0;
-	right: 0;
-	left: 0;
-	z-index: 100;
-	&.active {
-		display: flex;
-		.modal-container {
-			animation: modal-in 800ms;
-		}
-	}
-}
-.modal-container {
-	position: relative;
-	width: 100%;
-	max-width: 480px;
-	padding: 30px;
-	background-color: var(--bg-contents);
-	border-radius: 20px;
-	.btn-modal-close {
-		position: absolute;
-		top: 20px;
-		right: 20px;
-		background: transparent;
-		line-height: 1;
-		color: var(--base-color);
-		.icon {
-			width: 32px;
-			height: 32px;
-		}
-	}
-	h1 {
-		color: var(--notice-text);
-		font: {
-			size: 18px;
-			weight: 600;
-		}
-	}
-}
-
 // * Tab
 .tab-header {
 	display: flex;
@@ -451,6 +401,55 @@ summary {
 }
 #tab2 {
 	display: none;
+}
+
+// * Modal
+.modal {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	position: fixed;
+	background-color: rgba(0, 0, 0, 50%);
+	backdrop-filter: blur(4px);
+	top: 0;
+	right: 0;
+	left: 0;
+	z-index: 100;
+	&.active {
+		display: flex;
+		.modal-container {
+			animation: modal-in 800ms;
+		}
+	}
+}
+.modal-container {
+	position: relative;
+	width: 100%;
+	max-width: 480px;
+	padding: 30px;
+	border-radius: 20px;
+	background-color: var(--bg-contents);
+	.btn-modal-close {
+		position: absolute;
+		top: 26px;
+		right: 26px;
+		background: transparent;
+		line-height: 1;
+		color: var(--base-color);
+		.icon {
+			width: 32px;
+			height: 32px;
+		}
+	}
+	h1 {
+		color: var(--notice-text);
+		margin-bottom: 15px;
+		font: {
+			size: 18px;
+			weight: 600;
+		}
+	}
 }
 
 @keyframes modal-in {
@@ -551,6 +550,7 @@ summary {
 		}
 	}
 	.graph-container {
+		margin-top: 30px;
 		gap: 20px;
 	}
 	.graph-bg {
@@ -590,11 +590,6 @@ summary {
 			+ li {
 				margin-top: 5px;
 			}
-		}
-	}
-	.modal-container {
-		h1 {
-			margin-bottom: 20px;
 		}
 	}
 }
@@ -645,7 +640,7 @@ summary {
 			dd {
 				input {
 					font: {
-						size: 28px;
+						size: 26px;
 						weight: 700;
 					}
 				}
@@ -654,11 +649,14 @@ summary {
 	}
 	.btn-reset {
 		flex: 0 0 100%;
-		padding: 20px;
+		padding: 16px;
 		font: {
 			size: 18px;
 			weight: 700;
 		}
+	}
+	.graph-container {
+		margin-top: 20px;
 	}
 	.graph-bg {
 		background: repeating-linear-gradient(-55deg,
@@ -672,11 +670,11 @@ summary {
 	.graph-item {
 		flex: 0 0 100%;
 		&:first-child {
-			padding-top: 30px;
+			padding-top: 20px;
 			border-top: 1px dashed var(--graph-border);
 		}
 		&:nth-child(2) {
-			margin-top: 30px;
+			margin-top: 20px;
 		}
 		dl {
 			margin-bottom: 5px;
@@ -704,18 +702,13 @@ summary {
 			}
 		}
 	}
-	.modal-container {
-		h1 {
-			margin-bottom: 15px;
-		}
-	}
 }
 @media screen and (max-width: 574px) {
 	#container {
 		background-color: var(--bg-contents);
 	}
 	#contents {
-		padding: 26px 16px 36px;
+		padding: 16px 16px 20px;
 	}
 	.header {
 		align-items: center;
@@ -742,8 +735,8 @@ summary {
 			padding: 0 10px;
 			dd {
 				font: {
+					size: 38px;
 					weight: 700;
-					size: 42px;
 				}
 			}
 		}
@@ -751,10 +744,11 @@ summary {
 	.form {
 		dl {
 			padding: 16px;
+			flex: 0 0 calc(50% - 0.5px);
 			dd {
 				input {
 					font: {
-						size: 22px;
+						size: 20px;
 						weight: 700;
 					}
 				}
@@ -762,9 +756,9 @@ summary {
 		}
 	}
 	.btn-reset {
-		padding: 16px;
+		padding: 12px;
 		font: {
-			size: 16px;
+			size: 15px;
 			weight: 700;
 		}
 	}
@@ -774,20 +768,11 @@ summary {
 				margin-right: 4px;
 			}
 			font: {
-				size: 12px;
+				size: 13px;
 				weight: 400;
 			}
 			+ li {
 				margin-top: 2px;
-			}
-		}
-	}
-	.modal-container {
-		width: 90%;
-		.btn-modal-close {
-			.icon {
-				width: 24px;
-				height: 24px;
 			}
 		}
 	}
@@ -801,6 +786,30 @@ summary {
 					justify-content: center;
 					margin-top: 5px;
 				}
+			}
+		}
+	}
+	// * Modal
+	.modal {
+		align-items: flex-end;
+	}
+	.modal-container {
+		position: relative;
+		max-width: 100%;
+		padding: 24px;
+		border-radius: 16px 16px 0 0;
+		.btn-modal-close {
+			top: 23px;
+			.icon {
+				width: 28px;
+				height: 28px;
+			}
+		}
+		h1 {
+			margin-bottom: 15px;
+			font: {
+				size: 18px;
+				weight: 600;
 			}
 		}
 	}
