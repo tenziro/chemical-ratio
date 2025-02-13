@@ -280,9 +280,8 @@ summary {
 		}
 	}
 }
-
 .total-bar, .chemical-bar, .chemical-bar2, .water-bar {
-	transition: height 1200ms cubic-bezier(.06, .38, .13, 1);
+	transition: height 700ms cubic-bezier(.06, .38, .13, 1);
 	flex: none;
 	height: 0;
 }
@@ -735,7 +734,7 @@ summary {
 			padding: 0 10px;
 			dd {
 				font: {
-					size: 38px;
+					size: 32px;
 					weight: 700;
 				}
 			}
