@@ -27,12 +27,13 @@
 		--bg-form-inner: #fafafa;
 		--placeholder: #d1d1d1;
 		--copyright: #aaa;
-		--notice-text: #111;
-		--line-color: #ff2119;
+		--line-color: #ffd119;
 		--bg-tab: #fafafa;
 		--tab-default-text: #aaa;
 		--tab-active-text: #fff;
 		--tab-line: #1f1f1f;
+		--bg-modal: #1f1f1f;
+		--notice-text: #fff;
 	}
 }
 @media (prefers-color-scheme: dark) {
@@ -54,12 +55,13 @@
 		--bg-form-inner: #303134;
 		--placeholder: #a1a1a1;
 		--copyright: #999;
-		--notice-text: #fff;
-		--line-color: #ffd119;
+		--line-color: #ff2119;
 		--bg-tab: #303134;
 		--tab-default-text: #a1a1a1;
 		--tab-active-text: #151515;
 		--tab-line: #fff;
+		--bg-modal: #fff;
+		--notice-text: #111;
 	}
 }
 * {
@@ -409,7 +411,7 @@ summary {
 	justify-content: center;
 	height: 100dvh;
 	position: fixed;
-	background-color: rgba(0, 0, 0, 50%);
+	background-color: rgba(var(--bg-contents-rgb), 20%);
 	backdrop-filter: blur(4px);
 	top: 0;
 	right: 0;
@@ -428,14 +430,14 @@ summary {
 	max-width: 480px;
 	padding: 30px;
 	border-radius: 20px;
-	background-color: var(--bg-contents);
+	background-color: var(--bg-modal);
 	.btn-modal-close {
 		position: absolute;
 		top: 26px;
 		right: 26px;
 		background: transparent;
 		line-height: 1;
-		color: var(--base-color);
+		color: var(--notice-text);
 		.icon {
 			width: 32px;
 			height: 32px;
