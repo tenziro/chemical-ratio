@@ -34,6 +34,8 @@
 		--tab-line: #1f1f1f;
 		--bg-modal: #1f1f1f;
 		--notice-text: #fff;
+		--quick-line: #fff;
+		--bg-quick: #aaa;
 	}
 }
 @media (prefers-color-scheme: dark) {
@@ -62,6 +64,26 @@
 		--tab-line: #fff;
 		--bg-modal: #fff;
 		--notice-text: #111;
+		--quick-line: #1f1f1f;
+	}
+}
+// * 스크롤바 색상 설정
+@mixin scrollbar($width, $thumb-bg, $thumb-radius, $track-bg: null) {
+	&::-webkit-scrollbar {
+		width: $width;
+		height: $width;
+	}
+	&::-webkit-scrollbar-thumb {
+		background-color: $thumb-bg;
+		border-radius: $thumb-radius;
+	}
+	&::-webkit-scrollbar-track {
+		background-color: $track-bg;
+	}
+	&::-webkit-scrollbar-button {
+		width: $width;
+		height: $width;
+		background-color: transparent;
 	}
 }
 * {
@@ -87,24 +109,24 @@ html {
 	scroll-behavior: smooth;
 }
 body {
+	min-width: 320px;
+	min-height: 100dvh;
+	letter-spacing: -0.5px;
 	font: {
 		family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
 		feature-settings: 'tnum';
 		variant-numeric: tabular-nums;
 	}
-	min-height: 100dvh;
 	background: {
 		color: var(--bg-contents);
 	}
-	letter-spacing: -0.5px;
-	min-width: 320px;
 }
 
 sup {
 	&:after {
 		content: "*";
-		margin-left: 3px;
 		color: #ff0000;
+		margin-left: 3px;
 	}
 }
 
@@ -131,10 +153,10 @@ summary {
 }
 
 #container {
-	width: 100%;
-	max-width: 1024px;
 	position: relative;
 	z-index: 1;
+	width: 100%;
+	max-width: 1024px;
 }
 
 #contents {
@@ -148,20 +170,20 @@ summary {
 		position: relative;
 		color: var(--base-color);
 		&:after {
-			content: "🧪";
 			position: absolute;
 			top: 50%;
+			content: "🧪";
 			transform: translateY(-50%);
 		}
 	}
 }
 
 .btn-information {
-	flex: none;
-	background: transparent;
 	display: inline-flex;
-	align-items: center;
+	flex: none;
 	color: var(--base-color);
+	background: transparent;
+	align-items: center;
 	.icon {
 		width: 18px;
 		height: 18px;
@@ -175,30 +197,30 @@ summary {
 }
 
 .form {
-	flex: none;
 	display: flex;
+	flex: none;
+	overflow: hidden;
 	align-items: stretch;
 	background-color: var(--bg-form);
 	flex-wrap: wrap;
 	border-radius: 10px;
-	overflow: hidden;
 	gap: 1px;
 	dl {
 		background-color: var(--bg-form-inner);
 		dt {
 			color: var(--base-color);
 			font: {
-				weight: 600;
 				size: 14px;
+				weight: 600;
 			}
 		}
 		dd {
 			input {
+				width: 100%;
+				color: var(--base-color);
 				border: 0;
 				background-color: transparent;
 				outline: 0;
-				width: 100%;
-				color: var(--base-color);
 				&::placeholder {
 					color: var(--placeholder);
 				}
@@ -214,8 +236,8 @@ summary {
 		background-color: var(--bg-form-inner);
 	}
 	&:not(:disabled) {
-		background-color: var(--btn);
 		color: var(--btn-text);
+		background-color: var(--btn);
 	}
 }
 
@@ -223,15 +245,15 @@ summary {
 	list-style: none;
 	li {
 		display: flex;
-		align-items: flex-start;
 		color: var(--notice-text);
+		align-items: flex-start;
 		line-height: 160%;
 		&:before {
+			flex: none;
 			content: "\b7";
 			font: {
 				weight: 700;
 			}
-			flex: none;
 		}
 		a,
 		span {
@@ -246,16 +268,16 @@ summary {
 }
 
 .btn-area {
-	flex: 1 1 auto;
 	display: flex;
+	flex: 1 1 auto;
 	align-items: stretch;
 	gap: 2px;
 }
 
 .graph-container {
+	display: flex;
 	flex: 1 1;
 	width: 100%;
-	display: flex;
 	flex-wrap: wrap;
 }
 .graph-item {
@@ -263,8 +285,8 @@ summary {
 		dt {
 			color: var(--base-color);
 			font: {
-				weight: 600;
 				size: 14px;
+				weight: 600;
 			}
 		}
 		dd {
@@ -273,12 +295,12 @@ summary {
 	}
 }
 .graph-bg {
-	border-radius: 10px;
 	display: flex;
+	overflow: hidden;
+	border-radius: 10px;
 	flex-direction: column;
 	justify-content: flex-end;
 	padding-top: 20px;
-	overflow: hidden;
 	> div {
 		&:nth-child(1) {
 			border-radius: 10px 10px 0 0;
@@ -286,9 +308,9 @@ summary {
 	}
 }
 .total-bar, .chemical-bar, .chemical-bar2, .water-bar {
-	transition: height 700ms cubic-bezier(.06, .38, .13, 1);
 	flex: none;
 	height: 0;
+	transition: height 700ms cubic-bezier(.06, .38, .13, 1);
 }
 .total-bar {
 	background-color: var(--bg-total-bar);
@@ -311,19 +333,19 @@ summary {
 		list-style: none;
 		align-items: center;
 		li {
-			flex: none;
 			display: inline-flex;
+			flex: none;
 			align-items: center;
 			+ li {
 				&:before {
-					content: "";
-					flex: none;
 					display: inline-block;
+					flex: none;
+					margin: 0 10px;
+					content: "";
 					width: 4px;
 					height: 4px;
 					background-color: var(--copyright);
 					border-radius: 50%;
-					margin: 0 10px;
 				}
 			}
 		}
@@ -344,16 +366,16 @@ summary {
 // * Tab
 .tab-header {
 	display: flex;
+	position: relative;
 	border-radius: 10px;
 	background-color: var(--bg-tab);
 	margin-bottom: 15px;
-	position: relative;
 	.radio-label {
 		display: flex;
-		align-items: center;
-		justify-content: center;
 		flex: 1 1;
 		cursor: pointer;
+		align-items: center;
+		justify-content: center;
 		input[type="radio"] {
 			display: none;
 			&:checked {
@@ -368,10 +390,10 @@ summary {
 			}
 		}
 		.control-text {
+			display: flex;
 			position: relative;
 			z-index: 2;
 			height: 42px;
-			display: flex;
 			align-items: center;
 			justify-content: center;
 			transition: color var(--tab-speed);
@@ -383,18 +405,18 @@ summary {
 	}
 	.tab-line {
 		position: absolute;
-		height: 100%;
-		background-color: var(--tab-line);
 		z-index: 1;
 		top: 0;
-		border-radius: 10px;
 		width: 50%;
+		height: 100%;
+		background-color: var(--tab-line);
+		border-radius: 10px;
 		transition: transform var(--tab-speed);
 	}
 }
 .tab-body {
-	flex: 1 1;
 	display: flex;
+	flex: 1 1;
 	flex-direction: column;
 }
 #tab2 {
@@ -404,16 +426,16 @@ summary {
 // * Modal
 .modal {
 	display: none;
-	align-items: center;
-	justify-content: center;
-	height: 100dvh;
 	position: fixed;
-	background-color: rgba(var(--bg-contents-rgb), 20%);
-	backdrop-filter: blur(4px);
+	z-index: 100;
 	top: 0;
 	right: 0;
 	left: 0;
-	z-index: 100;
+	height: 100dvh;
+	align-items: center;
+	justify-content: center;
+	background-color: rgba(var(--bg-contents-rgb), 20%);
+	backdrop-filter: blur(4px);
 	&.active {
 		display: flex;
 		.modal-container {
@@ -422,19 +444,19 @@ summary {
 	}
 }
 .modal-container {
+	padding: 30px;
 	position: relative;
 	width: 100%;
 	max-width: 480px;
-	padding: 30px;
 	border-radius: 20px;
 	background-color: var(--bg-modal);
 	.btn-modal-close {
 		position: absolute;
 		top: 26px;
 		right: 26px;
+		color: var(--notice-text);
 		background: transparent;
 		line-height: 1;
-		color: var(--notice-text);
 		.icon {
 			width: 32px;
 			height: 32px;
@@ -449,6 +471,37 @@ summary {
 		}
 	}
 }
+.quick-area {
+	border-top: 1px dashed var(--quick-line);
+	margin-top: 10px;
+	padding-top: 10px;
+	.inner {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+}
+.btn-quick {
+	transition: background-color 300ms;
+	@media (hover: hover) and (pointer: fine) {
+		&:hover {
+			background: {
+				color: var(--tab-line);
+			}
+		}
+	}
+	flex: 1 1;
+	color: var(--bg-contents);
+	border: {
+		radius: 4px;
+	}
+	background: {
+		color: var(--bg-quick);
+	}
+	font: {
+		weight: 700;
+	}
+}
 
 @keyframes modal-in {
 	from {
@@ -461,35 +514,35 @@ summary {
 
 @media screen and (min-width: 1024px) {
 	#wrap {
+		display: flex;
 		position: relative;
 		min-height: 100dvh;
-		display: flex;
 		align-items: center;
 		justify-content: center;
 		background: {
-			image: url('../images/bg.jpg');
 			position: 50% 50%;
 			size: cover;
+			image: url('../images/bg.jpg');
 		}
 		&:before {
-			content: "";
 			position: fixed;
 			top: 0;
-			left: 0;
-			bottom: 0;
 			right: 0;
+			bottom: 0;
+			left: 0;
+			content: "";
+			backdrop-filter: blur(10px);
 			background: {
 				color: var(--bg-opacity);
 			}
-			backdrop-filter: blur(10px);
 		}
 	}
 	.header {
+		display: flex;
 		position: relative;
+		z-index: 2;
 		align-items: center;
 		margin-bottom: 30px;
-		z-index: 2;
-		display: flex;
 		h1 {
 			justify-self: flex-start;
 			&:after {
@@ -505,8 +558,8 @@ summary {
 		margin-left: auto;
 	}
 	#container {
-		border-radius: 24px;
 		padding: 30px;
+		border-radius: 24px;
 		background-color: rgba(var(--bg-contents-rgb), 100%);
 	}
 	#contents {
@@ -518,13 +571,13 @@ summary {
 	}
 	.form {
 		dl {
+			padding: 20px;
 			&:nth-of-type(1) {
 				flex: 0 0 50%;
 			}
 			&:not(:nth-of-type(1)) {
 				flex: 1 1;
 			}
-			padding: 20px;
 			dt {
 				margin-bottom: 5px;
 			}
@@ -552,26 +605,26 @@ summary {
 		gap: 20px;
 	}
 	.graph-bg {
+		flex: 1 1;
 		background: repeating-linear-gradient(-55deg,
 				var(--graph-bg-gradient1),
 				var(--graph-bg-gradient1) 4px,
 				var(--graph-bg-gradient2) 4px,
 				var(--graph-bg-gradient2) 8px);
-		flex: 1 1;
 	}
 	.graph-item {
 		display: flex;
-		flex-direction: column;
 		flex: 1 1;
+		flex-direction: column;
 		padding-top: 30px;
 		border-top: 1px dashed var(--graph-border);
 		dl {
-			margin-bottom: 10px;
 			padding: 0 20px;
+			margin-bottom: 10px;
 			dd {
 				font: {
-					weight: 700;
 					size: 52px;
+					weight: 700;
 				}
 			}
 		}
@@ -608,6 +661,12 @@ summary {
 			}
 		}
 	}
+	.btn-quick {
+		padding: 6px 8px;
+		font: {
+			size: 14px;
+		}
+	}
 }
 @media screen and (max-width: 1024px) {
 	#contents {
@@ -615,14 +674,15 @@ summary {
 	}
 	.header {
 		position: sticky;
-		top: 0;
 		z-index: 10;
+		top: 0;
 		height: 61px;
 		align-items: center;
 		justify-content: center;
 		border-bottom: 1px solid var(--graph-border);
 		background-color: var(--bg-contents);
 		h1 {
+			color: var(--base-color);
 			font: {
 				size: 18px;
 				weight: 700;
@@ -630,13 +690,12 @@ summary {
 			&:after {
 				right: -32px;
 			}
-			color: var(--base-color);
 		}
 	}
 	.btn-information {
 		position: absolute;
-		right: 24px;
 		top: 50%;
+		right: 24px;
 		transform: translateY(-50%);
 		.icon {
 			width: 22px;
@@ -675,13 +734,13 @@ summary {
 		margin-top: 20px;
 	}
 	.graph-bg {
+		flex: 1 1;
+		height: 200px;
 		background: repeating-linear-gradient(-55deg,
 				var(--graph-bg-gradient1),
 				var(--graph-bg-gradient1) 3px,
 				var(--graph-bg-gradient2) 3px,
 				var(--graph-bg-gradient2) 6px);
-		flex: 1 1;
-		height: 200px;
 	}
 	.graph-item {
 		flex: 0 0 100%;
@@ -693,13 +752,13 @@ summary {
 			margin-top: 20px;
 		}
 		dl {
-			margin-bottom: 5px;
 			padding: 0 20px;
+			margin-bottom: 5px;
 			dd {
 				margin-top: 5px;
 				font: {
-					weight: 700;
 					size: 42px;
+					weight: 700;
 				}
 			}
 		}
@@ -735,6 +794,12 @@ summary {
 			}
 		}
 	}
+	.btn-quick {
+		padding: 4px 6px;
+		font: {
+			size: 14px;
+		}
+	}
 }
 @media screen and (max-width: 574px) {
 	#container {
@@ -744,8 +809,8 @@ summary {
 		padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
 	}
 	.header {
-		align-items: center;
 		z-index: 10;
+		align-items: center;
 		h1 {
 			&:after {
 				right: -28px;
@@ -764,8 +829,8 @@ summary {
 	}
 	.graph-item {
 		dl {
-			margin-bottom: 6px;
 			padding: 0 10px;
+			margin-bottom: 6px;
 			dd {
 				font: {
 					size: 32px;
@@ -776,8 +841,9 @@ summary {
 	}
 	.form {
 		dl {
-			padding: 16px;
 			flex: 0 0 calc(50% - 0.5px);
+			padding: 16px;
+			min-width: 0;
 			dd {
 				input {
 					font: {
@@ -814,9 +880,9 @@ summary {
 		align-items: flex-end;
 	}
 	.modal-container {
+		padding: 24px 24px calc(24px + env(safe-area-inset-bottom));
 		position: relative;
 		max-width: 100%;
-		padding: 24px 24px calc(24px + env(safe-area-inset-bottom));
 		border-radius: 16px 16px 0 0;
 		.btn-modal-close {
 			top: 23px;
@@ -831,6 +897,44 @@ summary {
 				size: 18px;
 				weight: 600;
 			}
+		}
+	}
+	.quick-area {
+		position: relative;
+		.inner {
+			@media (hover: none) and (pointer: coarse) {
+				&::-webkit-scrollbar {
+					display: none;
+				}
+			}
+			@media (hover: hover) and (pointer: fine) {
+				@include scrollbar(4px, transparent, 2px);
+				&:hover {
+					@include scrollbar(4px, var(--graph-border), 2px);
+				}
+			}
+			flex-wrap: nowrap;
+			overflow-x: auto;
+			padding-right: 10px;
+		}
+		&:after {
+			position: absolute;
+			pointer-events: none;
+			top: calc(50%);
+			right: 0;
+			content: "";
+			width: 24px;
+			height: 24px;
+			transform: translateY(calc(-50% + 5px));
+		}
+		&:after {
+			background: linear-gradient(90deg, hsla(0, 0%, 98%, 0), var(--bg-form-inner) 24px, var(--bg-form-inner));
+		}
+	}
+	.btn-quick {
+		padding: 3px 4px;
+		font: {
+			size: 11px;
 		}
 	}
 }

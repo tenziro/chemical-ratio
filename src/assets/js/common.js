@@ -47,6 +47,46 @@ document.addEventListener("DOMContentLoaded", () => {
 	// * 탭별 입력 이벤트 등록
 	registerInputEventsTab(inputsTab1, calculateChemicalVolume, btnReset);
 	registerInputEventsTab(inputsTab2, calculateTotalVolume, btnReset);
+
+	// * 빠른 용량 추가 버튼 클릭 이벤트 등록
+	document.querySelectorAll('.btn-dilution-ratio').forEach(button => {
+		button.addEventListener('click', () => {
+			const tabElement = button.closest('.tab-body');
+			if (!tabElement) return;
+			const tabId = tabElement.id;
+			const inputSelector = tabId === 'tab1' ? '#dilutionRatio' : '#dilutionRatio2';
+			const dilutionRatioInput = document.querySelector(inputSelector);
+			const value = parseFloat(button.getAttribute('data-value').replace(/,/g, ''));
+			const currentValue = parseFloat(dilutionRatioInput.value.replace(/,/g, '')) || 0;
+			dilutionRatioInput.value = formatNumberWithCommas(currentValue + value);
+			updateResetButtonState();
+			if (tabId === 'tab1') {
+				calculateChemicalVolume();
+			} else {
+				calculateTotalVolume();
+			}
+		});
+	});
+
+	// * 빠른 용량 추가 버튼 클릭 이벤트 등록
+	document.querySelectorAll('.btn-capacity-ratio').forEach(button => {
+		button.addEventListener('click', () => {
+			const tabElement = button.closest('.tab-body');
+			if (!tabElement) return;
+			const tabId = tabElement.id;
+			const inputSelector = tabId === 'tab1' ? '#waterVolume' : '#totalCapacity';
+			const dilutionRatioInput = document.querySelector(inputSelector);
+			const value = parseFloat(button.getAttribute('data-value').replace(/,/g, ''));
+			const currentValue = parseFloat(dilutionRatioInput.value.replace(/,/g, '')) || 0;
+			dilutionRatioInput.value = formatNumberWithCommas(currentValue + value);
+			updateResetButtonState();
+			if (tabId === 'tab1') {
+				calculateChemicalVolume();
+			} else {
+				calculateTotalVolume();
+			}
+		});
+	});
 });
 
 // ! 리셋 버튼 활성화 함수
