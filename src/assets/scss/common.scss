@@ -65,6 +65,7 @@
 		--bg-modal: #fff;
 		--notice-text: #111;
 		--quick-line: #1f1f1f;
+		--bg-quick: #aaa;
 	}
 }
 // * 스크롤바 색상 설정
@@ -915,7 +916,6 @@ summary {
 			}
 			flex-wrap: nowrap;
 			overflow-x: auto;
-			padding-right: 10px;
 		}
 		&:after {
 			position: absolute;
