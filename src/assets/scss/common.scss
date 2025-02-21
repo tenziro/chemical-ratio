@@ -485,6 +485,7 @@ summary {
 .btn-quick {
 	transition: background-color 300ms;
 	@media (hover: hover) and (pointer: fine) {
+		cursor: pointer;
 		&:hover {
 			background: {
 				color: var(--tab-line);
@@ -827,6 +828,7 @@ summary {
 	}
 	.graph-bg {
 		height: 130px;
+		padding-top: 10px;
 	}
 	.graph-item {
 		dl {
