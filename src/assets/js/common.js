@@ -14,6 +14,27 @@ document.addEventListener("DOMContentLoaded", () => {
 		totalVolume: document.querySelector("#totalCapacity"),
 	};
 
+	// * .quick-area 스크롤 이벤트 등록
+	document.querySelectorAll('.quick-area .inner').forEach(quickArea => {
+		const quickAreaParent = quickArea.parentElement;
+		const checkScroll = () => {
+			if (quickArea.scrollWidth <= quickArea.clientWidth) {
+				quickAreaParent.classList.add('hide-after');
+			} else {
+				quickAreaParent.classList.remove('hide-after');
+			}
+		};
+		checkScroll();
+		quickArea.addEventListener('scroll', () => {
+			if (quickArea.scrollWidth - quickArea.scrollLeft <= quickArea.clientWidth) {
+				quickAreaParent.classList.add('hide-after');
+			} else {
+				quickAreaParent.classList.remove('hide-after');
+			}
+		});
+		window.addEventListener('resize', checkScroll);
+	});
+
 	// * 리셋 버튼 클릭 이벤트 등록
 	btnReset.addEventListener("click", resetAll);
 	tabHeaderItem.addEventListener("click", resetAll);
@@ -87,27 +108,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 		});
 	});
-
-	// * .quick-area 스크롤 이벤트 등록
-	document.querySelectorAll('.quick-area .inner').forEach(quickArea => {
-		const quickAreaParent = quickArea.parentElement;
-		const checkScroll = () => {
-			if (quickArea.scrollWidth <= quickArea.clientWidth) {
-				quickAreaParent.classList.add('hide-after');
-			} else {
-				quickAreaParent.classList.remove('hide-after');
-			}
-		};
-		checkScroll();
-		quickArea.addEventListener('scroll', () => {
-			if (quickArea.scrollWidth - quickArea.scrollLeft <= quickArea.clientWidth) {
-				quickAreaParent.classList.add('hide-after');
-			} else {
-				quickAreaParent.classList.remove('hide-after');
-			}
-		});
-		window.addEventListener('resize', checkScroll);
-	});
 });
 
 // ! 리셋 버튼 활성화 함수
@@ -129,6 +129,16 @@ const toggleModal = () => {
 	body.classList.toggle('stop-scroll');
 };
 
+const resetQuickArea = () => {
+	const quickAreas = document.querySelectorAll('.quick-area');
+	quickAreas.forEach(quickArea => {
+		quickArea.classList.remove('hide-after');
+		const inner = quickArea.querySelector('.inner');
+		if (inner) {
+			inner.scrollLeft = 0; // 가로 스크롤을 0으로 설정
+		}
+	});
+}
 // ! 전체 리셋 함수
 const resetAll = () => {
 	resetAllTab1();
@@ -216,7 +226,7 @@ const showTab = () => {
 	tabs.tab1.style.display = isTab1Checked ? "flex" : "none";
 	tabs.tab2.style.display = isTab1Checked ? "none" : "flex";
 	tabLine.style.transform = `translateX(${isTab1Checked ? 0 : 100}%)`;
-
+	resetQuickArea();
 	window.scrollTo({ top: 0, behavior: "smooth" });
 };
 tabRadio.addEventListener("change", showTab);
