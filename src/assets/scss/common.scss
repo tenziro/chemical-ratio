@@ -481,12 +481,9 @@ summary {
 		align-items: center;
 		gap: 4px;
 	}
-	&:after {
-		transition: opacity 200ms;
-	}
 	&.hide-after {
 		&:after {
-			opacity: 0;
+			content: none;
 		}
 	}
 }
