@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		};
 		checkScroll();
 		quickArea.addEventListener('scroll', () => {
-			if (quickArea.scrollWidth - quickArea.scrollLeft === quickArea.clientWidth) {
+			if (quickArea.scrollWidth - quickArea.scrollLeft <= quickArea.clientWidth) {
 				quickAreaParent.classList.add('hide-after');
 			} else {
 				quickAreaParent.classList.remove('hide-after');
