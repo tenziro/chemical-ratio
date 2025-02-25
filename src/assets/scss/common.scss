@@ -481,6 +481,14 @@ summary {
 		align-items: center;
 		gap: 4px;
 	}
+	&:after {
+		transition: opacity 600ms;
+	}
+	&.hide-after {
+		&:after {
+			opacity: 0;
+		}
+	}
 }
 .btn-quick {
 	transition: background-color 300ms;
@@ -927,9 +935,7 @@ summary {
 			content: "";
 			width: 24px;
 			height: 24px;
-			transform: translateY(calc(-50% + 5px));
-		}
-		&:after {
+			transform: translateY(calc(-50% + 3px));
 			background: linear-gradient(90deg, hsla(0, 0%, 98%, 0), var(--bg-form-inner) 24px, var(--bg-form-inner));
 		}
 	}

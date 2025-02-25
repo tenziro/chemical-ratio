@@ -87,6 +87,27 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 		});
 	});
+
+	// * .quick-area 스크롤 이벤트 등록
+	document.querySelectorAll('.quick-area .inner').forEach(quickArea => {
+		const quickAreaParent = quickArea.parentElement;
+		const checkScroll = () => {
+			if (quickArea.scrollWidth <= quickArea.clientWidth) {
+				quickAreaParent.classList.add('hide-after');
+			} else {
+				quickAreaParent.classList.remove('hide-after');
+			}
+		};
+		checkScroll();
+		quickArea.addEventListener('scroll', () => {
+			if (quickArea.scrollWidth - quickArea.scrollLeft === quickArea.clientWidth) {
+				quickAreaParent.classList.add('hide-after');
+			} else {
+				quickAreaParent.classList.remove('hide-after');
+			}
+		});
+		window.addEventListener('resize', checkScroll);
+	});
 });
 
 // ! 리셋 버튼 활성화 함수
