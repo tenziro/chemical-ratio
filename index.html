@@ -44,6 +44,7 @@
 		<link rel="icon" type="image/png" sizes="96x96" href="src/assets/images/favicon-96x96.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="src/assets/images/favicon-16x16.png">
 		<link rel="icon" href="src/assets/images/favicon.ico">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
 		<!-- Google tag (gtag.js) -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=G-LSZE5PJ3HW"></script>
 		<script>
@@ -70,13 +71,9 @@
 			<div id="container">
 				<div class="header">
 					<h1>희석비 계산기</h1>
-					<button type="button" class="btn-information">
-						<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-message" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-							<path d="M8 9h8" />
-							<path d="M8 13h6" />
-							<path d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
-						</svg>
+					<button type="button" class="btn-search" data-open-modal="search"><i class="ti ti-search"></i><span>검색</span></button>
+					<button type="button" class="btn-information" data-open-modal="information">
+						<i class="ti ti-message-question"></i>
 						<span>안내사항</span>
 					</button>
 				</div>
@@ -93,7 +90,7 @@
 						<div class="tab-line"></div>
 					</div>
 
-					<div class="tab-body" id="tab1">
+					<div class="tab-body" data-tab="tab1">
 						<div class="form">
 							<dl>
 								<dt><label for="dilutionRatio"><sup>희석 비율</sup></label></dt>
@@ -142,7 +139,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="tab-body" id="tab2">
+					<div class="tab-body" data-tab="tab2">
 						<div class="form">
 							<dl>
 								<dt><label for="dilutionRatio2"><sup>희석 비율</sup></label></dt>
@@ -233,24 +230,42 @@
 				</main>
 			</div>
 
-			<div class="modal">
+			<div class="modal" data-modal-type="search">
 				<div class="modal-container">
-					<button class="btn-modal-close">
-						<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-							<path d="M18 6l-12 12" />
-							<path d="M6 6l12 12" />
-						</svg>
-					</button>
+					<button class="btn-modal-close ti ti-x" aria-label="닫기"></button>
+					<div class="modal-contents">
+						<h1>제품 검색 💁🏻</h1>
+						<input type="text" id="searchInput" placeholder="검색어를 입력하고 엔터키를 누르세요.">
+						<div id="result-data" class="result-msg">
+							<i class="ti ti-device-ipad-horizontal-search"></i>
+							<p class="msg">데이터를 불러오는 중입니다.</p>
+						</div>
+						<div class="product-list"></div>
+						<div id="nodata" class="result-msg">
+							<i class="ti ti-alert-triangle-filled"></i>
+							<p class="msg">검색결과가 없습니다.</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<ul class="notice">
+							<li><span>제품을 클릭하시면 해당 희석비가 자동으로 입력됩니다.</span></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal" data-modal-type="information">
+				<div class="modal-container">
+					<button type="button" class="btn-modal-close ti ti-x" aria-label="닫기"></button>
 					<div class="modal-contents">
 						<h1>안녕하세요! 👋🏻</h1>
 						<ul class="notice">
-							<li>세차가 취미인 사람이 만들었습니다 😘</li>
+							<li><span>세차가 취미인 사람이 만들었습니다 😘</span></li>
 							<li><strong>물 용량 대비 희석된 케미컬의 용량 / 전체 용량 대비 희석된 케미컬 + 물의 용량을 계산 할 수 있습니다.</strong></li>
-							<li>희석 비율과 용량을 모두 입력하면 결과값이 자동 계산됩니다.</li>
-							<li><span>희석 비율이 1:30일 경우 "30"을 입력합니다.</span></li>
-							<li>사이트가 만족스러우셨다면&nbsp;<a href="https://buymeacoffee.com/wash_ratio" target="_blank" class="underline">여기</a>를 눌러 후원도 가능합니다! 😘</li>
-							<li><span>희석비 계산기 사이트는 무료로 제공되는 서비스로 별도의 공지없이 서비스가 중단될 수 있습니다.</span></li>
+							<li><span>희석 비율과 용량을 모두 입력하면 결과값이 자동 계산됩니다.</span></li>
+							<li><span class="underline">희석 비율이 1:30일 경우 "30"을 입력합니다.</span></li>
+							<li><span>사이트가 만족스러우셨다면&nbsp;<a href="https://buymeacoffee.com/wash_ratio" target="_blank" class="underline">여기</a>를 눌러 후원도 가능합니다! 😘</span></li>
+							<li><span class="underline">희석비 계산기 사이트는 무료로 제공되는 서비스로 별도의 공지없이 서비스가 중단될 수 있습니다.</span></li>
 						</ul>
 					</div>
 				</div>
