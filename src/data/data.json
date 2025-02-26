@@ -19,5 +19,19 @@
 		"product": "다목적 카샴푸 디콘",
 		"dilution": 10,
 		"etc": "폼랜스 기준"
+	},
+	{
+		"label": "gb",
+		"brand": "글로스브로",
+		"product": "라임밤",
+		"dilution": 10,
+		"etc": "압축분무기 기준"
+	},
+	{
+		"label": "gb",
+		"brand": "글로스브로",
+		"product": "피치크러쉬",
+		"dilution": 10,
+		"etc": "압축분무기 기준"
 	}
 ]
