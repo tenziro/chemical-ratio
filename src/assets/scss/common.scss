@@ -42,6 +42,7 @@
 		--input-placeholder: #999;
 		--bg-quick: #aaa;
 		--etc: #888;
+		--product-line: #e1e1e1;
 	}
 }
 @media (prefers-color-scheme: dark) {
@@ -78,6 +79,7 @@
 		--input-placeholder: #999;
 		--bg-quick: #aaa;
 		--etc: #ddd;
+		--product-line: #666;
 	}
 }
 // * 스크롤바 색상 설정
@@ -482,11 +484,11 @@ summary {
 	border-radius: 20px;
 	.btn-modal-close {
 		position: absolute;
-		top: 26px;
+		top: 30px;
 		right: 26px;
 		background: transparent;
 		line-height: 1;
-		font-size: 32px;
+		font-size: 28px;
 	}
 	h1 {
 		margin-bottom: 15px;
@@ -571,10 +573,13 @@ summary {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		padding: 10px 0;
+		padding: 16px 0;
 		gap: 6px;
+		&:first-child {
+			padding-top: 6px;
+		}
 		&:not(:first-child) {
-			border-top: 1px dashed #e1e1e1;
+			border-top: 1px dashed var(--product-line);
 		}
 		.brand {
 			flex: none;
@@ -845,7 +850,7 @@ summary {
 		transform: translateY(-50%);
 		.ti {
 			font: {
-				size: 18px;
+				size: 20px;
 			}
 		}
 		span {
@@ -853,10 +858,10 @@ summary {
 		}
 	}
 	.btn-information {
-		right: 24px;
+		left: 24px;
 	}
 	.btn-search {
-		left: 24px;
+		right: 24px;
 	}
 	.form {
 		dl {
@@ -975,10 +980,10 @@ summary {
 		}
 	}
 	.btn-information {
-		right: 16px;
+		left: 16px;
 	}
 	.btn-search {
-		left: 16px;
+		right: 16px;
 	}
 	.graph-bg {
 		height: 130px;
@@ -1125,5 +1130,12 @@ summary {
 	}
 	.product-list {
 		flex: 1 1 auto;
+		.product-item {
+			.brand {
+				font: {
+					size: 13px;
+				}
+			}
+		}
 	}
 }
