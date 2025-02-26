@@ -107,6 +107,8 @@ const openModal = async (button) => {
 	const modalType = button.dataset.openModal;
 	const modal = document.querySelector(`.modal[data-modal-type="${modalType}"]`);
 	if (modalType === 'search') {
+		document.querySelector('#nodata').classList.remove('active');
+		document.querySelector('.product-list').style.display = 'block';
 		await loadData();
 	}
 	toggleModal(modal, true);
@@ -114,6 +116,9 @@ const openModal = async (button) => {
 const closeModal = button => {
 	const modal = button.closest(".modal");
 	toggleModal(modal, false);
+	if (modal.dataset.modalType === 'search') {
+		document.querySelector('#searchInput').value = '';
+	}
 	window.scrollTo({
 		top: 0,
 		behavior: 'smooth' // 부드러운 스크롤 효과를 위해 추가
@@ -346,7 +351,5 @@ document.addEventListener('click', (e) => {
 		const inputSelector = activeTab.dataset.tab === 'tab1' ? '#dilutionRatio' : '#dilutionRatio2';
 		document.querySelector(inputSelector).value = dilutionValue;
 		closeModal(e.target);
-		document.querySelector('#searchInput').value = '';
-		console.log('희석비 버튼 클릭:', dilutionValue);
 	}
 });

@@ -43,6 +43,9 @@
 		--bg-quick: #aaa;
 		--etc: #888;
 		--product-line: #e1e1e1;
+		--btn-dilution-line: #e1e1e1;
+		--btn-dilution-bg: #fff;
+		--btn-dilution-hover: #1f1f1f;
 	}
 }
 @media (prefers-color-scheme: dark) {
@@ -80,6 +83,9 @@
 		--bg-quick: #aaa;
 		--etc: #ddd;
 		--product-line: #666;
+		--btn-dilution-line: #333;
+		--btn-dilution-bg: #1f1f1f;
+		--btn-dilution-hover: #fff;
 	}
 }
 // * 스크롤바 색상 설정
@@ -629,10 +635,11 @@ summary {
 			}
 		}
 		.btn-modal-dilution {
-			background-color: var(--bg-quick);
+			background-color: var(--btn-dilution-bg);
+			border: 1px solid var(--btn-dilution-line);
+			color: var(--btn-dilution-hover);
 			border-radius: 4px;
 			padding: 12px 0;
-			color: var(--bg-contents);
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
@@ -641,8 +648,10 @@ summary {
 				cursor: pointer;
 				transition: background-color 300ms;
 				&:hover {
+					border-color: transparent;
+					color: var(--btn-dilution-bg);
 					background: {
-						color: var(--tab-line);
+						color: var(--btn-dilution-hover);
 					}
 				}
 			}
