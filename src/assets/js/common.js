@@ -114,19 +114,23 @@ const openModal = async (button) => {
 const closeModal = button => {
 	const modal = button.closest(".modal");
 	toggleModal(modal, false);
+	window.scrollTo({
+		top: 0,
+		behavior: 'smooth' // 부드러운 스크롤 효과를 위해 추가
+	});
 };
 
 // ! 데이터 로드 함수
 const loadData = async () => {
 	try {
 		const loadingMsg = document.querySelector('.modal[data-modal-type="search"] #result-data');
-		loadingMsg.classList.add = 'active';
+		loadingMsg.classList.add('active');
 		const response = await fetch('src/data/data.json');
 		if (!response.ok) throw new Error('Network response was not ok');
 		const data = await response.json();
 		localStorage.setItem('productData', JSON.stringify(data));
 		displayProductList(data);
-		loadingMsg.classList.remove = 'active';
+		loadingMsg.classList.remove('active');
 	} catch (error) {
 		console.error('Failed to fetch data:', error);
 	}
@@ -135,13 +139,17 @@ const loadData = async () => {
 // ! 제품 리스트 표시 함수
 const displayProductList = (data) => {
 	const productListContainer = document.querySelector('.modal[data-modal-type="search"] .product-list');
-	productListContainer.innerHTML = data.map(product => `
-		<div class="product-item">
-			<p class="brand ${product.label}"><span><strong>${product.brand}</strong> - ${product.product}</span></p>
-			<p class="etc">${product.etc} - 1:${product.dilution}</p>
-			<button type="button" class="btn-modal-dilution" data-value="${product.dilution}"></button>
-		</div>
-	`).join('');
+	productListContainer.innerHTML = data.map(product => {
+		const dilutionButtons = Array.isArray(product.dilution)
+			? product.dilution.map((d, i) => `<button type="button" class="btn-modal-dilution" data-value="${d}"><strong>1:${d}</strong> <span>(${product.etc[i]})</span></button>`).join('')
+			: `<button type="button" class="btn-modal-dilution" data-value="${product.dilution}"><strong>1:${product.dilution}</strong><span>(${product.etc})</span></button>`;
+		return `
+			<div class="product-item">
+				<p class="brand ${product.label}"><span><strong>${product.brand}</strong> - ${product.product}</span></p>
+				<div class="dilution-buttons">${dilutionButtons}</div>
+			</div>
+		`;
+	}).join('');
 };
 
 // ! 검색 기능
@@ -332,11 +340,13 @@ document.querySelector('#searchInput').addEventListener('keypress', async (e) =>
 
 // ! 희석비 버튼 클릭 이벤트 등록
 document.addEventListener('click', (e) => {
-	if (e.target.classList.contains('btn-modal-dilution')) {
-		const dilutionValue = e.target.dataset.value;
+	if (e.target.closest('.btn-modal-dilution')) {
+		const dilutionValue = e.target.closest('.btn-modal-dilution').dataset.value;
 		const activeTab = document.querySelector('.tab-body.active');
 		const inputSelector = activeTab.dataset.tab === 'tab1' ? '#dilutionRatio' : '#dilutionRatio2';
 		document.querySelector(inputSelector).value = dilutionValue;
 		closeModal(e.target);
+		document.querySelector('#searchInput').value = '';
+		console.log('희석비 버튼 클릭:', dilutionValue);
 	}
 });

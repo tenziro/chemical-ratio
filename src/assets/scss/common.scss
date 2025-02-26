@@ -571,9 +571,6 @@ summary {
 	.product-item {
 		min-width: 0;
 		position: relative;
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
 		padding: 16px 0;
 		gap: 6px;
 		&:first-child {
@@ -583,44 +580,85 @@ summary {
 			border-top: 1px dashed var(--product-line);
 		}
 		.brand {
-			flex: none;
-			border-radius: 4px;
-			padding: 4px 6px;
 			max-width: 100%;
+			margin-bottom: 4px;
 			span {
+				border-radius: 4px;
+				padding: 4px 6px;
 				text-overflow: ellipsis;
 				white-space: nowrap;
 				overflow: hidden;
-				display: block;
+				max-width: 100%;
+				display: inline-block;
 			}
 			font: {
 				size: 14px;
 				weight: 700;
 			}
 			&.ad {
-				background: #d11212;
 				color: #fff;
+				span {
+					background: #d11212;
+					color: #fff;
+				}
 			}
 			&.gb {
-				background: #46340b;
 				color: #fff;
+				span {
+					background: #46340b;
+					color: #fff;
+				}
+			}
+			&.gq {
+				color: #fff;
+				span {
+					background: #0073ff;
+					color: #fff;
+				}
 			}
 			&.default {
 				background: #dadada;
 				color: #111;
 			}
 		}
-		.etc {
-			color: var(--etc);
-			padding: 0 6px;
-			font: {
-				size: 12px;
+		.dilution-buttons {
+			display: flex;
+			gap: 4px;
+			.btn-modal-dilution {
+				flex: 1 1;
 			}
 		}
 		.btn-modal-dilution {
-			position: absolute;
-			inset: 0;
-			background-color: transparent;
+			background-color: var(--bg-quick);
+			border-radius: 4px;
+			padding: 12px 0;
+			color: var(--bg-contents);
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			@media (hover: hover) and (pointer: fine) {
+				cursor: pointer;
+				transition: background-color 300ms;
+				&:hover {
+					background: {
+						color: var(--tab-line);
+					}
+				}
+			}
+			strong {
+				font: {
+					size: 18px;
+					weight: 700;
+				}
+			}
+			span {
+				opacity: 70%;
+				font: {
+					size: 13px;
+					weight: 500;
+				}
+			}
 		}
 	}
 }
@@ -635,6 +673,7 @@ summary {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
+	flex: none;
 	background: {
 		color: var(--bg-input);
 	}
@@ -1034,7 +1073,7 @@ summary {
 				margin-right: 4px;
 			}
 			font: {
-				size: 13px;
+				size: 12px;
 				weight: 400;
 			}
 			+ li {
@@ -1139,6 +1178,18 @@ summary {
 			.brand {
 				font: {
 					size: 13px;
+				}
+			}
+			.btn-modal-dilution {
+				strong {
+					font: {
+						size: 16px;
+					}
+				}
+				span {
+					font: {
+						size: 12px;
+					}
 				}
 			}
 		}
