@@ -881,13 +881,13 @@ summary {
 
 @media screen and (max-width: 1024px) {
 	#contents {
-		padding: 24px;
+		padding: 24px calc(24px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left));
 	}
 	.header {
 		position: sticky;
 		z-index: 10;
 		top: 0;
-		height: 61px;
+		padding: calc(env(safe-area-inset-top) + 20px) 0 20px;
 		align-items: center;
 		justify-content: center;
 		border-bottom: 1px solid var(--graph-border);
@@ -918,10 +918,10 @@ summary {
 		}
 	}
 	.btn-information {
-		left: 24px;
+		left: calc(env(safe-area-inset-left) + 24px);
 	}
 	.btn-search {
-		right: 24px;
+		right: calc(env(safe-area-inset-left) + 24px);
 	}
 	.form {
 		dl {
@@ -1024,7 +1024,7 @@ summary {
 		background-color: var(--bg-contents);
 	}
 	#contents {
-		padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+		padding: 16px calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
 	}
 	.header {
 		z-index: 10;
@@ -1040,10 +1040,10 @@ summary {
 		}
 	}
 	.btn-information {
-		left: 16px;
+		left: calc(env(safe-area-inset-left) + 16px);
 	}
 	.btn-search {
-		right: 16px;
+		right: calc(env(safe-area-inset-right) + 16px);
 	}
 	.graph-bg {
 		height: 130px;

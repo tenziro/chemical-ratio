@@ -109,7 +109,6 @@ const openModal = async (button) => {
 	if (modalType === 'search') {
 		document.querySelector('#nodata').classList.remove('active');
 		document.querySelector('.product-list').style.display = 'block';
-		document.querySelector('.product-list').scrollTop = 0;
 		await loadData();
 	}
 	toggleModal(modal, true);
@@ -138,6 +137,7 @@ const loadData = async () => {
 		localStorage.setItem('productData', JSON.stringify(data));
 		displayProductList(data);
 		loadingMsg.classList.remove('active');
+		document.querySelector('.product-list').scrollTop = 0; // 스크롤을 top 0으로 이동
 	} catch (error) {
 		console.error('Failed to fetch data:', error);
 	}
