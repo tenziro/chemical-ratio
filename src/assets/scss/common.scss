@@ -35,7 +35,7 @@
 		--bg-modal: 3, 3, 3;
 		--bg-modal-content: #fff;
 		--modal-text: #111;
-		--notice-text: #1f1f1f;
+		--notice-text: #666;
 		--quick-line: #fff;
 		--bg-input: #f1f1f1;
 		--border-input: #e1e1e1;
@@ -590,7 +590,7 @@ summary {
 			margin-bottom: 4px;
 			span {
 				border-radius: 4px;
-				padding: 4px 6px;
+				padding: 5px 8px;
 				text-overflow: ellipsis;
 				white-space: nowrap;
 				overflow: hidden;
@@ -605,6 +605,13 @@ summary {
 				color: #fff;
 				span {
 					background: #d11212;
+					color: #fff;
+				}
+			}
+			&.bo {
+				color: #fff;
+				span {
+					background: #4d009a;
 					color: #fff;
 				}
 			}

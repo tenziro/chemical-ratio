@@ -109,6 +109,7 @@ const openModal = async (button) => {
 	if (modalType === 'search') {
 		document.querySelector('#nodata').classList.remove('active');
 		document.querySelector('.product-list').style.display = 'block';
+		document.querySelector('.product-list').scrollTop = 0;
 		await loadData();
 	}
 	toggleModal(modal, true);
@@ -118,6 +119,7 @@ const closeModal = button => {
 	toggleModal(modal, false);
 	if (modal.dataset.modalType === 'search') {
 		document.querySelector('#searchInput').value = '';
+		document.querySelector('.product-list').scrollTop = 0;
 	}
 	window.scrollTo({
 		top: 0,
