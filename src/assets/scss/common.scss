@@ -133,6 +133,7 @@ html {
 html {
 	scroll-behavior: smooth;
 	scrollbar-gutter: stable;
+	overscroll-behavior: none;
 }
 body {
 	min-width: 320px;
@@ -175,6 +176,9 @@ summary {
 .stop-scroll {
 	overflow-y: hidden;
 	max-height: 100dvh;
+	@media all and (display-mode: standalone) {
+		max-height: 100vh;
+	}
 }
 
 .ti {
@@ -457,6 +461,9 @@ summary {
 	right: 0;
 	left: 0;
 	height: 100dvh;
+	@media all and (display-mode: standalone) {
+		height: 100vh;
+	}
 	align-items: center;
 	justify-content: center;
 	background-color: rgba(var(--bg-modal), 20%);
@@ -723,6 +730,9 @@ summary {
 		display: flex;
 		position: relative;
 		min-height: 100dvh;
+		@media all and (display-mode: standalone) {
+			min-height: 100vh;
+		}
 		align-items: center;
 		justify-content: center;
 		background: {
@@ -879,6 +889,9 @@ summary {
 	}
 	.product-list {
 		max-height: 50dvh;
+		@media all and (display-mode: standalone) {
+			max-height: 50vh;
+		}
 	}
 }
 
@@ -1196,7 +1209,7 @@ summary {
 		.product-item {
 			.brand {
 				font: {
-					size: 13px;
+					size: 12px;
 				}
 			}
 			.btn-modal-dilution {
