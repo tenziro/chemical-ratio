@@ -174,11 +174,11 @@ summary {
 }
 
 .stop-scroll {
-	overflow-y: hidden;
-	max-height: 100dvh;
 	@media all and (display-mode: standalone) {
 		max-height: 100vh;
 	}
+	max-height: 100dvh;
+	overflow-y: hidden;
 }
 
 .ti {
@@ -198,7 +198,9 @@ summary {
 }
 
 .header {
-	display: flex;
+	.inner {
+		display: flex;
+	}
 	h1 {
 		position: relative;
 		color: var(--base-color);
@@ -454,6 +456,9 @@ summary {
 }
 // * Modal
 .modal {
+	@media all and (display-mode: standalone) {
+		height: 100vh;
+	}
 	display: none;
 	position: fixed;
 	z-index: 100;
@@ -461,9 +466,6 @@ summary {
 	right: 0;
 	left: 0;
 	height: 100dvh;
-	@media all and (display-mode: standalone) {
-		height: 100vh;
-	}
 	align-items: center;
 	justify-content: center;
 	background-color: rgba(var(--bg-modal), 20%);
@@ -533,7 +535,6 @@ summary {
 	}
 }
 .btn-quick {
-	transition: background-color 300ms;
 	@media (hover: hover) and (pointer: fine) {
 		cursor: pointer;
 		&:hover {
@@ -544,6 +545,7 @@ summary {
 	}
 	flex: 1 1;
 	color: var(--bg-contents);
+	transition: background-color 300ms;
 	border: {
 		radius: 4px;
 	}
@@ -557,21 +559,21 @@ summary {
 
 .result-msg {
 	display: none;
+	flex: 1 1;
+	padding: 40px 0;
 	flex-direction: column;
 	justify-content: center;
 	text-align: center;
-	padding: 40px 0;
-	flex: 1 1;
 	.ti {
+		color: #FF5C4B;
 		font: {
 			size: 40px;
 			weight: 400;
 		}
-		color: #FF5C4B;
 	}
 	.msg {
-		margin-top: 6px;
 		color: var(--notice-text);
+		margin-top: 6px;
 		font: {
 			size: 14px;
 			weight: 400;
@@ -584,9 +586,9 @@ summary {
 .product-list {
 	overflow-y: auto;
 	.product-item {
-		min-width: 0;
-		position: relative;
 		padding: 16px 0;
+		position: relative;
+		min-width: 0;
 		gap: 6px;
 		&:first-child {
 			padding-top: 6px;
@@ -598,13 +600,13 @@ summary {
 			max-width: 100%;
 			margin-bottom: 4px;
 			span {
-				border-radius: 4px;
+				display: inline-block;
 				padding: 5px 8px;
-				text-overflow: ellipsis;
-				white-space: nowrap;
 				overflow: hidden;
 				max-width: 100%;
-				display: inline-block;
+				border-radius: 4px;
+				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
 			font: {
 				size: 14px;
@@ -613,34 +615,34 @@ summary {
 			&.ad {
 				color: #fff;
 				span {
-					background: #d11212;
 					color: #fff;
+					background: #d11212;
 				}
 			}
 			&.bo {
 				color: #fff;
 				span {
-					background: #4d009a;
 					color: #fff;
+					background: #4d009a;
 				}
 			}
 			&.gb {
 				color: #fff;
 				span {
-					background: #46340b;
 					color: #fff;
+					background: #46340b;
 				}
 			}
 			&.gq {
 				color: #fff;
 				span {
-					background: #0073ff;
 					color: #fff;
+					background: #0073ff;
 				}
 			}
 			&.default {
-				background: #dadada;
 				color: #111;
+				background: #dadada;
 			}
 		}
 		.dilution-buttons {
@@ -651,26 +653,26 @@ summary {
 			}
 		}
 		.btn-modal-dilution {
-			background-color: var(--btn-dilution-bg);
-			border: 1px solid var(--btn-dilution-line);
-			color: var(--btn-dilution-hover);
-			border-radius: 4px;
-			padding: 12px 0;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			flex-direction: column;
 			@media (hover: hover) and (pointer: fine) {
 				cursor: pointer;
 				transition: background-color 300ms;
 				&:hover {
-					border-color: transparent;
 					color: var(--btn-dilution-bg);
+					border-color: transparent;
 					background: {
 						color: var(--btn-dilution-hover);
 					}
 				}
 			}
+			display: inline-flex;
+			padding: 12px 0;
+			color: var(--btn-dilution-hover);
+			background-color: var(--btn-dilution-bg);
+			border: 1px solid var(--btn-dilution-line);
+			border-radius: 4px;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
 			strong {
 				font: {
 					size: 18px;
@@ -689,23 +691,23 @@ summary {
 }
 
 #searchInput {
+	flex: none;
+	padding: 0 12px;
+	overflow: hidden;
+	width: 100%;
+	height: 40px;
+	color: var(--notice-text);
 	border: 1px solid var(--border-input);
 	margin-bottom: 10px;
 	border-radius: 4px;
-	width: 100%;
-	height: 40px;
-	padding: 0 12px;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	overflow: hidden;
-	flex: none;
 	background: {
 		color: var(--bg-input);
 	}
 	&::placeholder {
 		color: var(--input-placeholder);
 	}
-	color: var(--notice-text);
 	font: {
 		size: 14px;
 		weight: 500;
@@ -727,12 +729,12 @@ summary {
 
 @media screen and (min-width: 1280px) {
 	#wrap {
-		display: flex;
-		position: relative;
-		min-height: 100dvh;
 		@media all and (display-mode: standalone) {
 			min-height: 100vh;
 		}
+		display: flex;
+		position: relative;
+		min-height: 100dvh;
 		align-items: center;
 		justify-content: center;
 		background: {
@@ -754,11 +756,12 @@ summary {
 		}
 	}
 	.header {
-		display: flex;
-		position: relative;
-		z-index: 2;
-		align-items: center;
 		margin-bottom: 30px;
+		.inner {
+			position: relative;
+			z-index: 2;
+			align-items: center;
+		}
 		h1 {
 			justify-self: flex-start;
 			&:after {
@@ -778,9 +781,9 @@ summary {
 	}
 	#container {
 		padding: 30px;
+		max-width: 1024px;
 		border-radius: 24px;
 		background-color: rgba(var(--bg-contents-rgb), 100%);
-		max-width: 1024px;
 	}
 	#contents {
 		height: 65vh;
@@ -888,10 +891,10 @@ summary {
 		}
 	}
 	.product-list {
-		max-height: 50dvh;
 		@media all and (display-mode: standalone) {
 			max-height: 50vh;
 		}
+		max-height: 50dvh;
 	}
 }
 
@@ -900,14 +903,16 @@ summary {
 		padding: 24px calc(24px + var(--sar)) calc(24px + var(--sab)) calc(24px + var(--sal));
 	}
 	.header {
+		padding: calc(var(--sat) + 20px) 0 20px;
 		position: sticky;
 		z-index: 10;
 		top: 0;
-		padding: calc(var(--sat) + 20px) 0 20px;
-		align-items: center;
-		justify-content: center;
 		border-bottom: 1px solid var(--graph-border);
 		background-color: var(--bg-contents);
+		.inner {
+			align-items: center;
+			justify-content: center;
+		}
 		h1 {
 			color: var(--base-color);
 			font: {
@@ -922,8 +927,8 @@ summary {
 	.btn-search,
 	.btn-information {
 		position: absolute;
-		top: calc(var(--sat) + 50%);
-		transform: translateY(calc(-50% - var(--sat)));
+		top: 50%;
+		transform: translateY(-50%);
 		.ti {
 			font: {
 				size: 20px;
@@ -1044,7 +1049,10 @@ summary {
 	}
 	.header {
 		z-index: 10;
-		align-items: center;
+		.inner {
+			position: relative;
+			align-items: center;
+		}
 		h1 {
 			&:after {
 				right: -28px;
@@ -1143,11 +1151,11 @@ summary {
 		&[data-modal-type="search"] {
 			align-items: stretch;
 			.modal-container {
-				padding: calc(16px + var(--sat)) calc(16px + var(--sar)) calc(16px + var(--sab)) calc(16px + var(--sal));
-				border-radius: 0;
-				max-width: 100%;
-				flex: 1 1;
 				display: flex;
+				flex: 1 1;
+				padding: calc(16px + var(--sat)) calc(16px + var(--sar)) calc(16px + var(--sab)) calc(16px + var(--sal));
+				max-width: 100%;
+				border-radius: 0;
 				flex-direction: column;
 				.btn-modal-close {
 					top: calc(15px + var(--sat));
@@ -1159,8 +1167,8 @@ summary {
 				}
 			}
 			.modal-contents {
-				flex: 1 1;
 				display: flex;
+				flex: 1 1;
 				flex-direction: column;
 				overflow-y: auto;
 			}
@@ -1188,12 +1196,12 @@ summary {
 		}
 		&:after {
 			position: absolute;
-			pointer-events: none;
 			top: calc(50%);
 			right: 0;
 			content: "";
 			width: 24px;
 			height: 24px;
+			pointer-events: none;
 			transform: translateY(calc(-50% + 3px));
 			background: linear-gradient(90deg, hsla(0, 0%, 98%, 0), var(--bg-form-inner) 24px, var(--bg-form-inner));
 		}
