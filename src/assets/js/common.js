@@ -352,6 +352,7 @@ document.addEventListener('click', (e) => {
 		const activeTab = document.querySelector('.tab-body.active');
 		const inputSelector = activeTab.dataset.tab === 'tab1' ? '#dilutionRatio' : '#dilutionRatio2';
 		document.querySelector(inputSelector).value = dilutionValue;
+		updateResetButtonState();
 		closeModal(e.target);
 	}
 });
