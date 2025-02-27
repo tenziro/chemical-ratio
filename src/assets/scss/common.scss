@@ -891,10 +891,10 @@ summary {
 		}
 	}
 	.product-list {
+		max-height: 50dvh;
 		@media all and (display-mode: standalone) {
 			max-height: 50vh;
 		}
-		max-height: 50dvh;
 	}
 }
 
@@ -1037,6 +1037,31 @@ summary {
 		padding: 4px 6px;
 		font: {
 			size: 14px;
+		}
+	}
+	.product-list {
+		max-height: 40dvh;
+		@media all and (display-mode: standalone) {
+			max-height: 40vh;
+		}
+		.product-item {
+			.brand {
+				font: {
+					size: 12px;
+				}
+			}
+			.btn-modal-dilution {
+				strong {
+					font: {
+						size: 16px;
+					}
+				}
+				span {
+					font: {
+						size: 12px;
+					}
+				}
+			}
 		}
 	}
 }
@@ -1214,24 +1239,10 @@ summary {
 	}
 	.product-list {
 		flex: 1 1 auto;
-		.product-item {
-			.brand {
-				font: {
-					size: 12px;
-				}
-			}
-			.btn-modal-dilution {
-				strong {
-					font: {
-						size: 16px;
-					}
-				}
-				span {
-					font: {
-						size: 12px;
-					}
-				}
-			}
+		max-height: none;
+		overflow-y: auto;
+		@media all and (display-mode: standalone) {
+			max-height: none;
 		}
 	}
 }
