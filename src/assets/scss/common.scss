@@ -922,7 +922,7 @@ summary {
 	.btn-search,
 	.btn-information {
 		position: absolute;
-		top: 50%;
+		top: calc(env(--sat) + 50%);
 		transform: translateY(-50%);
 		.ti {
 			font: {
@@ -1127,7 +1127,7 @@ summary {
 		&[data-modal-type="information"] {
 			align-items: flex-end;
 			.modal-container {
-				padding: 24px 24px calc(24px + var(--sab));
+				padding: 24px calc(24px + var(--sar)) calc(24px + var(--sab)) calc(24px + var(--sal));
 				position: relative;
 				max-width: 100%;
 				border-radius: 16px 16px 0 0;
@@ -1143,15 +1143,15 @@ summary {
 		&[data-modal-type="search"] {
 			align-items: stretch;
 			.modal-container {
-				padding: 16px 16px calc(24px + var(--sab));
+				padding: calc(16px + var(--sat)) calc(16px + var(--sar)) calc(16px + var(--sab)) calc(16px + var(--sal));
 				border-radius: 0;
 				max-width: 100%;
 				flex: 1 1;
 				display: flex;
 				flex-direction: column;
 				.btn-modal-close {
-					top: 15px;
-					right: 16px;
+					top: calc(15px + var(--sat));
+					right: calc(16px + var(--sar));
 					.icon {
 						width: 28px;
 						height: 28px;
