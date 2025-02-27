@@ -77,8 +77,10 @@ document.addEventListener("DOMContentLoaded", () => {
 			updateResetButtonState();
 			if (tabId === 'tab1') {
 				calculateChemicalVolume();
+				wcs.event('CLICK', 'QUICK_TAB1_DILUTION_RATIO');
 			} else {
 				calculateTotalVolume();
+				wcs.event('CLICK', 'QUICK_TAB2_DILUTION_RATIO');
 			}
 		});
 	});
@@ -110,6 +112,9 @@ const openModal = async (button) => {
 		document.querySelector('#nodata').classList.remove('active');
 		document.querySelector('.product-list').style.display = 'block';
 		await loadData();
+		wcs.event('MODAL', 'OPEN_SEARCH');
+	} else {
+		wcs.event('MODAL', 'OPEN_INFORMATION');
 	}
 	toggleModal(modal, true);
 };
@@ -187,6 +192,7 @@ const resetAll = () => {
 		top: 0,
 		behavior: 'smooth' // 부드러운 스크롤 효과를 위해 추가
 	});
+	wcs.event('CLICK', 'RESET');
 };
 
 // ! 탭별 리셋 함수
@@ -354,5 +360,6 @@ document.addEventListener('click', (e) => {
 		document.querySelector(inputSelector).value = dilutionValue;
 		updateResetButtonState();
 		closeModal(e.target);
+		wcs.event('CLICK', 'DILUTION_RATIO');
 	}
 });
