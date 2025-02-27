@@ -923,7 +923,7 @@ summary {
 	.btn-information {
 		position: absolute;
 		top: calc(var(--sat) + 50%);
-		transform: translateY(-50%);
+		transform: translateY(calc(-50% + var(--sat)));
 		.ti {
 			font: {
 				size: 20px;
