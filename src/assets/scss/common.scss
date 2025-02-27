@@ -4,6 +4,10 @@
 
 :root {
 	--tab-speed: 280ms;
+	--sat: env(safe-area-inset-top);
+	--sar: env(safe-area-inset-right);
+	--sab: env(safe-area-inset-bottom);
+	--sal: env(safe-area-inset-left);
 }
 
 @media (prefers-color-scheme: light) {
@@ -881,13 +885,13 @@ summary {
 
 @media screen and (max-width: 1024px) {
 	#contents {
-		padding: 24px calc(24px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(24px + env(safe-area-inset-left));
+		padding: 24px calc(24px + var(--sar)) calc(24px + var(--sab)) calc(24px + var(--sal));
 	}
 	.header {
 		position: sticky;
 		z-index: 10;
 		top: 0;
-		padding: calc(env(safe-area-inset-top) + 20px) 0 20px;
+		padding: calc(var(--sat) + 20px) 0 20px;
 		align-items: center;
 		justify-content: center;
 		border-bottom: 1px solid var(--graph-border);
@@ -918,10 +922,10 @@ summary {
 		}
 	}
 	.btn-information {
-		left: calc(env(safe-area-inset-left) + 24px);
+		left: calc(var(--sal) + 24px);
 	}
 	.btn-search {
-		right: calc(env(safe-area-inset-left) + 24px);
+		right: calc(var(--sal) + 24px);
 	}
 	.form {
 		dl {
@@ -1024,7 +1028,7 @@ summary {
 		background-color: var(--bg-contents);
 	}
 	#contents {
-		padding: 16px calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));
+		padding: 16px calc(16px + var(--sar)) calc(16px + var(--sab)) calc(16px + var(--sal));
 	}
 	.header {
 		z-index: 10;
@@ -1040,10 +1044,10 @@ summary {
 		}
 	}
 	.btn-information {
-		left: calc(env(safe-area-inset-left) + 16px);
+		left: calc(var(--sal) + 16px);
 	}
 	.btn-search {
-		right: calc(env(safe-area-inset-right) + 16px);
+		right: calc(var(--sar) + 16px);
 	}
 	.graph-bg {
 		height: 130px;
@@ -1111,7 +1115,7 @@ summary {
 		&[data-modal-type="information"] {
 			align-items: flex-end;
 			.modal-container {
-				padding: 24px 24px calc(24px + env(safe-area-inset-bottom));
+				padding: 24px 24px calc(24px + var(--sab));
 				position: relative;
 				max-width: 100%;
 				border-radius: 16px 16px 0 0;
@@ -1127,7 +1131,7 @@ summary {
 		&[data-modal-type="search"] {
 			align-items: stretch;
 			.modal-container {
-				padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
+				padding: 16px 16px calc(24px + var(--sab));
 				border-radius: 0;
 				max-width: 100%;
 				flex: 1 1;
