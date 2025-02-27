@@ -471,7 +471,7 @@ summary {
 	&.active {
 		display: flex;
 		.modal-container {
-			animation: modal-in 800ms;
+			animation: modal-in 600ms;
 			background-color: var(--bg-modal-content);
 		}
 	}
