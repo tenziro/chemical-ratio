@@ -132,11 +132,10 @@ html {
 }
 html {
 	scroll-behavior: smooth;
+	scrollbar-gutter: stable;
 }
 body {
 	min-width: 320px;
-	min-height: 100dvh;
-	letter-spacing: -0.5px;
 	font: {
 		family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
 		feature-settings: 'tnum';
@@ -187,7 +186,6 @@ summary {
 	position: relative;
 	z-index: 1;
 	width: 100%;
-	max-width: 1024px;
 }
 
 #contents {
@@ -720,7 +718,7 @@ summary {
 	}
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1280px) {
 	#wrap {
 		display: flex;
 		position: relative;
@@ -772,6 +770,7 @@ summary {
 		padding: 30px;
 		border-radius: 24px;
 		background-color: rgba(var(--bg-contents-rgb), 100%);
+		max-width: 1024px;
 	}
 	#contents {
 		height: 65vh;
@@ -883,7 +882,7 @@ summary {
 	}
 }
 
-@media screen and (max-width: 1024px) {
+@media (max-width: 1279px) {
 	#contents {
 		padding: 24px calc(24px + var(--sar)) calc(24px + var(--sab)) calc(24px + var(--sal));
 	}
@@ -1023,7 +1022,7 @@ summary {
 		}
 	}
 }
-@media screen and (max-width: 574px) {
+@media (max-width: 639px) {
 	#container {
 		background-color: var(--bg-contents);
 	}
