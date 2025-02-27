@@ -922,7 +922,7 @@ summary {
 	.btn-search,
 	.btn-information {
 		position: absolute;
-		top: calc(env(--sat) + 50%);
+		top: calc(var(--sat) + 50%);
 		transform: translateY(-50%);
 		.ti {
 			font: {
