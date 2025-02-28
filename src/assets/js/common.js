@@ -109,6 +109,7 @@ const updateResetButtonState = () => {
 // ! 모달창 제어 함수
 const updateBodyScrollLock = isActive => {
 	document.body.classList.toggle("stop-scroll", isActive);
+	document.documentElement.classList.toggle("stop-scroll", isActive);
 };
 const toggleModal = (modal, isOpen) => {
 	if (modal) {

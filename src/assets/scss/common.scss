@@ -471,7 +471,6 @@ summary {
 	&.active {
 		display: flex;
 		.modal-container {
-			animation: modal-in 600ms;
 			background-color: var(--bg-modal-content);
 		}
 	}
@@ -716,12 +715,28 @@ summary {
 	}
 }
 
-@keyframes modal-in {
+@keyframes modal-in-bottom {
 	from {
 		transform: translateY(40px);
 	}
 	to {
 		transform: translateY(0);
+	}
+}
+@keyframes modal-in-right {
+	from {
+		transform: translateX(calc(100% + 40px));
+	}
+	to {
+		transform: translateX(0);
+	}
+}
+@keyframes modal-in-fade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 100%;
 	}
 }
 
@@ -894,6 +909,18 @@ summary {
 			max-height: 50vh;
 		}
 	}
+	.modal {
+		&[data-modal-type="information"] {
+			.modal-container {
+				animation: modal-in-bottom 580ms;
+			}
+		}
+		&[data-modal-type="search"] {
+			.modal-container {
+				animation: modal-in-bottom 580ms;
+			}
+		}
+	}
 }
 
 @media (max-width: 1279px) {
@@ -1062,6 +1089,18 @@ summary {
 			}
 		}
 	}
+	.modal {
+		&[data-modal-type="information"] {
+			.modal-container {
+				animation: modal-in-bottom 580ms;
+			}
+		}
+		&[data-modal-type="search"] {
+			.modal-container {
+				animation: modal-in-bottom 580ms;
+			}
+		}
+	}
 }
 @media (max-width: 639px) {
 	#container {
@@ -1158,6 +1197,7 @@ summary {
 		&[data-modal-type="information"] {
 			align-items: flex-end;
 			.modal-container {
+				animation: modal-in-bottom 580ms;
 				padding: 24px calc(24px + var(--sar)) calc(24px + var(--sab)) calc(24px + var(--sal));
 				position: relative;
 				max-width: 100%;
@@ -1174,6 +1214,7 @@ summary {
 		&[data-modal-type="search"] {
 			align-items: stretch;
 			.modal-container {
+				animation: modal-in-fade 300ms;
 				display: flex;
 				flex: 1 1;
 				padding: calc(16px + var(--sat)) calc(16px + var(--sar)) calc(16px + var(--sab)) calc(16px + var(--sal));
