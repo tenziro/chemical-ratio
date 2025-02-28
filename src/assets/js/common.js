@@ -134,7 +134,7 @@ const closeModal = button => {
 	if (modalType === 'search') {
 		document.querySelector('#searchInput').value = '';
 	} else if (modalType === 'install') {
-		const INSTALL_PROMPT_KEY = "hideInstallPromptUntil";
+		const INSTALL_PROMPT_KEY = "hideInstallModalUntil";
 		localStorage.setItem(INSTALL_PROMPT_KEY, (Date.now() + 7 * 24 * 60 * 60 * 1000).toString());
 	}
 	window.scrollTo({
@@ -146,10 +146,11 @@ const closeModal = button => {
 const installModal = () => {
 	const INSTALL_PROMPT_KEY = "hideInstallModalUntil";
 	const isIOS = () => /iphone|ipad/i.test(navigator.userAgent);
+	const isAndroid = () => /android/i.test(navigator.userAgent);
 	const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches;
 	const shouldShowInstallModal = () => {
 		const hideUntil = localStorage.getItem(INSTALL_PROMPT_KEY);
-		return isIOS() && !isStandalone() && (!hideUntil || Date.now() > parseInt(hideUntil, 10));
+		return (isIOS() || isAndroid()) && !isStandalone() && (!hideUntil || Date.now() > parseInt(hideUntil, 10));
 	};
 	const showInstallModal = () => {
 		const modal = document.querySelector('.modal[data-modal-type="install"]');
