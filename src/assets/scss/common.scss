@@ -17,7 +17,7 @@
 	:root {
 		--base-color: #111;
 		--base-color-sub: #999;
-		--bg-opacity: rgba(25, 25, 25, 30%);
+		--bg-opacity: #1919194d;
 		--bg-contents: #fff;
 		--bg-contents-rgb: 255, 255, 255;
 		--bg-check-input: #000;
@@ -56,7 +56,7 @@
 	:root {
 		--base-color: #fff;
 		--base-color-sub: #bbb;
-		--bg-opacity: rgba(0, 0, 0, 50%);
+		--bg-opacity: #00000080;
 		--bg-contents: #1f1f1f;
 		--bg-contents-rgb: 31, 31, 31;
 		--graph-border: #303134;
@@ -106,6 +106,19 @@
 		width: $width;
 		height: $width;
 		background-color: transparent;
+	}
+}
+@mixin mobile-scrollbars {
+	@media (hover: none) and (pointer: coarse) {
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+	@media (hover: hover) and (pointer: fine) {
+		@include scrollbar(4px, transparent, 2px);
+		&:hover {
+			@include scrollbar(4px, var(--base-color-sub), 2px);
+		}
 	}
 }
 * {
@@ -915,10 +928,10 @@ summary {
 		}
 	}
 	.product-list {
-		max-height: 50dvh;
 		@media all and (display-mode: standalone) {
 			max-height: 50vh;
 		}
+		max-height: 50dvh;
 	}
 	.modal {
 		&[data-modal-type="information"] {
@@ -1076,10 +1089,10 @@ summary {
 		}
 	}
 	.product-list {
-		max-height: 40dvh;
 		@media all and (display-mode: standalone) {
 			max-height: 40vh;
 		}
+		max-height: 40dvh;
 		.product-item {
 			.brand {
 				font: {
@@ -1208,10 +1221,10 @@ summary {
 		&[data-modal-type="information"] {
 			align-items: flex-end;
 			.modal-container {
-				animation: modal-in-bottom 580ms;
 				padding: 24px calc(24px + var(--sar)) calc(24px + var(--sab)) calc(24px + var(--sal));
 				position: relative;
 				max-width: 100%;
+				animation: modal-in-bottom 580ms;
 				border-radius: 16px 16px 0 0;
 				.btn-modal-close {
 					top: 23px;
@@ -1225,11 +1238,11 @@ summary {
 		&[data-modal-type="search"] {
 			align-items: stretch;
 			.modal-container {
-				animation: modal-in-fade 300ms;
 				display: flex;
 				flex: 1 1;
 				padding: calc(16px + var(--sat)) calc(16px + var(--sar)) calc(16px + var(--sab)) calc(16px + var(--sal));
 				max-width: 100%;
+				animation: modal-in-fade 300ms;
 				border-radius: 0;
 				flex-direction: column;
 				.btn-modal-close {
@@ -1255,17 +1268,7 @@ summary {
 	.quick-area {
 		position: relative;
 		.inner {
-			@media (hover: none) and (pointer: coarse) {
-				&::-webkit-scrollbar {
-					display: none;
-				}
-			}
-			@media (hover: hover) and (pointer: fine) {
-				@include scrollbar(4px, transparent, 2px);
-				&:hover {
-					@include scrollbar(4px, var(--graph-border), 2px);
-				}
-			}
+			@include mobile-scrollbars;
 			flex-wrap: nowrap;
 			overflow-x: auto;
 		}
@@ -1288,11 +1291,11 @@ summary {
 		}
 	}
 	.product-list {
-		flex: 1 1 auto;
-		max-height: none;
-		overflow-y: auto;
 		@media all and (display-mode: standalone) {
 			max-height: none;
 		}
+		flex: 1 1 auto;
+		max-height: none;
+		overflow-y: auto;
 	}
 }
