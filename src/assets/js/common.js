@@ -399,7 +399,7 @@ const displayGraph = (tab, chemicalAmount, totalVolume, waterAmount) => {
 	// 탭에 따라 퍼센트 비율 계산
 	const dilutionRatioValue = parseFloat(document.querySelector("#dilutionRatio").value.replace(/,/g, ''));
 	const percentages = tab === "[data-tab='tab1']"
-		? [100, dilutionRatioValue >= 100 ? (chemicalAmount / waterAmount) * 1000 : (chemicalAmount / waterAmount) * 100] // 물 기준으로 퍼센트 계산
+		? [100, dilutionRatioValue >= 100 ? (chemicalAmount / waterAmount) * 5000 : (chemicalAmount / waterAmount) * 100] // 물 기준으로 퍼센트 계산
 		: [(totalVolume / totalVolume) * 100, (chemicalAmount / totalVolume) * 100]; // 전체 용량 기준으로 퍼센트 계산
 	// #waterVolume, #totalCapacity의 value가 0이면 .water-bar, .total-bar의 높이를 0으로 설정
 	if (waterAmount === 0) {
