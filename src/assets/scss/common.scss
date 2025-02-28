@@ -122,6 +122,7 @@
 	}
 }
 * {
+	@include mobile-scrollbars;
 	margin: 0;
 	padding: 0;
 	color: inherit;
@@ -582,7 +583,6 @@ summary {
 		color: var(--notice-text);
 		margin-top: 6px;
 		font: {
-			size: 14px;
 			weight: 400;
 		}
 	}
@@ -590,6 +590,7 @@ summary {
 		display: flex;
 	}
 }
+
 .product-list {
 	overflow-y: auto;
 	.product-item {
@@ -927,6 +928,13 @@ summary {
 			size: 14px;
 		}
 	}
+	.result-msg {
+		.msg {
+			font: {
+				size: 14px;
+			}
+		}
+	}
 	.product-list {
 		@media all and (display-mode: standalone) {
 			max-height: 50vh;
@@ -1113,6 +1121,13 @@ summary {
 			}
 		}
 	}
+	.result-msg {
+		.msg {
+			font: {
+				size: 13px;
+			}
+		}
+	}
 	.modal {
 		&[data-modal-type="information"] {
 			.modal-container {
@@ -1207,7 +1222,13 @@ summary {
 			}
 		}
 	}
-	// * Modal
+	.result-msg {
+		.msg {
+			font: {
+				size: 12px;
+			}
+		}
+	}
 	.modal {
 		.modal-container {
 			h1 {
@@ -1268,7 +1289,6 @@ summary {
 	.quick-area {
 		position: relative;
 		.inner {
-			@include mobile-scrollbars;
 			flex-wrap: nowrap;
 			overflow-x: auto;
 		}

@@ -119,19 +119,18 @@ const toggleModal = (modal, isOpen) => {
 const openModal = async (button) => {
 	const modalType = button.dataset.openModal;
 	const modal = document.querySelector(`.modal[data-modal-type="${modalType}"]`);
+	toggleModal(modal, true);
 	if (modalType === 'search') {
 		document.querySelector('#nodata').classList.remove('active');
 		document.querySelector('.product-list').style.display = 'block';
 		await loadData();
 	}
-	toggleModal(modal, true);
 };
 const closeModal = button => {
 	const modal = button.closest(".modal");
 	toggleModal(modal, false);
 	if (modal.dataset.modalType === 'search') {
 		document.querySelector('#searchInput').value = '';
-		document.querySelector('.product-list').scrollTop = 0;
 	}
 	window.scrollTo({
 		top: 0,
@@ -152,13 +151,20 @@ const fetchData = async (url) => {
 };
 const toggleLoading = (isLoading) => {
 	const loadingMsg = document.querySelector('.modal[data-modal-type="search"] #result-data');
+	const productList = document.querySelector('.modal[data-modal-type="search"] .product-list');
 	loadingMsg.classList.toggle('active', isLoading);
+	productList.style.display = isLoading ? 'none' : 'block';
+	if (!isLoading) {
+		productList.scrollTop = 0;
+	}
 };
+
 const loadData = async () => {
 	const dataUrl = 'src/data/data.json';
 	const productList = document.querySelector('.product-list');
 	try {
 		toggleLoading(true);
+		await new Promise(resolve => setTimeout(resolve, 500));
 		const data = await fetchData(dataUrl);
 		localStorage.setItem('productData', JSON.stringify(data));
 		displayProductList(data);
