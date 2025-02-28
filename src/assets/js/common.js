@@ -290,7 +290,15 @@ const inputFields = ["dilutionRatio", "waterVolume", "dilutionRatio2", "totalCap
 inputFields.forEach(id => {
 	const element = document.querySelector(`#${id}`);
 	if (element) {
-		element.addEventListener('input', formatInputHandler);
+		element.addEventListener('input', (event) => {
+			const value = formatUtils.removeCommas(event.target.value);
+			const number = Number(value);
+			if (number < 1) {
+				event.target.value = '';
+			} else if (formatUtils.isValidNumber(number)) {
+				event.target.value = formatUtils.addCommasToNumber(number);
+			}
+		});
 	}
 });
 
@@ -332,12 +340,14 @@ const animateGraph = (selectors, heights) => {
 // ! 케미컬 용량 계산 함수
 const animateNumber = (selector, targetValue) => {
 	const element = document.querySelector(selector);
-	if (!element) return; // 요소가 존재하지 않으면 함수 종료
-
+	if (!element || isNaN(targetValue) || targetValue <= 0 || !isFinite(targetValue)) {
+		element.textContent = '0ml'; // 요소가 존재하지 않거나 값이 유효하지 않으면 0ml로 설정
+		return;
+	}
 	let startValue = 0; // 애니메이션 시작 값
 	const duration = 620; // 애니메이션 지속 시간 (ms)
 	const frameRate = 30; // 초당 프레임 수
-	const totalFrames = duration / (1000 / frameRate); // 총 프레임 수 계산
+	const totalFrames = duration / (1000 / frameRate) || 1; // 총 프레임 수 계산, 0 방지
 	const increment = targetValue / totalFrames; // 프레임당 증가량 계산
 
 	const updateNumber = () => {
@@ -360,20 +370,24 @@ const calculateVolume = (ratioSelector, volumeSelector, isTotalCalculation = fal
 	const chemicalVolume = isTotalCalculation ? volume / (dilutionRatio + 1) : volume / dilutionRatio;
 	const waterVolume = isTotalCalculation ? volume - chemicalVolume : volume;
 	const totalVolume = chemicalVolume + waterVolume; // 전체 용량 계산
+	// 결과값이 ∞일 경우 0으로 설정
+	const validChemicalVolume = isFinite(chemicalVolume) ? chemicalVolume : 0;
+	const validWaterVolume = isFinite(waterVolume) ? waterVolume : 0;
+	const validTotalVolume = isFinite(totalVolume) ? totalVolume : 0;
 	// 어떤 탭에서 계산이 수행되는지에 따라 선택자 설정
 	const tab = isTotalCalculation ? "[data-tab='tab2']" : "[data-tab='tab1']";
 	// 그래프 업데이트
-	displayGraph(tab, chemicalVolume, totalVolume, waterVolume);
+	displayGraph(tab, validChemicalVolume, validTotalVolume, validWaterVolume);
 	// 희석 비율 및 전체/물 용량 텍스트 업데이트
 	updateTextContent(`${tab} .chemical-ratio`, `(희석비 - 1:${formatUtils.formatNumber(dilutionRatio)})`);
 	updateTextContent(`${tab} .total-ratio`, isTotalCalculation
-		? `(물 용량 - ${formatUtils.formatNumber(waterVolume)}ml)`
-		: `(전체 용량 - ${formatUtils.formatNumber(totalVolume)}ml)`);
+		? `(물 용량 - ${formatUtils.formatNumber(validWaterVolume)}ml)`
+		: `(전체 용량 - ${formatUtils.formatNumber(validTotalVolume)}ml)`);
 	// 애니메이션을 통한 숫자 변경
-	animateNumber(`${tab} .chemical-result`, chemicalVolume);
-	animateNumber(`${tab} .${isTotalCalculation ? "total-result" : "water-result"}`, waterVolume);
+	animateNumber(`${tab} .chemical-result`, validChemicalVolume);
+	animateNumber(`${tab} .${isTotalCalculation ? "total-result" : "water-result"}`, validWaterVolume);
 	if (isTotalCalculation) {
-		animateNumber(`${tab} .total-result`, totalVolume);
+		animateNumber(`${tab} .total-result`, validTotalVolume);
 	}
 };
 const displayGraph = (tab, chemicalAmount, totalVolume, waterAmount) => {
@@ -383,9 +397,17 @@ const displayGraph = (tab, chemicalAmount, totalVolume, waterAmount) => {
 		"[data-tab='tab2']": [".total-bar", ".chemical-bar2"]
 	};
 	// 탭에 따라 퍼센트 비율 계산
+	const dilutionRatioValue = parseFloat(document.querySelector("#dilutionRatio").value.replace(/,/g, ''));
 	const percentages = tab === "[data-tab='tab1']"
-		? [100, (chemicalAmount / waterAmount) * 100] // 물 기준으로 퍼센트 계산
+		? [100, dilutionRatioValue >= 100 ? (chemicalAmount / waterAmount) * 1000 : (chemicalAmount / waterAmount) * 100] // 물 기준으로 퍼센트 계산
 		: [(totalVolume / totalVolume) * 100, (chemicalAmount / totalVolume) * 100]; // 전체 용량 기준으로 퍼센트 계산
+	// #waterVolume, #totalCapacity의 value가 0이면 .water-bar, .total-bar의 높이를 0으로 설정
+	if (waterAmount === 0) {
+		percentages[0] = 0;
+	}
+	if (totalVolume === 0) {
+		percentages[0] = 0;
+	}
 	// 애니메이션을 통한 그래프 업데이트
 	animateGraph(barSelectors[tab], percentages);
 };
