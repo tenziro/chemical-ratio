@@ -613,11 +613,18 @@ summary {
 					background: #d11212;
 				}
 			}
-			&.bo {
+			&.lp {
 				color: #fff;
 				span {
 					color: #fff;
 					background: #4d009a;
+				}
+			}
+			&.gd {
+				color: #fff;
+				span {
+					color: #fff;
+					background: #F9982A;
 				}
 			}
 			&.gb {
@@ -632,6 +639,13 @@ summary {
 				span {
 					color: #fff;
 					background: #0073ff;
+				}
+			}
+			&.mf {
+				color: #fff;
+				span {
+					color: #fff;
+					background: #11306E;
 				}
 			}
 			&.default {
