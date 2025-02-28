@@ -147,7 +147,7 @@ const installModal = () => {
 	const INSTALL_PROMPT_KEY = "hideInstallModalUntil";
 	const isIOS = () => /iphone|ipad/i.test(navigator.userAgent);
 	const isAndroid = () => /android/i.test(navigator.userAgent);
-	const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches;
+	const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 	const shouldShowInstallModal = () => {
 		const hideUntil = localStorage.getItem(INSTALL_PROMPT_KEY);
 		return (isIOS() || isAndroid()) && !isStandalone() && (!hideUntil || Date.now() > parseInt(hideUntil, 10));
