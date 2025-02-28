@@ -348,6 +348,9 @@ const calculateVolume = (ratioSelector, volumeSelector, isTotalCalculation = fal
 		: `(전체 용량 - ${formatUtils.formatNumber(totalVolume)}ml)`);
 	updateTextContent(`${tab} .chemical-result`, `${formatUtils.formatNumber(chemicalVolume)}ml`);
 	updateTextContent(`${tab} .${isTotalCalculation ? "total-result" : "water-result"}`, `${formatUtils.formatNumber(waterVolume)}ml`);
+	if (isTotalCalculation) {
+		updateTextContent(`${tab} .total-result`, `${formatUtils.formatNumber(chemicalVolume + waterVolume)}ml`);
+	}
 };
 const displayGraph = (tab, chemicalAmount, totalVolume, waterAmount) => {
 	const barSelectors = {
@@ -390,16 +393,6 @@ document.querySelector('#searchInput').addEventListener('keypress', async (e) =>
 });
 
 // ! 희석비 버튼 클릭 이벤트 등록
-// document.addEventListener('click', (e) => {
-// 	if (e.target.closest('.btn-modal-dilution')) {
-// 		const dilutionValue = e.target.closest('.btn-modal-dilution').dataset.value;
-// 		const activeTab = document.querySelector('.tab-body.active');
-// 		const inputSelector = activeTab.dataset.tab === 'tab1' ? '#dilutionRatio' : '#dilutionRatio2';
-// 		document.querySelector(inputSelector).value = dilutionValue;
-// 		updateResetButtonState();
-// 		closeModal(e.target);
-// 	}
-// });
 const handleDilutionClick = (e) => {
 	const button = e.target.closest('.btn-modal-dilution');
 	if (!button) return;
@@ -410,6 +403,12 @@ const handleDilutionClick = (e) => {
 	}
 	updateResetButtonState();
 	closeModal(button);
+	const activeTab = getCheckedTab();
+	if (activeTab === 'tab1') {
+		calculateChemicalVolume();
+	} else {
+		calculateTotalVolume();
+	}
 };
 const getActiveTabInputSelector = () => {
 	const activeTab = document.querySelector('.tab-body.active');
