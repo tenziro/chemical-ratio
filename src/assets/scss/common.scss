@@ -103,8 +103,8 @@
 		background-color: $track-bg;
 	}
 	&::-webkit-scrollbar-button {
-		width: $width;
-		height: $width;
+		width: 0;
+		height: 0;
 		background-color: transparent;
 	}
 }
