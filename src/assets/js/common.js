@@ -108,7 +108,6 @@ const updateResetButtonState = () => {
 };
 // ! 모달창 제어 함수
 const updateBodyScrollLock = isActive => {
-	document.body.classList.toggle("stop-scroll", isActive);
 	document.documentElement.classList.toggle("stop-scroll", isActive);
 };
 const toggleModal = (modal, isOpen) => {
@@ -261,8 +260,8 @@ const resetTab = (tabId, inputSelectors, barSelectors, textSelectors, resultSele
 	}
 };
 const resetAllTabs = {
-	tab1: () => resetTab("[data-tab='tab1']", ["#dilutionRatio", "#waterVolume"], [".total-bar", ".chemical-bar"], [".chemical-ratio", ".total-ratio"], [".chemical-result", ".water-result"], [".btn-reset"]),
-	tab2: () => resetTab("[data-tab='tab2']", ["#dilutionRatio2", "#totalCapacity"], [".chemical-bar", ".chemical-bar2", ".water-bar"], [".total-ratio", ".chemical-ratio"], [".chemical-result", ".total-result"], [".btn-reset"])
+	tab1: () => resetTab("[data-tab='tab1']", ["#dilutionRatio", "#waterVolume"], [".water-bar", ".chemical-bar"], [".chemical-ratio", ".total-ratio"], [".chemical-result", ".water-result"], [".btn-reset"]),
+	tab2: () => resetTab("[data-tab='tab2']", ["#dilutionRatio2", "#totalCapacity"], [".chemical-bar2", ".total-bar"], [".total-ratio", ".chemical-ratio"], [".chemical-result", ".total-result"], [".btn-reset"])
 };
 
 // ! 숫자 관련 유틸리티 함수 모음
@@ -331,6 +330,29 @@ const animateGraph = (selectors, heights) => {
 };
 
 // ! 케미컬 용량 계산 함수
+const animateNumber = (selector, targetValue) => {
+	const element = document.querySelector(selector);
+	if (!element) return;
+
+	let startValue = 0;
+	const duration = 620; // 1초 동안 애니메이션
+	const frameRate = 30; // 초당 프레임 수
+	const totalFrames = duration / (1000 / frameRate);
+	const increment = targetValue / totalFrames;
+
+	const updateNumber = () => {
+		startValue += increment;
+		if (startValue >= targetValue) {
+			element.textContent = `${formatUtils.formatNumber(targetValue)}ml`;
+		} else {
+			element.textContent = `${formatUtils.formatNumber(Math.floor(startValue))}ml`;
+			requestAnimationFrame(updateNumber);
+		}
+	};
+
+	updateNumber();
+};
+
 const calculateVolume = (ratioSelector, volumeSelector, isTotalCalculation = false) => {
 	const dilutionRatio = getInputValue(ratioSelector);
 	const volume = getInputValue(volumeSelector);
@@ -347,20 +369,23 @@ const calculateVolume = (ratioSelector, volumeSelector, isTotalCalculation = fal
 	updateTextContent(`${tab} .total-ratio`, isTotalCalculation
 		? `(물 용량 - ${formatUtils.formatNumber(waterVolume)}ml)`
 		: `(전체 용량 - ${formatUtils.formatNumber(totalVolume)}ml)`);
-	updateTextContent(`${tab} .chemical-result`, `${formatUtils.formatNumber(chemicalVolume)}ml`);
-	updateTextContent(`${tab} .${isTotalCalculation ? "total-result" : "water-result"}`, `${formatUtils.formatNumber(waterVolume)}ml`);
+
+	animateNumber(`${tab} .chemical-result`, chemicalVolume);
+	animateNumber(`${tab} .${isTotalCalculation ? "total-result" : "water-result"}`, waterVolume);
+
 	if (isTotalCalculation) {
-		updateTextContent(`${tab} .total-result`, `${formatUtils.formatNumber(chemicalVolume + waterVolume)}ml`);
+		animateNumber(`${tab} .total-result`, totalVolume);
 	}
 };
+
 const displayGraph = (tab, chemicalAmount, totalVolume, waterAmount) => {
 	const barSelectors = {
-		"[data-tab='tab1']": [".total-bar", ".chemical-bar"],
-		"[data-tab='tab2']": [".chemical-bar", ".chemical-bar2", ".water-bar"]
+		"[data-tab='tab1']": [".water-bar", ".chemical-bar"],
+		"[data-tab='tab2']": [".total-bar", ".chemical-bar2"]
 	};
 	const percentages = tab === "[data-tab='tab1']"
 		? [100, (chemicalAmount / waterAmount) * 100]
-		: [(chemicalAmount / totalVolume) * 100, (chemicalAmount / totalVolume) * 100, (waterAmount / totalVolume) * 100];
+		: [(totalVolume / totalVolume) * 100, (chemicalAmount / totalVolume) * 100];
 
 	animateGraph(barSelectors[tab], percentages);
 };

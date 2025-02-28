@@ -8,6 +8,9 @@
 	--sar: env(safe-area-inset-right);
 	--sab: env(safe-area-inset-bottom);
 	--sal: env(safe-area-inset-left);
+	--bg-total-bar: #0094378b;
+	--bg-water-bar: #1984ff8b;
+	--bg-chemical-bar: #ff5e198b;
 }
 
 @media (prefers-color-scheme: light) {
@@ -22,9 +25,6 @@
 		--graph-border: #eee;
 		--graph-bg-gradient1: #fafafa;
 		--graph-bg-gradient2: transparent;
-		--bg-total-bar: #1984ff8b;
-		--bg-water-bar: #1984ff8b;
-		--bg-chemical-bar: #ff5e198b;
 		--btn: #151515;
 		--btn-text: #fff;
 		--bg-form: transparent;
@@ -62,9 +62,6 @@
 		--graph-border: #303134;
 		--graph-bg-gradient1: #303134;
 		--graph-bg-gradient2: transparent;
-		--bg-total-bar: #1984ff8b;
-		--bg-water-bar: #1984ff8b;
-		--bg-chemical-bar: #ff5e198b;
 		--btn: #fff;
 		--btn-text: #151515;
 		--bg-form: transparent;
@@ -337,7 +334,7 @@ summary {
 .total-bar, .chemical-bar, .chemical-bar2, .water-bar {
 	flex: none;
 	height: 0;
-	transition: height 700ms cubic-bezier(.06, .38, .13, 1);
+	transition: height 620ms cubic-bezier(.06, .38, .13, 1);
 }
 .total-bar {
 	background-color: var(--bg-total-bar);
