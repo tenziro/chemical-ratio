@@ -764,6 +764,39 @@ summary {
 		opacity: 100%;
 	}
 }
+@keyframes shake-top {
+	0%,
+	100% {
+		-webkit-transform: rotate(0deg);
+		transform: rotate(0deg);
+		-webkit-transform-origin: 50% 0;
+		transform-origin: 50% 0;
+	}
+	10% {
+		-webkit-transform: rotate(2deg);
+		transform: rotate(2deg);
+	}
+	20%,
+	40%,
+	60% {
+		-webkit-transform: rotate(-4deg);
+		transform: rotate(-4deg);
+	}
+	30%,
+	50%,
+	70% {
+		-webkit-transform: rotate(4deg);
+		transform: rotate(4deg);
+	}
+	80% {
+		-webkit-transform: rotate(-2deg);
+		transform: rotate(-2deg);
+	}
+	90% {
+		-webkit-transform: rotate(2deg);
+		transform: rotate(2deg);
+	}
+}
 
 @media screen and (min-width: 1280px) {
 	#wrap {
@@ -997,6 +1030,9 @@ summary {
 	}
 	.btn-information {
 		left: calc(var(--sal) + 24px);
+		.ti {
+			animation: shake-top 800ms cubic-bezier(0.455, 0.030, 0.515, 0.955) 2 both;
+		}
 	}
 	.btn-search {
 		right: calc(var(--sal) + 24px);
