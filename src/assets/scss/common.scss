@@ -291,6 +291,7 @@ summary {
 	li {
 		display: flex;
 		align-items: flex-start;
+		flex-wrap: wrap;
 		line-height: 160%;
 		&:before {
 			flex: none;
@@ -301,6 +302,13 @@ summary {
 		}
 		> span {
 			flex: 1 1;
+		}
+		strong {
+			color: var(--line-color)
+		}
+		> ul {
+			flex: 0 0 100%;
+			padding-left: 10px;
 		}
 	}
 }
@@ -975,7 +983,8 @@ summary {
 		max-height: 50dvh;
 	}
 	.modal {
-		&[data-modal-type="information"] {
+		&[data-modal-type="information"],
+		&[data-modal-type="install"] {
 			.modal-container {
 				animation: modal-in-bottom 580ms;
 			}
@@ -1165,7 +1174,8 @@ summary {
 		}
 	}
 	.modal {
-		&[data-modal-type="information"] {
+		&[data-modal-type="information"],
+		&[data-modal-type="install"] {
 			.modal-container {
 				animation: modal-in-bottom 580ms;
 			}
@@ -1275,7 +1285,8 @@ summary {
 				}
 			}
 		}
-		&[data-modal-type="information"] {
+		&[data-modal-type="information"],
+		&[data-modal-type="install"] {
 			align-items: flex-end;
 			.modal-container {
 				padding: 24px calc(24px + var(--sar)) calc(24px + var(--sab)) calc(24px + var(--sal));

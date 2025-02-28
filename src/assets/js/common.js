@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		button.addEventListener('click', () => quickRatioButtonClick(button))
 	);
 	showTab();
+	installModal();
 });
 
 // ! quick-area 스크롤 상태 업데이트 함수
@@ -128,15 +129,37 @@ const openModal = async (button) => {
 };
 const closeModal = button => {
 	const modal = button.closest(".modal");
+	const modalType = modal.dataset.modalType;
 	toggleModal(modal, false);
-	if (modal.dataset.modalType === 'search') {
+	if (modalType === 'search') {
 		document.querySelector('#searchInput').value = '';
+	} else if (modalType === 'install') {
+		const INSTALL_PROMPT_KEY = "hideInstallPromptUntil";
+		localStorage.setItem(INSTALL_PROMPT_KEY, (Date.now() + 7 * 24 * 60 * 60 * 1000).toString());
 	}
 	window.scrollTo({
 		top: 0,
 		behavior: 'smooth' // 부드러운 스크롤 효과를 위해 추가
 	});
 };
+// ! install 모달
+const installModal = () => {
+	const INSTALL_PROMPT_KEY = "hideInstallModalUntil";
+	const isIOS = () => /iphone|ipad/i.test(navigator.userAgent);
+	const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches;
+	const shouldShowInstallModal = () => {
+		const hideUntil = localStorage.getItem(INSTALL_PROMPT_KEY);
+		return isIOS() && !isStandalone() && (!hideUntil || Date.now() > parseInt(hideUntil, 10));
+	};
+	const showInstallModal = () => {
+		const modal = document.querySelector('.modal[data-modal-type="install"]');
+		toggleModal(modal, true);
+	};
+	if (shouldShowInstallModal()) {
+		showInstallModal();
+	}
+};
+
 
 // ! 데이터 로드 함수
 const fetchData = async (url) => {
