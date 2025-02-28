@@ -332,86 +332,94 @@ const animateGraph = (selectors, heights) => {
 // ! 케미컬 용량 계산 함수
 const animateNumber = (selector, targetValue) => {
 	const element = document.querySelector(selector);
-	if (!element) return;
+	if (!element) return; // 요소가 존재하지 않으면 함수 종료
 
-	let startValue = 0;
-	const duration = 620; // 1초 동안 애니메이션
+	let startValue = 0; // 애니메이션 시작 값
+	const duration = 620; // 애니메이션 지속 시간 (ms)
 	const frameRate = 30; // 초당 프레임 수
-	const totalFrames = duration / (1000 / frameRate);
-	const increment = targetValue / totalFrames;
+	const totalFrames = duration / (1000 / frameRate); // 총 프레임 수 계산
+	const increment = targetValue / totalFrames; // 프레임당 증가량 계산
 
 	const updateNumber = () => {
-		startValue += increment;
+		startValue += increment; // 현재 값 증가
 		if (startValue >= targetValue) {
-			element.textContent = `${formatUtils.formatNumber(targetValue)}ml`;
+			element.textContent = `${formatUtils.formatNumber(targetValue)}ml`; // 최종 값 설정
 		} else {
-			element.textContent = `${formatUtils.formatNumber(Math.floor(startValue))}ml`;
-			requestAnimationFrame(updateNumber);
+			element.textContent = `${formatUtils.formatNumber(Math.floor(startValue))}ml`; // 현재 값 업데이트
+			requestAnimationFrame(updateNumber); // 다음 프레임 요청
 		}
 	};
-
-	updateNumber();
+	updateNumber(); // 애니메이션 시작
 };
-
 const calculateVolume = (ratioSelector, volumeSelector, isTotalCalculation = false) => {
+	// 입력 필드에서 희석 비율과 용량 값을 가져옴
 	const dilutionRatio = getInputValue(ratioSelector);
 	const volume = getInputValue(volumeSelector);
-	if (dilutionRatio === null || volume === null) return;
-
+	if (dilutionRatio === null || volume === null) return; // 값이 없으면 종료
+	// 화학 용액 및 물의 용량 계산
 	const chemicalVolume = isTotalCalculation ? volume / (dilutionRatio + 1) : volume / dilutionRatio;
 	const waterVolume = isTotalCalculation ? volume - chemicalVolume : volume;
-	const totalVolume = chemicalVolume + waterVolume;
-
+	const totalVolume = chemicalVolume + waterVolume; // 전체 용량 계산
+	// 어떤 탭에서 계산이 수행되는지에 따라 선택자 설정
 	const tab = isTotalCalculation ? "[data-tab='tab2']" : "[data-tab='tab1']";
+	// 그래프 업데이트
 	displayGraph(tab, chemicalVolume, totalVolume, waterVolume);
-
+	// 희석 비율 및 전체/물 용량 텍스트 업데이트
 	updateTextContent(`${tab} .chemical-ratio`, `(희석비 - 1:${formatUtils.formatNumber(dilutionRatio)})`);
 	updateTextContent(`${tab} .total-ratio`, isTotalCalculation
 		? `(물 용량 - ${formatUtils.formatNumber(waterVolume)}ml)`
 		: `(전체 용량 - ${formatUtils.formatNumber(totalVolume)}ml)`);
-
+	// 애니메이션을 통한 숫자 변경
 	animateNumber(`${tab} .chemical-result`, chemicalVolume);
 	animateNumber(`${tab} .${isTotalCalculation ? "total-result" : "water-result"}`, waterVolume);
-
 	if (isTotalCalculation) {
 		animateNumber(`${tab} .total-result`, totalVolume);
 	}
 };
-
 const displayGraph = (tab, chemicalAmount, totalVolume, waterAmount) => {
+	// 탭에 따라 적절한 그래프 바의 선택자 지정
 	const barSelectors = {
 		"[data-tab='tab1']": [".water-bar", ".chemical-bar"],
 		"[data-tab='tab2']": [".total-bar", ".chemical-bar2"]
 	};
+	// 탭에 따라 퍼센트 비율 계산
 	const percentages = tab === "[data-tab='tab1']"
-		? [100, (chemicalAmount / waterAmount) * 100]
-		: [(totalVolume / totalVolume) * 100, (chemicalAmount / totalVolume) * 100];
-
+		? [100, (chemicalAmount / waterAmount) * 100] // 물 기준으로 퍼센트 계산
+		: [(totalVolume / totalVolume) * 100, (chemicalAmount / totalVolume) * 100]; // 전체 용량 기준으로 퍼센트 계산
+	// 애니메이션을 통한 그래프 업데이트
 	animateGraph(barSelectors[tab], percentages);
 };
+// 각각의 계산 함수 - 특정 요소에서 값을 가져와 calculateVolume 실행
 const calculateChemicalVolume = () => calculateVolume("#dilutionRatio", "#waterVolume");
 const calculateTotalVolume = () => calculateVolume("#dilutionRatio2", "#totalCapacity", true);
 
 // ! 검색 입력 이벤트 등록
 document.querySelector('#searchInput').addEventListener('keypress', async (e) => {
-	if (e.key === 'Enter') {
+	// 사용자가 입력 필드에서 키를 눌렀을 때 이벤트 리스너 실행
+	if (e.key === 'Enter') { // Enter 키가 눌렸을 경우 실행
+		// 입력 필드에서 검색어를 가져와 공백을 제거
 		const searchTerm = e.target.value.trim();
+		// 로컬 스토리지에서 'productData' 키로 저장된 데이터를 가져옴
 		let data = JSON.parse(localStorage.getItem('productData'));
+		// 로컬 스토리지에 데이터가 없는 경우 데이터를 로드하는 함수 실행
 		if (!data) {
-			await loadData();
-			data = JSON.parse(localStorage.getItem('productData'));
+			await loadData(); // 데이터 로드 함수 실행 (비동기 처리)
+			data = JSON.parse(localStorage.getItem('productData')); // 다시 로컬 스토리지에서 데이터 가져옴
 		}
+		// 데이터가 배열인지 확인 후 필터링 수행
 		if (Array.isArray(data)) {
-			const filteredData = filterProductList(searchTerm, data);
+			const filteredData = filterProductList(searchTerm, data); // 검색어를 기준으로 데이터 필터링
+			// 'nodata' 메시지 요소와 제품 목록 요소 선택
 			const noDataMsg = document.querySelector('#nodata');
 			const itemParent = document.querySelector('.product-list');
+			// 'nodata' 메시지 요소가 존재하는 경우 처리
 			if (noDataMsg) {
-				if (filteredData.length === 0) {
-					noDataMsg.classList.add('active');
-					itemParent.style.display = 'none';
-				} else {
-					noDataMsg.classList.remove('active');
-					itemParent.style.display = 'block';
+				if (filteredData.length === 0) { // 필터링된 데이터가 없는 경우
+					noDataMsg.classList.add('active'); // 'nodata' 메시지 활성화
+					itemParent.style.display = 'none'; // 제품 목록 숨김
+				} else { // 필터링된 데이터가 존재하는 경우
+					noDataMsg.classList.remove('active'); // 'nodata' 메시지 비활성화
+					itemParent.style.display = 'block'; // 제품 목록 표시
 				}
 			}
 		}
