@@ -127,6 +127,19 @@
 		]
 	},
 	{
+		"label": "default",
+		"brand": "루미너스",
+		"product": "아쿠아",
+		"dilution": [
+			10,
+			100
+		],
+		"etc": [
+			"폼랜스",
+			"압축분무기"
+		]
+	},
+	{
 		"label": "mf",
 		"brand": "마프라 라보코스메티카",
 		"product": "셈퍼",
