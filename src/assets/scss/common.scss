@@ -19,20 +19,21 @@
 		--base-color-sub: #999;
 		--bg-opacity: #1919194d;
 		--bg-contents: #fff;
+		--bg-contents-rgb: 255, 255, 255;
 		--bg-check-input: #000;
 		--bg-check-input-label: #fff;
 		--graph-border: #eee;
-		--graph-bg-gradient1: #f0f0f0;
+		--graph-bg-gradient1: #fafafa;
 		--graph-bg-gradient2: transparent;
 		--btn: #151515;
 		--btn-text: #fff;
 		--bg-form: transparent;
-		--bg-form-inner: #f0f0f0;
-		--placeholder: #b6b6b65c;
+		--bg-form-inner: #fafafa;
+		--placeholder: #d1d1d1;
 		--copyright: #aaa;
 		--line-color: #ff2119;
-		--bg-tab: #f0f0f0;
-		--tab-default-text: #aaaaaa5c;
+		--bg-tab: #fafafa;
+		--tab-default-text: #aaa;
 		--tab-active-text: #fff;
 		--tab-line: #1f1f1f;
 		--bg-modal: 3, 3, 3;
@@ -40,12 +41,10 @@
 		--modal-text: #111;
 		--notice-text: #666;
 		--quick-line: #fff;
-		--bg-input: #f8f8f8;
+		--bg-input: #f1f1f1;
 		--border-input: #e1e1e1;
 		--input-placeholder: #999;
-		--btn-quick-text: #ffffffb3;
-		--btn-quick-hover: #fff;
-		--bg-quick: #c7c7c7;
+		--bg-quick: #aaa;
 		--etc: #888;
 		--product-line: #e1e1e1;
 		--btn-dilution-line: #e1e1e1;
@@ -58,19 +57,20 @@
 		--base-color: #fff;
 		--base-color-sub: #bbb;
 		--bg-opacity: #00000080;
-		--bg-contents: #151515;
+		--bg-contents: #1f1f1f;
+		--bg-contents-rgb: 31, 31, 31;
 		--graph-border: #303134;
-		--graph-bg-gradient1: #3031345c;
+		--graph-bg-gradient1: #303134;
 		--graph-bg-gradient2: transparent;
 		--btn: #fff;
 		--btn-text: #151515;
 		--bg-form: transparent;
-		--bg-form-inner: #1d1e20;
-		--placeholder: #a1a1a13b;
+		--bg-form-inner: #303134;
+		--placeholder: #a1a1a1;
 		--copyright: #999;
 		--line-color: #ffd119;
-		--bg-tab: #1d1e20;
-		--tab-default-text: #a1a1a13b;
+		--bg-tab: #303134;
+		--tab-default-text: #a1a1a1;
 		--tab-active-text: #151515;
 		--tab-line: #fff;
 		--bg-modal: 70, 70, 70;
@@ -81,9 +81,7 @@
 		--bg-input: #333;
 		--border-input: #222;
 		--input-placeholder: #999;
-		--btn-quick-text: #ffffff84;
-		--btn-quick-hover: #151515;
-		--bg-quick: #151515;
+		--bg-quick: #aaa;
 		--etc: #ddd;
 		--product-line: #666;
 		--btn-dilution-line: #333;
@@ -158,13 +156,13 @@ body {
 	}
 }
 
-// sup {
-// 	&:after {
-// 		content: "*";
-// 		color: #ff0000;
-// 		margin-left: 3px;
-// 	}
-// }
+sup {
+	&:after {
+		content: "*";
+		color: #ff0000;
+		margin-left: 3px;
+	}
+}
 
 button {
 	outline: 0;
@@ -556,14 +554,13 @@ summary {
 	@media (hover: hover) and (pointer: fine) {
 		cursor: pointer;
 		&:hover {
-			color: var(--btn-quick-hover);
 			background: {
 				color: var(--tab-line);
 			}
 		}
 	}
 	flex: 1 1;
-	color: var(--btn-quick-text);
+	color: var(--bg-contents);
 	transition: background-color 300ms;
 	border: {
 		radius: 4px;
@@ -584,7 +581,7 @@ summary {
 	justify-content: center;
 	text-align: center;
 	.ti {
-		color: var(--line-color);
+		color: #FF5C4B;
 		font: {
 			size: 40px;
 			weight: 400;
@@ -868,7 +865,7 @@ summary {
 		padding: 30px;
 		max-width: 1024px;
 		border-radius: 24px;
-		background-color: var(--bg-contents);
+		background-color: rgba(var(--bg-contents-rgb), 100%);
 	}
 	#contents {
 		height: 65vh;

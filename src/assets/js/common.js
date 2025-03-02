@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		button.addEventListener('click', () => quickRatioButtonClick(button))
 	);
 	showTab();
+	installModal();
 });
 
 // ! quick-area 스크롤 상태 업데이트 함수
@@ -147,10 +148,8 @@ const installModal = () => {
 	const isIOS = () => /iphone|ipad/i.test(navigator.userAgent);
 	const isAndroid = () => /android/i.test(navigator.userAgent);
 	const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-	// 스탠드얼론 모드에서 모달이 보이지 않도록 shouldShowInstallModal 수정
 	const shouldShowInstallModal = () => {
 		const hideUntil = localStorage.getItem(INSTALL_PROMPT_KEY);
-		// 스탠드얼론 모드에서는 모달이 보이지 않게 설정
 		return (isIOS() || isAndroid()) && !isStandalone() && (!hideUntil || Date.now() > parseInt(hideUntil, 10));
 	};
 	const showInstallModal = () => {
@@ -161,6 +160,7 @@ const installModal = () => {
 		showInstallModal();
 	}
 };
+
 
 // ! 데이터 로드 함수
 const fetchData = async (url) => {
