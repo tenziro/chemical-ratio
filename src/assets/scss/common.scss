@@ -1050,7 +1050,7 @@ summary {
 	.btn-information {
 		left: calc(var(--sal) + 24px);
 		.ti {
-			animation: shake-top 800ms cubic-bezier(0.455, 0.030, 0.515, 0.955) 2 both;
+			animation: shake-top 1000ms cubic-bezier(0.455, 0.030, 0.515, 0.955) infinite both;
 		}
 	}
 	.btn-search {
