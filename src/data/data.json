@@ -2,7 +2,7 @@
 	{
 		"label": "gd",
 		"brand": "가우디",
-		"product": "슈퍼 폼",
+		"product": "슈퍼폼",
 		"dilution": [
 			10,
 			200
@@ -15,7 +15,7 @@
 	{
 		"label": "gd",
 		"brand": "가우디",
-		"product": "하이퍼 폼",
+		"product": "하이퍼폼",
 		"dilution": [
 			10,
 			200
@@ -292,6 +292,43 @@
 			"심한 오염",
 			"벌레사체 제거",
 			"평균적인 오염"
+		]
+	},
+	{
+		"label": "tac",
+		"brand": "TAC시스템",
+		"product": "택디폼",
+		"dilution": [
+			30,
+			50
+		],
+		"etc": [
+			"폼랜스",
+			"압축분무기"
+		]
+	},
+	{
+		"label": "tac",
+		"brand": "TAC시스템",
+		"product": "택시폼",
+		"dilution": [
+			20,
+			30
+		],
+		"etc": [
+			"폼랜스",
+			"압축분무기"
+		]
+	},
+	{
+		"label": "tac",
+		"brand": "TAC시스템",
+		"product": "카샴푸",
+		"dilution": [
+			800
+		],
+		"etc": [
+			"버킷"
 		]
 	}
 ]

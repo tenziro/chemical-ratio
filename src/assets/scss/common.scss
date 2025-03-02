@@ -60,13 +60,13 @@
 		--bg-contents: #1f1f1f;
 		--bg-contents-rgb: 31, 31, 31;
 		--graph-border: #303134;
-		--graph-bg-gradient1: #303134;
+		--graph-bg-gradient1: #2b2b2b;
 		--graph-bg-gradient2: transparent;
 		--btn: #fff;
 		--btn-text: #151515;
 		--bg-form: transparent;
 		--bg-form-inner: #303134;
-		--placeholder: #a1a1a1;
+		--placeholder: #5d5d5d;
 		--copyright: #999;
 		--line-color: #ffd119;
 		--bg-tab: #303134;
@@ -670,6 +670,13 @@ summary {
 					background: #11306E;
 				}
 			}
+			&.tac {
+				color: #fff;
+				span {
+					color: #fff;
+					background: #ff3401;
+				}
+			}
 			&.default {
 				color: #111;
 				span {
@@ -1210,6 +1217,15 @@ summary {
 			font: {
 				size: 16px;
 				weight: 700;
+			}
+		}
+	}
+	.tab-header {
+		.radio-label {
+			.control-text {
+				font: {
+					size: 13px;
+				}
 			}
 		}
 	}
