@@ -22,16 +22,16 @@
 		--bg-check-input: #000;
 		--bg-check-input-label: #fff;
 		--graph-border: #eee;
-		--graph-bg-gradient1: #f4f4f49e;
+		--graph-bg-gradient1: #f0f0f0;
 		--graph-bg-gradient2: transparent;
 		--btn: #151515;
 		--btn-text: #fff;
 		--bg-form: transparent;
-		--bg-form-inner: #fafafa;
-		--placeholder: #c3c3c35c;
+		--bg-form-inner: #f0f0f0;
+		--placeholder: #b6b6b65c;
 		--copyright: #aaa;
 		--line-color: #ff2119;
-		--bg-tab: #fafafa;
+		--bg-tab: #f0f0f0;
 		--tab-default-text: #aaaaaa5c;
 		--tab-active-text: #fff;
 		--tab-line: #1f1f1f;
@@ -45,7 +45,7 @@
 		--input-placeholder: #999;
 		--btn-quick-text: #ffffffb3;
 		--btn-quick-hover: #fff;
-		--bg-quick: #d7d7d7;
+		--bg-quick: #c7c7c7;
 		--etc: #888;
 		--product-line: #e1e1e1;
 		--btn-dilution-line: #e1e1e1;
@@ -1046,7 +1046,7 @@ summary {
 	.btn-information {
 		left: calc(var(--sal) + 24px);
 		.ti {
-			animation: shake-top 800ms cubic-bezier(0.455, 0.030, 0.515, 0.955) 3 both;
+			animation: shake-top 800ms cubic-bezier(0.455, 0.030, 0.515, 0.955) 2 both;
 		}
 	}
 	.btn-search {
