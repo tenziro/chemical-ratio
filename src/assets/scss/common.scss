@@ -400,10 +400,11 @@ summary {
 		display: inline-flex;
 		text-decoration: none;
 		align-items: center;
-		.icon {
+		.ti {
 			flex: none;
-			width: 14px;
-			height: 14px;
+			font: {
+				size: 14px;
+			}
 			margin-right: 3px;
 		}
 	}
@@ -581,7 +582,7 @@ summary {
 	justify-content: center;
 	text-align: center;
 	.ti {
-		color: #FF5C4B;
+		color: var(--line-color);
 		font: {
 			size: 40px;
 			weight: 400;
@@ -1292,6 +1293,11 @@ summary {
 			font: {
 				size: 12px;
 			}
+		}
+	}
+	#searchInput {
+		font: {
+			size: 13px;
 		}
 	}
 	.modal {
