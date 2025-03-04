@@ -29,7 +29,7 @@
 		<meta property="twitter:description" content="세차환자를 위해 희석비 계산을 쉽게 할 수 있도록 도와드립니다." />
 		<meta property="twitter:image" content="https://ratio.tenziro.net/src/assets/images/img-meta-2025.png" />
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
-		<link rel="stylesheet" href="src/assets/css/common.css?v=2025030302">
+		<link rel="stylesheet" href="src/assets/css/common.css?v=2025030401">
 		<link rel="apple-touch-icon-precomposed" href="src/assets/images/apple-icon-precomposed.png">
 		<link rel="apple-touch-icon-icon-precomposed" sizes="57x57" href="src/assets/images/apple-icon-57x57.png">
 		<link rel="apple-touch-icon-icon-precomposed" sizes="60x60" href="src/assets/images/apple-icon-60x60.png">
@@ -69,7 +69,7 @@
 	<body>
 		<div id="wrap">
 			<div id="container">
-				<div class="header">
+				<div id="header">
 					<div class="inner">
 						<h1>희석비 계산기</h1>
 						<button type="button" class="btn-search" data-open-modal="search"><i class="ti ti-search"></i><span>검색</span></button>
@@ -90,7 +90,9 @@
 							<span class="control-text">전체 용량 대비 계산</span></label>
 						<div class="tab-line"></div>
 					</div>
-
+					<div class="selected-brand-alert">
+						<div class="inner"></div>
+					</div>
 					<div class="tab-body" data-tab="tab1">
 						<div class="form">
 							<dl>
@@ -223,7 +225,7 @@
 						<h1>제품 검색 💁🏻</h1>
 						<input type="text" id="searchInput" placeholder="검색어를 입력하고 엔터키를 누르세요.">
 						<div id="result-data" class="result-msg">
-							<i class="ti ti-archive-filled"></i>
+							<i class="ti ti-archive"></i>
 							<p class="msg">데이터를 불러오는 중입니다.</p>
 						</div>
 						<div class="product-list"></div>
@@ -285,7 +287,7 @@
 				</div>
 			</div>
 		</div>
-		<script src="src/assets/js/common.js?v=2025030302"></script>
+		<script src="src/assets/js/common.js?v=2025030401"></script>
 	</body>
 
 </html>

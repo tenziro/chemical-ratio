@@ -500,6 +500,22 @@ const handleDilutionClick = (e) => {
 	} else {
 		calculateTotalVolume();
 	}
+	// Display the selected brand alert
+	const selectedBrandAlert = document.querySelector('.selected-brand-alert');
+	const brandElement = button.closest('.product-item').querySelector('.brand');
+	if (selectedBrandAlert && brandElement) {
+		selectedBrandAlert.innerHTML = `<div class="inner"><i class="ti ti-circle-check"></i><div><p>선택하신 제품은 ${brandElement.innerHTML}이며, </p><p>희석비는 <strong>1:${dilutionValue}</strong>입니다.</p></div></div>`;
+		selectedBrandAlert.classList.add('active');
+		selectedBrandAlert.style.opacity = '1';
+		setTimeout(() => {
+			selectedBrandAlert.style.transition = 'opacity 500ms';
+			selectedBrandAlert.style.opacity = '0';
+			setTimeout(() => {
+				selectedBrandAlert.classList.remove('active');
+				selectedBrandAlert.style.transition = '';
+			}, 500); // 3초 후에 .active 삭제
+		}, 2000); // 3초 후에 opacity: 0으로 변경
+	}
 };
 const getActiveTabInputSelector = () => {
 	const activeTab = document.querySelector('.tab-body.active');
