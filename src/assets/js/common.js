@@ -515,7 +515,7 @@ const handleDilutionClick = (e) => {
 				selectedBrandAlert.classList.remove('active');
 				selectedBrandAlert.style.transition = '';
 			}, 500); // 3초 후에 .active 삭제
-		}, 2000); // 3초 후에 opacity: 0으로 변경
+		}, 3000); // 3초 후에 opacity: 0으로 변경
 	}
 };
 const getActiveTabInputSelector = () => {
