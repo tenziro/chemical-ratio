@@ -149,8 +149,9 @@ const installModal = () => {
 	const isAndroid = () => /android/i.test(navigator.userAgent);
 	const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 	const shouldShowInstallModal = () => {
+		if (isStandalone()) return false;
 		const hideUntil = localStorage.getItem(INSTALL_PROMPT_KEY);
-		return (isIOS() || isAndroid()) && !isStandalone() && (!hideUntil || Date.now() > parseInt(hideUntil, 10));
+		return (isIOS() || isAndroid()) && (!hideUntil || Date.now() > parseInt(hideUntil, 10));
 	};
 	const showInstallModal = () => {
 		const modal = document.querySelector('.modal[data-modal-type="install"]');
