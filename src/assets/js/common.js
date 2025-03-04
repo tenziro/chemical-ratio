@@ -371,25 +371,29 @@ const animateGraph = (selectors, heights) => {
 const animateNumber = (selector, targetValue) => {
 	const element = document.querySelector(selector);
 	if (!element || isNaN(targetValue) || targetValue <= 0 || !isFinite(targetValue)) {
-		element.textContent = '0ml'; // 요소가 존재하지 않거나 값이 유효하지 않으면 0ml로 설정
+		element.textContent = '0ml';
 		return;
 	}
-	let startValue = 0; // 애니메이션 시작 값
+	let startValue = 0;
 	const duration = 620; // 애니메이션 지속 시간 (ms)
-	const frameRate = 30; // 초당 프레임 수
-	const totalFrames = duration / (1000 / frameRate) || 1; // 총 프레임 수 계산, 0 방지
-	const increment = targetValue / totalFrames; // 프레임당 증가량 계산
-
+	const frameRate = 30;
+	const totalFrames = duration / (1000 / frameRate) || 1;
+	let currentFrame = 0;
+	const easeOut = (progress) => 1 - Math.pow(1 - progress, 3); // 점점 느려지는 효과 (Cubic Ease-Out)
 	const updateNumber = () => {
-		startValue += increment; // 현재 값 증가
-		if (startValue >= targetValue) {
+		currentFrame++;
+		// 현재 진행 비율 (0 ~ 1)
+		const progress = currentFrame / totalFrames;
+		// Ease-out 적용
+		startValue = targetValue * easeOut(progress);
+		if (currentFrame >= totalFrames) {
 			element.textContent = `${formatUtils.formatNumber(targetValue)}ml`; // 최종 값 설정
 		} else {
-			element.textContent = `${formatUtils.formatNumber(Math.floor(startValue))}ml`; // 현재 값 업데이트
-			requestAnimationFrame(updateNumber); // 다음 프레임 요청
+			element.textContent = `${formatUtils.formatNumber(Math.floor(startValue))}ml`;
+			requestAnimationFrame(updateNumber);
 		}
 	};
-	updateNumber(); // 애니메이션 시작
+	updateNumber();
 };
 const calculateVolume = (ratioSelector, volumeSelector, isTotalCalculation = false) => {
 	// 입력 필드에서 희석 비율과 용량 값을 가져옴
