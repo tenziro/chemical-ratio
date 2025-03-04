@@ -52,7 +52,7 @@
 		--btn-dilution-hover: #1f1f1f;
 		--alert-color: #151515;
 		--alert-title: #151515;
-		--alert-text: #5d5d5d;
+		--alert-text: #4e4e4e;
 		--alert-border: rgba(214, 214, 214, 0.25);
 	}
 }
@@ -418,28 +418,23 @@ summary {
 		border: 1px solid var(--alert-border);
 		padding: 16px;
 		> div {
+			line-height: 140%;
 			flex: 1 1;
 			opacity: 1;
-			p {
-				&:nth-child(1) {
-					color: var(--alert-title);
-					font: {
-						size: 13px;
-						weight: 700;
-					}
+			color: var(--alert-title);
+			font: {
+				size: 13px;
+				weight: 700;
+			}
+			em {
+				color: var(--alert-text);
+				font: {
+					weight: 400;
 				}
-				&:nth-child(2) {
-					margin-top: 4px;
-					color: var(--alert-text);
-					strong {
-						color: var(--line-color);
-						font: {
-							weight: 700;
-						}
-					}
+				strong {
+					color: var(--line-color);
 					font: {
-						size: 13px;
-						weight: 400;
+						weight: 700;
 					}
 				}
 			}
