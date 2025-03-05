@@ -44,9 +44,10 @@
 		--modal-text: #111;
 		--notice-text: #666;
 		--quick-line: #fff;
-		--bg-input: #f1f1f1;
+		--bg-input: #f9f9f9;
 		--border-input: #e1e1e1;
 		--input-placeholder: #999;
+		--input-text: #151515;
 		--bg-quick: #aaa;
 		--etc: #888;
 		--product-line: #e1e1e1;
@@ -89,6 +90,7 @@
 		--bg-input: #333;
 		--border-input: #222;
 		--input-placeholder: #999;
+		--input-text: #fff;
 		--bg-quick: #aaa;
 		--etc: #ddd;
 		--product-line: #666;
@@ -181,6 +183,15 @@ button {
 	border: 0;
 	&:not(:disabled) {
 		cursor: pointer;
+	}
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="password"] {
+	&:focus {
+		outline: 0;
 	}
 }
 
@@ -670,15 +681,15 @@ summary {
 	justify-content: center;
 	text-align: center;
 	.ti {
-		color: var(--line-color);
+		color: var(--base-color);
 		font: {
 			size: 40px;
-			weight: 400;
+			weight: 100;
 		}
 	}
 	.msg {
 		color: var(--notice-text);
-		margin-top: 6px;
+		margin-top: 10px;
 		font: {
 			weight: 400;
 		}
@@ -689,11 +700,11 @@ summary {
 }
 .product-list {
 	overflow-y: auto;
+	@include mobile-scrollbars;
 	.product-item {
 		padding: 16px 0;
 		position: relative;
 		min-width: 0;
-		gap: 6px;
 		&:first-child {
 			padding-top: 6px;
 		}
@@ -823,7 +834,7 @@ summary {
 	overflow: hidden;
 	width: 100%;
 	height: 40px;
-	color: var(--notice-text);
+	color: var(--input-text);
 	border: 1px solid var(--border-input);
 	margin-bottom: 10px;
 	border-radius: 4px;
@@ -838,10 +849,6 @@ summary {
 	font: {
 		size: 14px;
 		weight: 500;
-	}
-	&:focus {
-		border-color: #111;
-		outline: 0;
 	}
 }
 
@@ -1392,13 +1399,6 @@ summary {
 			}
 			+ li {
 				margin-top: 2px;
-			}
-		}
-	}
-	.result-msg {
-		.msg {
-			font: {
-				size: 12px;
 			}
 		}
 	}
