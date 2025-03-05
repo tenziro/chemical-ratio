@@ -376,11 +376,11 @@ const animateNumber = (selector, targetValue) => {
 		return;
 	}
 	let startValue = 0;
-	const duration = 620; // 애니메이션 지속 시간 (ms)
+	const duration = 1000; // 애니메이션 지속 시간 (ms)
 	const frameRate = 30;
 	const totalFrames = duration / (1000 / frameRate) || 1;
 	let currentFrame = 0;
-	const easeOut = (progress) => 1 - Math.pow(1 - progress, 3); // 점점 느려지는 효과 (Cubic Ease-Out)
+	const easeOut = (progress) => 1 - Math.pow(1 - progress, 2); // 점점 느려지는 효과 (Cubic Ease-Out)
 	const updateNumber = () => {
 		currentFrame++;
 		// 현재 진행 비율 (0 ~ 1)
