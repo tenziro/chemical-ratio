@@ -12,10 +12,12 @@
 	--bg-total-bar: #0094378b;
 	--bg-water-bar: #1984ff8b;
 	--bg-chemical-bar: #ff5e198b;
+	--globalnav-backdrop-filter: saturate(180%) blur(20px);
 }
 
 @media (prefers-color-scheme: light) {
 	:root {
+		--globalnav-background: rgba(255, 255, 255, 0.6);
 		--base-color: #111;
 		--base-color-sub: #999;
 		--bg-opacity: #1919194d;
@@ -59,6 +61,7 @@
 }
 @media (prefers-color-scheme: dark) {
 	:root {
+		--globalnav-background: rgba(31, 31, 31, 0.6);
 		--base-color: #fff;
 		--base-color-sub: #bbb;
 		--bg-opacity: #00000080;
@@ -402,7 +405,7 @@ summary {
 .selected-brand-alert {
 	display: none;
 	position: absolute;
-	z-index: 10;
+	z-index: 20;
 	left: 50%;
 	width: 100%;
 	max-width: 638px;
@@ -424,9 +427,9 @@ summary {
 		align-items: flex-start;
 		border-radius: 10px;
 		background: {
-			color: rgba(var(--bg-contents-rgb), 25%);
+			color: var(--globalnav-background);
 		}
-		backdrop-filter: blur(7px);
+		backdrop-filter: var(--globalnav-backdrop-filter);
 		border: 1px solid var(--alert-border);
 		padding: 16px;
 		> div {
@@ -1118,12 +1121,13 @@ summary {
 		padding: 24px calc(24px + var(--sar)) calc(24px + var(--sab)) calc(24px + var(--sal));
 	}
 	#header {
-		padding: calc(var(--sat) + 20px) 0 20px;
+		padding: calc(var(--sat) + 16px) 0 20px;
 		position: sticky;
-		z-index: 10;
+		z-index: 50;
 		top: 0;
 		border-bottom: 1px solid var(--graph-border);
-		background-color: var(--bg-contents);
+		background-color: var(--globalnav-background);
+		backdrop-filter: var(--globalnav-backdrop-filter);
 		.inner {
 			align-items: center;
 			justify-content: center;
