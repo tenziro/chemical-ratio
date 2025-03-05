@@ -426,6 +426,11 @@ summary {
 				size: 13px;
 				weight: 700;
 			}
+			.text {
+				font: {
+					weight: 400;
+				}
+			}
 			em {
 				color: var(--alert-text);
 				font: {
@@ -550,6 +555,12 @@ summary {
 		display: flex;
 		.modal-container {
 			background-color: var(--bg-modal-content);
+		}
+	}
+	h1 {
+		span {
+			display: inline-block;
+			animation: shake-hand 580ms cubic-bezier(0.455, 0.030, 0.515, 0.955) infinite both;
 		}
 	}
 	h1,
@@ -877,6 +888,18 @@ summary {
 	90% {
 		-webkit-transform: rotate(2deg);
 		transform: rotate(2deg);
+	}
+}
+@keyframes shake-hand {
+	0%,
+	100% {
+		-webkit-transform: rotate(-8deg);
+		transform: rotate(-8deg);
+		transform-origin: 50% 50%;
+	}
+	50% {
+		-webkit-transform: rotate(8deg);
+		transform: rotate(8deg);
 	}
 }
 

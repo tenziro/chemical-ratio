@@ -505,7 +505,7 @@ const handleDilutionClick = (e) => {
 	const selectedBrandAlert = document.querySelector('.selected-brand-alert');
 	const brandElement = button.closest('.product-item').querySelector('.brand');
 	if (selectedBrandAlert && brandElement) {
-		selectedBrandAlert.innerHTML = `<div class="inner"><i class="ti ti-circle-check"></i><div>선택하신 제품은 ${brandElement.innerHTML}이며, <em>희석비는 <strong>1:${dilutionValue}</strong>입니다.</em></div></div>`;
+		selectedBrandAlert.innerHTML = `<div class="inner"><i class="ti ti-circle-check"></i><div><span class="text">선택하신 제품은 </span>${brandElement.innerHTML}<span class="text">이며,</span><em>희석비는 <strong>1:${dilutionValue}</strong>입니다.</em></div></div>`;
 		selectedBrandAlert.classList.add('active');
 		selectedBrandAlert.style.opacity = '1';
 		setTimeout(() => {
