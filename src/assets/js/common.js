@@ -607,7 +607,7 @@ const displayGraph = (tab, chemicalAmount, totalVolume, waterAmount) => {
 
 	const calculatePercentage = (amount, total, ratio) => {
 		const basePercentage = (amount / total) * 100;
-		return ratio >= 100 ? basePercentage * 50 : basePercentage;
+		return ratio >= 10 ? basePercentage * 5 : basePercentage;
 	};
 
 	const percentages = tab === "[data-tab='tab1']"

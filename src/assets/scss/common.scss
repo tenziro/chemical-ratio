@@ -6,6 +6,76 @@
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+// 기본 변수
+$font-primary: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+$font-secondary: "Poppins", sans-serif;
+$font-mono: "JetBrains Mono", monospace;
+
+// 브레이크포인트
+$breakpoint-desktop: 1025px;
+$breakpoint-tablet: 1024px;
+$breakpoint-mobile: 639px;
+
+// 반응형 믹스인
+@mixin desktop {
+	@media screen and (min-width: $breakpoint-desktop) {
+		@content;
+	}
+}
+
+@mixin tablet {
+	@media (max-width: $breakpoint-tablet) {
+		@content;
+	}
+}
+
+@mixin mobile {
+	@media (max-width: $breakpoint-mobile) {
+		@content;
+	}
+}
+
+// Flex 믹스인
+@mixin flex-center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@mixin flex-between {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+// 폰트 믹스인
+@mixin font-size($size, $weight: 400) {
+	font: {
+		size: $size;
+		weight: $weight;
+	}
+}
+
+// 트랜지션 믹스인
+@mixin transition($property: all) {
+	transition: $property 300ms;
+}
+
+// 하드웨어 가속 믹스인
+@mixin hardware-accelerate {
+	transform: translateZ(0);
+	backface-visibility: hidden;
+	perspective: 1000px;
+}
+
+// 텍스트 말줄임 믹스인
+@mixin text-truncate {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+// 루트 변수
 :root {
 	--tab-speed: 280ms;
 	--sat: env(safe-area-inset-top);
@@ -175,7 +245,7 @@ html {
 body {
 	min-width: 320px;
 	font: {
-		family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+		family: $font-primary;
 		feature-settings: 'tnum';
 		variant-numeric: tabular-nums;
 	}
@@ -248,8 +318,8 @@ summary {
 		position: relative;
 		color: var(--base-color);
 		font: {
-			family: "Poppins", sans-serif;
-			weight: 700;
+			family: $font-secondary;
+			weight: 700 !important;
 			style: normal;
 		}
 		strong {
@@ -272,21 +342,20 @@ summary {
 // ==========================================================================
 .btn-search,
 .btn-information {
-	display: inline-flex;
+	@include flex-center;
 	flex: none;
 	color: var(--base-color);
 	background: transparent;
-	align-items: center;
+
 	.ti {
 		flex: none;
 		width: 18px;
 		height: 18px;
 	}
+
 	span {
+		@include font-size(13px);
 		margin-left: 3px;
-		font: {
-			size: 13px;
-		}
 	}
 }
 .btn-information {
@@ -299,7 +368,7 @@ summary {
 // 8. 폼 요소
 // ==========================================================================
 .form {
-	display: flex;
+	@include flex-center;
 	flex: none;
 	overflow: hidden;
 	align-items: stretch;
@@ -307,15 +376,15 @@ summary {
 	flex-wrap: wrap;
 	border-radius: 10px;
 	gap: 1px;
+
 	dl {
 		background-color: var(--bg-form-inner);
+
 		dt {
+			@include font-size(14px, 600);
 			color: var(--base-color);
-			font: {
-				size: 14px;
-				weight: 600;
-			}
 		}
+
 		dd {
 			input {
 				width: 100%;
@@ -323,6 +392,7 @@ summary {
 				border: 0;
 				background-color: transparent;
 				outline: 0;
+
 				&::placeholder {
 					color: var(--placeholder);
 				}
@@ -883,34 +953,15 @@ summary {
 	--uib-color: var(--base-color);
 	--uib-speed: 2.5s;
 	display: flex;
+	width: var(--uib-size);
+	height: var(--uib-size);
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: var(--uib-size);
-	width: var(--uib-size);
 	margin-inline: auto;
 }
 
 .slice {
-	position: relative;
-	height: calc(var(--uib-size) / 6);
-	width: 100%;
-	&::before,
-	&::after {
-		--uib-a: calc(var(--uib-speed) / -2);
-		--uib-b: calc(var(--uib-speed) / -6);
-		content: '';
-		position: absolute;
-		top: 0;
-		left: calc(50% - var(--uib-size) / 12);
-		height: 100%;
-		width: calc(100% / 6);
-		border-radius: 50%;
-		background-color: var(--uib-color);
-		flex-shrink: 0;
-		animation: orbit var(--uib-speed) linear infinite;
-		transition: background-color 0.3s ease;
-	}
 
 	@for $i from 1 through 6 {
 		&:nth-child(#{$i}) {
@@ -922,60 +973,67 @@ summary {
 			}
 		}
 	}
+	position: relative;
+	width: 100%;
+	height: calc(var(--uib-size) / 6);
+	&::before,
+	&::after {
+		--uib-a: calc(var(--uib-speed) / -2);
+		--uib-b: calc(var(--uib-speed) / -6);
+		position: absolute;
+		top: 0;
+		left: calc(50% - var(--uib-size) / 12);
+		content: '';
+		width: calc(100% / 6);
+		height: 100%;
+		border-radius: 50%;
+		background-color: var(--uib-color);
+		flex-shrink: 0;
+		animation: orbit var(--uib-speed) linear infinite;
+		transition: background-color 0.3s ease;
+	}
 }
 
 // ==========================================================================
 // 14. 반응형 스타일
 // ==========================================================================
-@media screen and (min-width: 1280px) {
-	// Desktop Styles
+@include desktop {
 	#wrap {
-		@media all and (display-mode: standalone) {
-			min-height: 100vh;
-		}
-		display: flex;
+		@include flex-center;
 		position: relative;
 		min-height: 100dvh;
-		align-items: center;
-		justify-content: center;
 		background: {
 			position: 50% 50%;
 			size: cover;
 			image: url('../images/bg.jpg');
 		}
+
 		&:before {
 			position: fixed;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
 			content: "";
+			inset: 0;
 			backdrop-filter: blur(10px);
-			background: {
-				color: var(--bg-opacity);
-			}
+			background-color: var(--bg-opacity);
 		}
 	}
+
 	#header {
 		margin-bottom: 30px;
 		.inner {
+			@include flex-center;
 			position: relative;
 			z-index: 2;
-			align-items: center;
 		}
 		h1 {
+			@include font-size(18px);
 			justify-self: flex-start;
-			font: {
-				size: 18px;
-			}
 			&:after {
+				@include font-size(12px);
 				right: -20px;
-				font: {
-					size: 12px;
-				}
 			}
 		}
 	}
+
 	#nav {
 		display: flex;
 		align-items: center;
@@ -985,19 +1043,23 @@ summary {
 			flex: none;
 		}
 	}
+
 	#container {
 		padding: 30px;
 		max-width: 1024px;
 		border-radius: 24px;
 		background-color: rgba(var(--bg-contents-rgb), 100%);
 	}
+
 	#contents {
 		height: 65vh;
 		max-height: 700px;
 	}
+
 	.tab-header {
 		width: 50%;
 	}
+
 	.form {
 		dl {
 			padding: 20px;
@@ -1022,6 +1084,7 @@ summary {
 			}
 		}
 	}
+
 	.btn-reset {
 		padding: 30px;
 		font: {
@@ -1029,10 +1092,12 @@ summary {
 			weight: 700;
 		}
 	}
+
 	.graph-container {
 		margin-top: 30px;
 		gap: 20px;
 	}
+
 	.graph-bg {
 		flex: 1 1;
 		background: repeating-linear-gradient(-55deg,
@@ -1041,6 +1106,7 @@ summary {
 				var(--graph-bg-gradient2) 4px,
 				var(--graph-bg-gradient2) 8px);
 	}
+
 	.graph-item {
 		display: flex;
 		flex: 1 1;
@@ -1058,6 +1124,7 @@ summary {
 			}
 		}
 	}
+
 	.notice {
 		li {
 			&:before {
@@ -1072,6 +1139,7 @@ summary {
 			}
 		}
 	}
+
 	.copyright {
 		ul {
 			li {
@@ -1090,12 +1158,14 @@ summary {
 			}
 		}
 	}
+
 	.btn-quick {
 		padding: 6px 8px;
 		font: {
 			size: 14px;
 		}
 	}
+
 	.result-msg {
 		.msg {
 			font: {
@@ -1103,12 +1173,14 @@ summary {
 			}
 		}
 	}
+
 	.product-list {
 		@media all and (display-mode: standalone) {
 			max-height: 50vh;
 		}
 		max-height: 50dvh;
 	}
+
 	.modal {
 		&[data-modal-type="information"],
 		&[data-modal-type="install"] {
@@ -1122,6 +1194,7 @@ summary {
 			}
 		}
 	}
+
 	.selected-brand-alert {
 		.inner {
 			margin-top: -77px;
@@ -1129,11 +1202,11 @@ summary {
 	}
 }
 
-@media (max-width: 1279px) {
-	// Tablet Styles
+@include tablet {
 	#contents {
 		padding: 24px calc(24px + var(--sar)) calc(24px + var(--sab)) calc(24px + var(--sal));
 	}
+
 	#header {
 		padding: calc(var(--sat) + 16px) 0 20px;
 		position: sticky;
@@ -1142,22 +1215,22 @@ summary {
 		border-bottom: 1px solid var(--graph-border);
 		background-color: var(--globalnav-background);
 		backdrop-filter: var(--globalnav-backdrop-filter);
+
 		.inner {
-			align-items: center;
+			@include flex-center;
 			justify-content: center;
 		}
+
 		h1 {
-			font: {
-				size: 17px;
-			}
+			@include font-size(17px);
+
 			&:after {
+				@include font-size(12px);
 				right: -20px;
-				font: {
-					size: 12px;
-				}
 			}
 		}
 	}
+
 	.btn-search,
 	.btn-information {
 		position: absolute;
@@ -1172,12 +1245,15 @@ summary {
 			display: none;
 		}
 	}
+
 	.btn-information {
 		left: calc(var(--sal) + 24px);
 	}
+
 	.btn-search {
 		right: calc(var(--sal) + 24px);
 	}
+
 	.form {
 		dl {
 			flex: 0 0 100%;
@@ -1195,6 +1271,7 @@ summary {
 			}
 		}
 	}
+
 	.btn-reset {
 		flex: 0 0 100%;
 		padding: 16px;
@@ -1203,9 +1280,11 @@ summary {
 			weight: 700;
 		}
 	}
+
 	.graph-container {
 		margin-top: 20px;
 	}
+
 	.graph-bg {
 		flex: 1 1;
 		height: 200px;
@@ -1215,6 +1294,7 @@ summary {
 				var(--graph-bg-gradient2) 3px,
 				var(--graph-bg-gradient2) 6px);
 	}
+
 	.graph-item {
 		flex: 0 0 100%;
 		&:first-child {
@@ -1236,6 +1316,7 @@ summary {
 			}
 		}
 	}
+
 	.notice {
 		li {
 			&:before {
@@ -1250,6 +1331,7 @@ summary {
 			}
 		}
 	}
+
 	.copyright {
 		ul {
 			flex-wrap: wrap;
@@ -1267,12 +1349,14 @@ summary {
 			}
 		}
 	}
+
 	.btn-quick {
 		padding: 4px 6px;
 		font: {
 			size: 14px;
 		}
 	}
+
 	.product-list {
 		@media all and (display-mode: standalone) {
 			max-height: 40vh;
@@ -1293,6 +1377,7 @@ summary {
 			}
 		}
 	}
+
 	.result-msg {
 		.msg {
 			font: {
@@ -1300,6 +1385,7 @@ summary {
 			}
 		}
 	}
+
 	.modal {
 		&[data-modal-type="information"],
 		&[data-modal-type="install"] {
@@ -1313,6 +1399,7 @@ summary {
 			}
 		}
 	}
+
 	.selected-brand-alert {
 		padding: {
 			right: calc(24px + var(--sar));
@@ -1324,21 +1411,24 @@ summary {
 	}
 }
 
-@media (max-width: 639px) {
-	// Mobile Styles
+@include mobile {
 	#container {
 		background-color: var(--bg-contents);
 	}
+
 	#header {
 		z-index: 10;
+
 		.inner {
+			@include flex-center;
 			position: relative;
-			align-items: center;
 		}
 	}
+
 	#contents {
 		padding: 16px calc(16px + var(--sar)) calc(16px + var(--sab)) calc(16px + var(--sal));
 	}
+
 	.tab-header {
 		.radio-label {
 			.control-text {
@@ -1348,16 +1438,20 @@ summary {
 			}
 		}
 	}
+
 	.btn-information {
 		left: calc(var(--sal) + 16px);
 	}
+
 	.btn-search {
 		right: calc(var(--sar) + 16px);
 	}
+
 	.graph-bg {
 		height: 130px;
 		padding-top: 10px;
 	}
+
 	.graph-item {
 		dl {
 			padding: 0 10px;
@@ -1370,6 +1464,7 @@ summary {
 			}
 		}
 	}
+
 	.form {
 		dl {
 			flex: 0 0 calc(50% - 0.5px);
@@ -1385,6 +1480,7 @@ summary {
 			}
 		}
 	}
+
 	.btn-reset {
 		padding: 12px;
 		font: {
@@ -1392,6 +1488,7 @@ summary {
 			weight: 700;
 		}
 	}
+
 	.notice {
 		li {
 			&:before {
@@ -1406,11 +1503,13 @@ summary {
 			}
 		}
 	}
+
 	#searchInput {
 		font: {
 			size: 13px;
 		}
 	}
+
 	.modal {
 		.modal-container {
 			h1 {
@@ -1469,6 +1568,7 @@ summary {
 			}
 		}
 	}
+
 	.quick-area {
 		position: relative;
 		.inner {
@@ -1487,12 +1587,14 @@ summary {
 			background: linear-gradient(90deg, hsla(0, 0%, 98%, 0), var(--bg-form-inner) 24px, var(--bg-form-inner));
 		}
 	}
+
 	.btn-quick {
 		padding: 3px 4px;
 		font: {
 			size: 11px;
 		}
 	}
+
 	.product-list {
 		@media all and (display-mode: standalone) {
 			max-height: none;
@@ -1501,6 +1603,7 @@ summary {
 		max-height: none;
 		overflow-y: auto;
 	}
+
 	.selected-brand-alert {
 		padding: {
 			right: calc(16px + var(--sar));
