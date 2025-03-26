@@ -1,184 +1,310 @@
 // * DOMContentLoaded 이벤트 리스너 등록
 document.addEventListener("DOMContentLoaded", () => {
-	const select = (selector) => document.querySelector(selector);
-	const selectAll = (selector) => document.querySelectorAll(selector);
-	// 요소 선택
-	const btnReset = select(".btn-reset");
-	const tabHeaderItems = selectAll(".tab-header .radio-label");
-	const inputs = {
-		tab1: {
-			dilutionRatio: select("#dilutionRatio"),
-			waterVolume: select("#waterVolume"),
-		},
-		tab2: {
-			dilutionRatio: select("#dilutionRatio2"),
-			totalVolume: select("#totalCapacity"),
-		},
-	};
-	// * 리셋 버튼 및 탭 헤더 클릭 이벤트 등록
-	const addEventListeners = (elements, event, handler) => {
-		elements.forEach((element) => element.addEventListener(event, handler));
-	};
-	addEventListeners([btnReset, ...tabHeaderItems], "click", resetAll);
-	document.addEventListener("click", handleDilutionClick);
+	// DOM 요소 선택 유틸리티 함수
+	const select = selector => document.querySelector(selector);
+	const selectAll = selector => document.querySelectorAll(selector);
 
-	// * .quick-area 스크롤 이벤트 등록
-	quickAreas.forEach((quickArea) => {
-		updateQuickAreaScrollState(quickArea);
-		quickArea.addEventListener("scroll", () => updateQuickAreaScrollState(quickArea));
-	});
-	window.addEventListener("resize", () => {
-		quickAreas.forEach(updateQuickAreaScrollState);
-	});
-	// * 공통 클릭 이벤트 등록
-	document.addEventListener("click", event => {
-		if (event.target.closest("[data-open-modal]")) {
-			openModal(event.target.closest("[data-open-modal]")); // 모달 열기 버튼 클릭 시 모달 열기
-		} else if (event.target.closest(".btn-modal-close")) {
-			closeModal(event.target.closest(".btn-modal-close")); // 모달 닫기 버튼 클릭 시 모달 닫기
-		} else if (event.target.closest(".btn-reset")) {
-			resetAll(); // 리셋 버튼 클릭 시 전체 리셋
+	// 주요 DOM 요소 캐싱
+	const elements = {
+		btnReset: select(".btn-reset"),
+		tabHeaderItems: selectAll(".tab-header .radio-label"),
+		tabRadio: select("#contents-tab1"),
+		inputs: {
+			tab1: {
+				dilutionRatio: select("#dilutionRatio"),
+				waterVolume: select("#waterVolume")
+			},
+			tab2: {
+				dilutionRatio: select("#dilutionRatio2"),
+				totalVolume: select("#totalCapacity")
+			}
 		}
-	});
-	// * 탭 변경 이벤트 등록
-	const tabRadio = document.querySelector("#contents-tab1");
-	tabRadio.addEventListener('change', showTab);
-	// * 탭별 입력 이벤트 등록 함수
-	const registerInputEventsTab = (inputs, calculateFunction, btnReset) => {
+	};
+
+	// 이벤트 리스너 등록 유틸리티 함수
+	const addEventListeners = (elements, event, handler) => {
+		elements.forEach(element => element.addEventListener(event, handler));
+	};
+
+	// 탭별 입력 이벤트 등록 함수
+	const registerTabInputEvents = (inputs, calculateFn) => {
 		Object.values(inputs).forEach(input => {
 			input.addEventListener("input", () => {
-				calculateFunction();
+				calculateFn();
 				updateResetButtonState();
 			});
 		});
-		btnReset.addEventListener("click", resetAll);
 	};
-	// * 탭별 입력 이벤트 등록
-	registerInputEventsTab(inputs.tab1, calculateChemicalVolume, btnReset);
-	registerInputEventsTab(inputs.tab2, calculateTotalVolume, btnReset);
-	// * 빠른 용량 추가 버튼 클릭 이벤트 등록
-	document.querySelectorAll('.btn-dilution-ratio, .btn-capacity-ratio').forEach(button =>
-		button.addEventListener('click', () => quickRatioButtonClick(button))
-	);
+
+	// 이벤트 리스너 등록
+	addEventListeners([elements.btnReset, ...elements.tabHeaderItems], "click", resetAll);
+	document.addEventListener("click", handleDilutionClick);
+
+	// quick-area 스크롤 이벤트 처리
+	quickAreas.forEach(quickArea => {
+		updateQuickAreaScrollState(quickArea);
+		quickArea.addEventListener("scroll", () => updateQuickAreaScrollState(quickArea));
+	});
+
+	// 전역 클릭 이벤트 위임 처리
+	document.addEventListener("click", event => {
+		const target = event.target;
+		const modalTrigger = target.closest("[data-open-modal]");
+		const closeBtn = target.closest(".btn-modal-close");
+		const resetBtn = target.closest(".btn-reset");
+
+		if (modalTrigger) openModal(modalTrigger);
+		else if (closeBtn) closeModal(closeBtn);
+		else if (resetBtn) resetAll();
+	});
+
+	// 탭 관련 이벤트 등록
+	elements.tabRadio.addEventListener("change", showTab);
+	registerTabInputEvents(elements.inputs.tab1, calculateChemicalVolume);
+	registerTabInputEvents(elements.inputs.tab2, calculateTotalVolume);
+
+	// 빠른 용량 버튼 이벤트 등록
+	selectAll(".btn-dilution-ratio, .btn-capacity-ratio")
+		.forEach(btn => btn.addEventListener("click", () => quickRatioButtonClick(btn)));
+
+	// 초기화
+	window.addEventListener("resize", () => quickAreas.forEach(updateQuickAreaScrollState));
 	showTab();
 	installModal();
 });
 
 // ! quick-area 스크롤 상태 업데이트 함수
 const updateQuickAreaScrollState = (quickArea) => {
+	if (!quickArea) return;
+
 	const quickAreaParent = quickArea.parentElement;
-	const isScrollable = quickArea.scrollWidth > quickArea.clientWidth;
-	const isScrolledToEnd = quickArea.scrollWidth - quickArea.scrollLeft <= quickArea.clientWidth;
+	if (!quickAreaParent) return;
+
+	const { scrollWidth, clientWidth, scrollLeft } = quickArea;
+	const isScrollable = scrollWidth > clientWidth;
+	const isScrolledToEnd = scrollWidth - scrollLeft <= clientWidth;
+
 	quickAreaParent.classList.toggle("hide-after", !isScrollable || isScrolledToEnd);
 };
-const quickAreas = document.querySelectorAll(".quick-area .inner");
+
+// quick-area 요소들 선택
+const quickAreas = Array.from(document.querySelectorAll(".quick-area .inner")).filter(Boolean);
 
 // ! 빠른 용량 추가 함수
+// 빠른 용량 버튼 클릭 처리 함수
 const quickRatioButtonClick = button => {
+	// 탭 요소 확인 및 유효성 검사
 	const tabElement = button.closest('.tab-body');
-	if (!tabElement) return;
-	const tabId = tabElement.dataset.tab;
+	if (!tabElement?.dataset?.tab) return;
+
+	// 버튼 타입과 탭 ID 확인
+	const { tab: tabId } = tabElement.dataset;
 	const isDilutionButton = button.classList.contains('btn-dilution-ratio');
+	const buttonValue = button.dataset?.value;
+	if (!buttonValue) return;
+
+	// 입력 필드 선택 및 유효성 검사 
 	const inputSelector = getInputSelector(tabId, isDilutionButton);
 	const inputElement = document.querySelector(inputSelector);
 	if (!inputElement) return;
-	updateInputValue(inputElement, button.dataset.value);
+
+	// 입력값 업데이트 및 상태 갱신
+	updateInputValue(inputElement, buttonValue);
 	updateResetButtonState();
-	tabId === 'tab1' ? calculateChemicalVolume() : calculateTotalVolume();
+
+	// 계산 함수 실행
+	const calculateFn = {
+		tab1: calculateChemicalVolume,
+		tab2: calculateTotalVolume
+	}[tabId];
+
+	if (calculateFn) calculateFn();
 };
+
+// !입력 필드 선택자 반환 함수 
 const getInputSelector = (tabId, isDilutionButton) => {
-	const selectors = {
-		tab1: isDilutionButton ? '#dilutionRatio' : '#waterVolume',
-		tab2: isDilutionButton ? '#dilutionRatio2' : '#totalCapacity'
+	// 입력 필드 매핑 객체를 상수로 분리하여 재사용성 향상
+	const INPUT_SELECTORS = {
+		tab1: {
+			dilution: '#dilutionRatio',
+			volume: '#waterVolume'
+		},
+		tab2: {
+			dilution: '#dilutionRatio2',
+			volume: '#totalCapacity'
+		}
 	};
-	return selectors[tabId];
+
+	// 옵셔널 체이닝으로 안전한 접근
+	const tabInputs = INPUT_SELECTORS[tabId]?.dilution;
+	if (!tabInputs) return null;
+
+	return isDilutionButton ? INPUT_SELECTORS[tabId].dilution : INPUT_SELECTORS[tabId].volume;
 };
+
+// !입력값 업데이트 함수
 const updateInputValue = (inputElement, value) => {
-	const numericValue = parseFloat(value.replace(/,/g, ''));
-	const currentValue = parseFloat(inputElement.value.replace(/,/g, '')) || 0;
-	inputElement.value = formatUtils.addCommasToNumber(currentValue + numericValue);
+	if (!inputElement || value === undefined) return;
+
+	try {
+		// 숫자 변환 및 유효성 검사
+		const numericValue = parseFloat(formatUtils.removeCommas(value));
+		const currentValue = parseFloat(formatUtils.removeCommas(inputElement.value)) || 0;
+
+		if (isNaN(numericValue) || isNaN(currentValue)) {
+			throw new Error('유효하지 않은 숫자 형식입니다.');
+		}
+
+		// 합산 및 포맷팅
+		const newValue = currentValue + numericValue;
+		inputElement.value = formatUtils.addCommasToNumber(newValue);
+	} catch (error) {
+		console.error('입력값 업데이트 중 오류 발생:', error);
+	}
 };
 
 // ! 리셋 버튼 활성화 함수
-const isAnyInputFilled = (inputs) => [...inputs].some(input => input.value.trim() !== "");
+const isAnyInputFilled = (inputs) => {
+	if (!inputs?.length) return false;
+	return [...inputs].some(input => input.value?.trim() !== "");
+};
+
 const updateResetButtonState = () => {
 	document.querySelectorAll(".btn-reset").forEach(button => {
-		const inputs = document.querySelectorAll(`[data-tab='${button.closest("[data-tab]").dataset.tab}'] input`);
+		const tabContainer = button.closest("[data-tab]");
+		if (!tabContainer) return;
+
+		const inputs = document.querySelectorAll(`[data-tab='${tabContainer.dataset.tab}'] input`);
 		button.disabled = !isAnyInputFilled(inputs);
 	});
 };
 // ! 모달창 제어 함수
+// 스크롤 잠금 상태 관리
 const updateBodyScrollLock = isActive => {
 	document.documentElement.classList.toggle("stop-scroll", isActive);
 };
+
+// 모달 상태 토글 처리
 const toggleModal = (modal, isOpen) => {
-	if (modal) {
-		modal.classList.toggle("active", isOpen);
-		updateBodyScrollLock(isOpen);
-	}
+	if (!modal) return;
+
+	modal.classList.toggle("active", isOpen);
+	updateBodyScrollLock(isOpen);
 };
+
+// 모달 열기 처리
 const openModal = async (button) => {
 	const modalType = button.dataset.openModal;
 	const modal = document.querySelector(`.modal[data-modal-type="${modalType}"]`);
+
+	if (!modal) return;
+
 	toggleModal(modal, true);
+
+	// 검색 모달 특수 처리
 	if (modalType === 'search') {
-		document.querySelector('#nodata').classList.remove('active');
-		document.querySelector('.product-list').style.display = 'block';
+		const nodataElement = document.querySelector('#nodata');
+		const productList = document.querySelector('.product-list');
+
+		if (nodataElement) nodataElement.classList.remove('active');
+		if (productList) productList.style.display = 'block';
+
 		await loadData();
 	}
 };
+
+// 모달 닫기 처리 
 const closeModal = button => {
-	const modal = button.closest(".modal");
+	const modal = button?.closest(".modal");
+	if (!modal) return;
+
 	const modalType = modal.dataset.modalType;
 	toggleModal(modal, false);
-	if (modalType === 'search') {
-		document.querySelector('#searchInput').value = '';
-	} else if (modalType === 'install') {
-		const INSTALL_PROMPT_KEY = "hideInstallModalUntil";
-		localStorage.setItem(INSTALL_PROMPT_KEY, (Date.now() + 7 * 24 * 60 * 60 * 1000).toString());
+
+	// 모달 타입별 후처리
+	switch (modalType) {
+		case 'search':
+			const searchInput = document.querySelector('#searchInput');
+			if (searchInput) searchInput.value = '';
+			break;
+		case 'install':
+			const INSTALL_PROMPT_KEY = "hideInstallModalUntil";
+			const oneWeekFromNow = Date.now() + 7 * 24 * 60 * 60 * 1000;
+			localStorage.setItem(INSTALL_PROMPT_KEY, oneWeekFromNow.toString());
+			break;
 	}
+
+	// 최상단으로 부드럽게 스크롤
 	window.scrollTo({
 		top: 0,
-		behavior: 'smooth' // 부드러운 스크롤 효과를 위해 추가
+		behavior: 'smooth'
 	});
 };
 // ! install 모달
 const installModal = () => {
 	const INSTALL_PROMPT_KEY = "hideInstallModalUntil";
-	const isIOS = () => /iphone|ipad/i.test(navigator.userAgent);
-	const isAndroid = () => /android/i.test(navigator.userAgent);
-	const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-	const shouldShowInstallModal = () => {
-		if (isStandalone()) return false;
-		const hideUntil = localStorage.getItem(INSTALL_PROMPT_KEY);
-		return (isIOS() || isAndroid()) && (!hideUntil || Date.now() > parseInt(hideUntil, 10));
+
+	// 디바이스 체크 함수
+	const checkDevice = {
+		isIOS: () => /iphone|ipad/i.test(navigator.userAgent),
+		isAndroid: () => /android/i.test(navigator.userAgent),
+		isStandalone: () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone
 	};
+
+	// 모달 표시 여부 확인
+	const shouldShowInstallModal = () => {
+		if (checkDevice.isStandalone()) return false;
+
+		const hideUntil = localStorage.getItem(INSTALL_PROMPT_KEY);
+		const isMobileDevice = checkDevice.isIOS() || checkDevice.isAndroid();
+		const isTimeExpired = !hideUntil || Date.now() > parseInt(hideUntil, 10);
+
+		return isMobileDevice && isTimeExpired;
+	};
+
+	// 모달 표시
 	const showInstallModal = () => {
 		const modal = document.querySelector('.modal[data-modal-type="install"]');
-		toggleModal(modal, true);
+		if (modal) toggleModal(modal, true);
 	};
-	if (shouldShowInstallModal()) {
-		showInstallModal();
-	}
+
+	// 조건 충족 시 모달 표시
+	shouldShowInstallModal() && showInstallModal();
 };
 
 
 // ! 데이터 로드 함수
+/**
+ * 주어진 URL에서 데이터를 가져오는 함수
+ * @param {string} url - 데이터를 가져올 URL
+ * @returns {Promise<any>} 가져온 JSON 데이터
+ * @throws {Error} 네트워크 요청 실패 시 에러
+ */
 const fetchData = async (url) => {
 	try {
 		const response = await fetch(url);
-		if (!response.ok) throw new Error('Network response was not ok');
+		if (!response.ok) {
+			throw new Error('네트워크 응답이 정상적이지 않습니다');
+		}
 		return await response.json();
 	} catch (error) {
-		console.error('Failed to fetch data:', error);
+		console.error('데이터 가져오기 실패:', error);
 		throw error;
 	}
 };
+
+/**
+ * 로딩 상태를 토글하는 함수
+ * @param {boolean} isLoading - 로딩 상태 여부
+ */
 const toggleLoading = (isLoading) => {
-	const loadingMsg = document.querySelector('.modal[data-modal-type="search"] #result-data');
-	const productList = document.querySelector('.modal[data-modal-type="search"] .product-list');
+	const searchModal = document.querySelector('.modal[data-modal-type="search"]');
+	const loadingMsg = searchModal.querySelector('#result-data');
+	const productList = searchModal.querySelector('.product-list');
+
 	loadingMsg.classList.toggle('active', isLoading);
 	productList.style.display = isLoading ? 'none' : 'block';
+
 	if (!isLoading) {
 		productList.scrollTop = 0;
 	}
@@ -202,31 +328,44 @@ const loadData = async () => {
 };
 
 // ! 제품 리스트 표시 함수
+const createDilutionButton = (dilution, etc) => {
+	return `<button type="button" class="btn-modal-dilution" data-value="${dilution}">
+		<strong>1:${dilution}</strong> <span>(${etc})</span>
+	</button>`;
+};
+
 const createDilutionButtons = (dilution, etc) => {
 	if (!Array.isArray(dilution)) {
-		return `<button type="button" class="btn-modal-dilution" data-value="${dilution}">
-			<strong>1:${dilution}</strong> <span>(${etc})</span>
-		</button>`;
+		return createDilutionButton(dilution, etc);
 	}
-	return dilution.map((d, i) => `
-		<button type="button" class="btn-modal-dilution" data-value="${d}">
-			<strong>1:${d}</strong> <span>(${etc[i]})</span>
-		</button>
-	`).join('');
+	return dilution.map((d, i) => createDilutionButton(d, etc[i])).join('');
 };
+
+const createProductItem = (product) => {
+	const dilutionButtons = createDilutionButtons(product.dilution, product.etc);
+	return `
+		<div class="product-item">
+			<p class="brand ${product.label}">
+				<span><strong>${product.brand}</strong> - ${product.product}</span>
+			</p>
+			<div class="dilution-buttons">${dilutionButtons}</div>
+		</div>
+	`;
+};
+
 const displayProductList = (data) => {
+	if (!Array.isArray(data)) {
+		console.error('데이터가 배열 형식이 아닙니다.');
+		return;
+	}
+
 	const productListContainer = document.querySelector('.modal[data-modal-type="search"] .product-list');
-	productListContainer.innerHTML = data.reduce((html, product) => {
-		const dilutionButtons = createDilutionButtons(product.dilution, product.etc);
-		return html + `
-			<div class="product-item">
-				<p class="brand ${product.label}">
-					<span><strong>${product.brand}</strong> - ${product.product}</span>
-				</p>
-				<div class="dilution-buttons">${dilutionButtons}</div>
-			</div>
-		`;
-	}, '');
+	if (!productListContainer) {
+		console.error('제품 목록 컨테이너를 찾을 수 없습니다.');
+		return;
+	}
+
+	productListContainer.innerHTML = data.map(createProductItem).join('');
 };
 
 // ! 검색 기능
@@ -261,38 +400,55 @@ const resetAll = () => {
 };
 
 // ! 탭별 리셋 함수
-const resetTab = (tabId, inputSelectors, barSelectors, textSelectors, resultSelectors, resetSelectors) => {
+// 각 탭의 선택자 설정을 객체로 관리
+const tabSelectors = {
+	tab1: {
+		inputs: ["#dilutionRatio", "#waterVolume"],
+		bars: [".water-bar", ".chemical-bar"],
+		texts: [".chemical-ratio", ".total-ratio"],
+		results: [".chemical-result", ".water-result"],
+		reset: [".btn-reset"]
+	},
+	tab2: {
+		inputs: ["#dilutionRatio2", "#totalCapacity"],
+		bars: [".chemical-bar2", ".total-bar"],
+		texts: [".total-ratio", ".chemical-ratio"],
+		results: [".chemical-result", ".total-result"],
+		reset: [".btn-reset"]
+	}
+};
+
+// 요소 초기화 함수
+const resetElements = (tab, selectors, options = {}) => {
+	selectors.forEach(selector => {
+		const element = tab.querySelector(selector);
+		if (!element) return;
+
+		if (options.value !== undefined) element.value = options.value;
+		if (options.height !== undefined) element.style.height = options.height;
+		if (options.text !== undefined) element.innerText = options.text;
+		if (options.disabled !== undefined) element.disabled = options.disabled;
+	});
+};
+
+// 탭 초기화 함수 
+const resetTab = (tabId) => {
 	const tab = document.querySelector(tabId);
 	if (!tab) return;
 
-	for (const selector of inputSelectors) {
-		const input = tab.querySelector(selector);
-		if (input) input.value = "";
-	}
+	const config = tabSelectors[tabId.replace(/\[data-tab='(.+)'\]/, '$1')];
 
-	for (const selector of barSelectors) {
-		const bar = tab.querySelector(selector);
-		if (bar) bar.style.height = '0%';
-	}
-
-	for (const selector of textSelectors) {
-		const text = tab.querySelector(selector);
-		if (text) text.innerText = '';
-	}
-
-	for (const selector of resultSelectors) {
-		const result = tab.querySelector(selector);
-		if (result) result.innerText = '0ml';
-	}
-
-	for (const selector of resetSelectors) {
-		const resetBtn = tab.querySelector(selector);
-		if (resetBtn) resetBtn.disabled = true;
-	}
+	resetElements(tab, config.inputs, { value: "" });
+	resetElements(tab, config.bars, { height: "0%" });
+	resetElements(tab, config.texts, { text: "" });
+	resetElements(tab, config.results, { text: "0ml" });
+	resetElements(tab, config.reset, { disabled: true });
 };
+
+// 전체 탭 초기화 객체
 const resetAllTabs = {
-	tab1: () => resetTab("[data-tab='tab1']", ["#dilutionRatio", "#waterVolume"], [".water-bar", ".chemical-bar"], [".chemical-ratio", ".total-ratio"], [".chemical-result", ".water-result"], [".btn-reset"]),
-	tab2: () => resetTab("[data-tab='tab2']", ["#dilutionRatio2", "#totalCapacity"], [".chemical-bar2", ".total-bar"], [".total-ratio", ".chemical-ratio"], [".chemical-result", ".total-result"], [".btn-reset"])
+	tab1: () => resetTab("[data-tab='tab1']"),
+	tab2: () => resetTab("[data-tab='tab2']")
 };
 
 // ! 숫자 관련 유틸리티 함수 모음
@@ -360,163 +516,200 @@ const getInputValue = (selector) => {
 
 // ! 그래프 애니메이션 함수
 const animateGraph = (selectors, heights) => {
-	selectors.forEach(selector => document.querySelector(selector).style.height = '0%');
-	setTimeout(() => {
+	selectors.forEach(selector => {
+		const element = document.querySelector(selector);
+		if (element) {
+			element.style.transition = 'none';
+			element.style.height = '0%';
+			element.offsetHeight; // 강제 리플로우
+			element.style.transition = 'height 1000ms cubic-bezier(0.06, 0.38, 0.13, 1)';
+			element.style.willChange = 'height';
+		}
+	});
+
+	requestAnimationFrame(() => {
 		selectors.forEach((selector, index) => {
-			document.querySelector(selector).style.height = heights[index] + '%';
+			const element = document.querySelector(selector);
+			if (element) {
+				element.style.height = `${heights[index]}%`;
+			}
 		});
-	}, 100);
+	});
 };
 
 // ! 케미컬 용량 계산 함수
-const animateNumber = (selector, targetValue) => {
-	const element = document.querySelector(selector);
-	if (!element || isNaN(targetValue) || targetValue <= 0 || !isFinite(targetValue)) {
-		element.textContent = '0ml';
-		return;
-	}
-	let startValue = 0;
-	const duration = 1000; // 애니메이션 지속 시간 (ms)
-	const frameRate = 30;
-	const totalFrames = duration / (1000 / frameRate) || 1;
-	let currentFrame = 0;
-	const easeOut = (progress) => 1 - Math.pow(1 - progress, 2); // 점점 느려지는 효과 (Cubic Ease-Out)
-	const updateNumber = () => {
-		currentFrame++;
-		// 현재 진행 비율 (0 ~ 1)
-		const progress = currentFrame / totalFrames;
-		// Ease-out 적용
-		startValue = targetValue * easeOut(progress);
-		if (currentFrame >= totalFrames) {
-			element.textContent = `${formatUtils.formatNumber(targetValue)}ml`; // 최종 값 설정
-		} else {
-			element.textContent = `${formatUtils.formatNumber(Math.floor(startValue))}ml`;
-			requestAnimationFrame(updateNumber);
-		}
-	};
-	updateNumber();
-};
 const calculateVolume = (ratioSelector, volumeSelector, isTotalCalculation = false) => {
-	// 입력 필드에서 희석 비율과 용량 값을 가져옴
 	const dilutionRatio = getInputValue(ratioSelector);
 	const volume = getInputValue(volumeSelector);
-	if (dilutionRatio === null || volume === null) return; // 값이 없으면 종료
-	// 화학 용액 및 물의 용량 계산
+	if (dilutionRatio === null || volume === null) return;
+
 	const chemicalVolume = isTotalCalculation ? volume / (dilutionRatio + 1) : volume / dilutionRatio;
 	const waterVolume = isTotalCalculation ? volume - chemicalVolume : volume;
-	const totalVolume = chemicalVolume + waterVolume; // 전체 용량 계산
-	// 결과값이 ∞일 경우 0으로 설정
+	const totalVolume = chemicalVolume + waterVolume;
+
 	const validChemicalVolume = isFinite(chemicalVolume) ? chemicalVolume : 0;
 	const validWaterVolume = isFinite(waterVolume) ? waterVolume : 0;
 	const validTotalVolume = isFinite(totalVolume) ? totalVolume : 0;
-	// 어떤 탭에서 계산이 수행되는지에 따라 선택자 설정
+
 	const tab = isTotalCalculation ? "[data-tab='tab2']" : "[data-tab='tab1']";
-	// 그래프 업데이트
+
 	displayGraph(tab, validChemicalVolume, validTotalVolume, validWaterVolume);
-	// 희석 비율 및 전체/물 용량 텍스트 업데이트
 	updateTextContent(`${tab} .chemical-ratio`, `(희석비 - 1:${formatUtils.formatNumber(dilutionRatio)})`);
 	updateTextContent(`${tab} .total-ratio`, isTotalCalculation
 		? `(물 용량 - ${formatUtils.formatNumber(validWaterVolume)}ml)`
 		: `(전체 용량 - ${formatUtils.formatNumber(validTotalVolume)}ml)`);
-	// 애니메이션을 통한 숫자 변경
+
 	animateNumber(`${tab} .chemical-result`, validChemicalVolume);
 	animateNumber(`${tab} .${isTotalCalculation ? "total-result" : "water-result"}`, validWaterVolume);
 	if (isTotalCalculation) {
 		animateNumber(`${tab} .total-result`, validTotalVolume);
 	}
 };
+
+// ! 케미컬 용량 애니메이션 함수
+const animateNumber = (selector, targetValue) => {
+	const element = document.querySelector(selector);
+	if (!element || isNaN(targetValue) || targetValue <= 0 || !isFinite(targetValue)) {
+		element.textContent = '0ml';
+		return;
+	}
+
+	const duration = 1000;
+	const startTime = performance.now();
+	const easeOutQuad = t => 1 - Math.pow(1 - t, 2);
+
+	const animate = (currentTime) => {
+		const elapsed = currentTime - startTime;
+		const progress = Math.min(elapsed / duration, 1);
+		const currentValue = targetValue * easeOutQuad(progress);
+
+		element.textContent = `${formatUtils.formatNumber(Math.floor(currentValue))}ml`;
+
+		if (progress < 1) {
+			requestAnimationFrame(animate);
+		} else {
+			element.textContent = `${formatUtils.formatNumber(targetValue)}ml`;
+		}
+	};
+
+	requestAnimationFrame(animate);
+};
+
 const displayGraph = (tab, chemicalAmount, totalVolume, waterAmount) => {
-	// 탭에 따라 적절한 그래프 바의 선택자 지정
 	const barSelectors = {
 		"[data-tab='tab1']": [".water-bar", ".chemical-bar"],
 		"[data-tab='tab2']": [".total-bar", ".chemical-bar2"]
 	};
-	// 탭에 따라 퍼센트 비율 계산
-	const dilutionRatioValue = parseFloat(document.querySelector("#dilutionRatio").value.replace(/,/g, ''));
-	const dilutionRatioValue2 = parseFloat(document.querySelector("#dilutionRatio2").value.replace(/,/g, ''));
+
+	const getDilutionRatio = id => parseFloat(document.querySelector(id).value.replace(/,/g, ''));
+	const dilutionRatio = getDilutionRatio("#dilutionRatio");
+	const dilutionRatio2 = getDilutionRatio("#dilutionRatio2");
+
+	const calculatePercentage = (amount, total, ratio) => {
+		const basePercentage = (amount / total) * 100;
+		return ratio >= 100 ? basePercentage * 50 : basePercentage;
+	};
+
 	const percentages = tab === "[data-tab='tab1']"
-		? [100, dilutionRatioValue >= 100 ? (chemicalAmount / waterAmount) * 5000 : (chemicalAmount / waterAmount) * 100] // 물 기준으로 퍼센트 계산
-		: [(totalVolume / totalVolume) * 100, dilutionRatioValue2 >= 100 ? (chemicalAmount / totalVolume) * 5000 : (chemicalAmount / totalVolume) * 100]; // 전체 용량 기준으로 퍼센트 계산
-	// #waterVolume, #totalCapacity의 value가 0이면 .water-bar, .total-bar의 높이를 0으로 설정
-	if (waterAmount === 0) {
-		percentages[0] = 0;
-	}
-	if (totalVolume === 0) {
-		percentages[0] = 0;
-	}
-	// 애니메이션을 통한 그래프 업데이트
+		? [waterAmount > 0 ? 100 : 0, calculatePercentage(chemicalAmount, waterAmount, dilutionRatio)]
+		: [totalVolume > 0 ? 100 : 0, calculatePercentage(chemicalAmount, totalVolume, dilutionRatio2)];
+
 	animateGraph(barSelectors[tab], percentages);
 };
+
 // 각각의 계산 함수 - 특정 요소에서 값을 가져와 calculateVolume 실행
 const calculateChemicalVolume = () => calculateVolume("#dilutionRatio", "#waterVolume");
 const calculateTotalVolume = () => calculateVolume("#dilutionRatio2", "#totalCapacity", true);
 
 // ! 검색 입력 이벤트 등록
-document.querySelector('#searchInput').addEventListener('keypress', async (e) => {
-	// 사용자가 입력 필드에서 키를 눌렀을 때 이벤트 리스너 실행
-	if (e.key === 'Enter') { // Enter 키가 눌렸을 경우 실행
-		// 입력 필드에서 검색어를 가져와 공백을 제거
-		const searchTerm = e.target.value.trim();
-		// 로컬 스토리지에서 'productData' 키로 저장된 데이터를 가져옴
-		let data = JSON.parse(localStorage.getItem('productData'));
-		// 로컬 스토리지에 데이터가 없는 경우 데이터를 로드하는 함수 실행
-		if (!data) {
-			await loadData(); // 데이터 로드 함수 실행 (비동기 처리)
-			data = JSON.parse(localStorage.getItem('productData')); // 다시 로컬 스토리지에서 데이터 가져옴
-		}
-		// 데이터가 배열인지 확인 후 필터링 수행
-		if (Array.isArray(data)) {
-			const filteredData = filterProductList(searchTerm, data); // 검색어를 기준으로 데이터 필터링
-			// 'nodata' 메시지 요소와 제품 목록 요소 선택
-			const noDataMsg = document.querySelector('#nodata');
-			const itemParent = document.querySelector('.product-list');
-			// 'nodata' 메시지 요소가 존재하는 경우 처리
-			if (noDataMsg) {
-				if (filteredData.length === 0) { // 필터링된 데이터가 없는 경우
-					noDataMsg.classList.add('active'); // 'nodata' 메시지 활성화
-					itemParent.style.display = 'none'; // 제품 목록 숨김
-				} else { // 필터링된 데이터가 존재하는 경우
-					noDataMsg.classList.remove('active'); // 'nodata' 메시지 비활성화
-					itemParent.style.display = 'block'; // 제품 목록 표시
-				}
-			}
-		}
+document.querySelector('#searchInput').addEventListener('keyup', async (e) => {
+	// Enter 키가 아닌 경우 즉시 반환
+	if (e.key !== 'Enter') return;
+
+	const searchTerm = e.target.value.trim();
+
+	// 로컬 스토리지에서 데이터 가져오기 또는 로드
+	let data = JSON.parse(localStorage.getItem('productData'));
+	if (!data) {
+		await loadData();
+		data = JSON.parse(localStorage.getItem('productData'));
 	}
+
+	// 데이터가 배열이 아닌 경우 반환
+	if (!Array.isArray(data)) return;
+
+	const filteredData = filterProductList(searchTerm, data);
+	const noDataMsg = document.querySelector('#nodata');
+	const itemParent = document.querySelector('.product-list');
+
+	// noDataMsg가 없는 경우 반환
+	if (!noDataMsg) return;
+
+	// 필터링 결과에 따른 UI 업데이트
+	const hasResults = filteredData.length > 0;
+	noDataMsg.classList.toggle('active', !hasResults);
+	itemParent.style.display = hasResults ? 'block' : 'none';
 });
 
 // ! 희석비 버튼 클릭 이벤트 등록
 const handleDilutionClick = (e) => {
+	// 희석비 버튼 요소 찾기
 	const button = e.target.closest('.btn-modal-dilution');
 	if (!button) return;
+
+	// 희석비 값과 입력 필드 설정
 	const dilutionValue = button.dataset.value;
 	const inputSelector = getActiveTabInputSelector();
 	if (inputSelector) {
 		document.querySelector(inputSelector).value = dilutionValue;
 	}
+
+	// UI 상태 업데이트
 	updateResetButtonState();
 	closeModal(button);
+
+	// 활성 탭에 따른 계산 실행
 	const activeTab = getCheckedTab();
-	if (activeTab === 'tab1') {
-		calculateChemicalVolume();
-	} else {
-		calculateTotalVolume();
-	}
-	// Display the selected brand alert
+	const calculateFn = activeTab === 'tab1' ? calculateChemicalVolume : calculateTotalVolume;
+	calculateFn();
+
+	// 선택된 브랜드 알림 표시
+	showSelectedBrandAlert(button, dilutionValue);
+};
+
+// !선택된 브랜드 알림 표시 함수
+const showSelectedBrandAlert = (button, dilutionValue) => {
 	const selectedBrandAlert = document.querySelector('.selected-brand-alert');
 	const brandElement = button.closest('.product-item').querySelector('.brand');
-	if (selectedBrandAlert && brandElement) {
-		selectedBrandAlert.innerHTML = `<div class="inner"><i class="ti ti-circle-check"></i><div><span class="text">선택하신 제품은 </span>${brandElement.innerHTML}<span class="text">이며,</span><em>희석비는 <strong>1:${dilutionValue}</strong>입니다.</em></div></div>`;
-		selectedBrandAlert.classList.add('active');
-		selectedBrandAlert.style.opacity = '1';
+
+	if (!selectedBrandAlert || !brandElement) return;
+
+	// 알림 내용 설정
+	selectedBrandAlert.innerHTML = `
+		<div class="inner">
+			<i class="ti ti-circle-check"></i>
+			<div>
+				<span class="text">선택하신 제품은 </span>
+				${brandElement.innerHTML}
+				<span class="text">이며,</span>
+				<em>희석비는 <strong>1:${dilutionValue}</strong>입니다.</em>
+			</div>
+		</div>
+	`;
+
+	// 알림 표시 및 자동 숨김 처리
+	selectedBrandAlert.classList.add('active');
+	selectedBrandAlert.style.opacity = '1';
+
+	setTimeout(() => {
+		selectedBrandAlert.style.transition = 'opacity 500ms';
+		selectedBrandAlert.style.opacity = '0';
+
 		setTimeout(() => {
-			selectedBrandAlert.style.transition = 'opacity 500ms';
-			selectedBrandAlert.style.opacity = '0';
-			setTimeout(() => {
-				selectedBrandAlert.classList.remove('active');
-				selectedBrandAlert.style.transition = '';
-			}, 500); // 3초 후에 .active 삭제
-		}, 3000); // 3초 후에 opacity: 0으로 변경
-	}
+			selectedBrandAlert.classList.remove('active');
+			selectedBrandAlert.style.transition = '';
+		}, 500);
+	}, 3000);
 };
 const getActiveTabInputSelector = () => {
 	const activeTab = document.querySelector('.tab-body.active');
