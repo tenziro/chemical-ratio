@@ -1,5 +1,8 @@
 @charset "UTF-8";
 
+// ==========================================================================
+// 1. 기본 설정 및 변수
+// ==========================================================================
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
@@ -15,6 +18,9 @@
 	--globalnav-backdrop-filter: saturate(180%) blur(20px);
 }
 
+// ==========================================================================
+// 2. 테마 설정
+// ==========================================================================
 @media (prefers-color-scheme: light) {
 	:root {
 		--globalnav-background: rgba(255, 255, 255, 0.6);
@@ -103,7 +109,10 @@
 		--alert-border: rgba(109, 109, 109, 0.25);
 	}
 }
-// * 스크롤바 색상 설정
+
+// ==========================================================================
+// 3. 유틸리티 믹스인
+// ==========================================================================
 @mixin scrollbar($width, $thumb-bg, $thumb-radius, $track-bg: null) {
 	&::-webkit-scrollbar {
 		width: $width;
@@ -122,6 +131,7 @@
 		background-color: transparent;
 	}
 }
+
 @mixin mobile-scrollbars {
 	@media (hover: none) and (pointer: coarse) {
 		&::-webkit-scrollbar {
@@ -135,6 +145,10 @@
 		}
 	}
 }
+
+// ==========================================================================
+// 4. 기본 리셋 및 공통 스타일
+// ==========================================================================
 * {
 	@include mobile-scrollbars;
 	margin: 0;
@@ -169,7 +183,6 @@ body {
 		color: var(--bg-contents);
 	}
 }
-
 sup {
 	&:after {
 		content: "*";
@@ -177,7 +190,6 @@ sup {
 		margin-left: 3px;
 	}
 }
-
 button {
 	outline: 0;
 	border: 0;
@@ -185,7 +197,6 @@ button {
 		cursor: pointer;
 	}
 }
-
 input[type="text"],
 input[type="tel"],
 input[type="email"],
@@ -194,7 +205,6 @@ input[type="password"] {
 		outline: 0;
 	}
 }
-
 summary {
 	display: list-item;
 	cursor: pointer;
@@ -204,7 +214,6 @@ summary {
 		content: none;
 	}
 }
-
 .stop-scroll {
 	@media all and (display-mode: standalone) {
 		max-height: 100vh;
@@ -212,7 +221,6 @@ summary {
 	max-height: 100dvh;
 	overflow-y: hidden;
 }
-
 .ti {
 	display: inline-flex;
 	align-items: center;
@@ -228,7 +236,10 @@ summary {
 	position: relative;
 	flex-direction: column;
 }
-// ! Header
+
+// ==========================================================================
+// 5. 레이아웃 구조
+// ==========================================================================
 #header {
 	.inner {
 		display: flex;
@@ -255,6 +266,10 @@ summary {
 		}
 	}
 }
+
+// ==========================================================================
+// 7. 버튼 스타일
+// ==========================================================================
 .btn-search,
 .btn-information {
 	display: inline-flex;
@@ -280,6 +295,9 @@ summary {
 	}
 }
 
+// ==========================================================================
+// 8. 폼 요소
+// ==========================================================================
 .form {
 	display: flex;
 	flex: none;
@@ -355,7 +373,10 @@ summary {
 	align-items: stretch;
 	gap: 2px;
 }
-// ! Tab
+
+// ==========================================================================
+// 9. 탭 네비게이션
+// ==========================================================================
 .tab-header {
 	display: flex;
 	position: relative;
@@ -477,7 +498,10 @@ summary {
 		}
 	}
 }
-// ! 그래프
+
+// ==========================================================================
+// 10. 그래프 영역
+// ==========================================================================
 .graph-container {
 	display: flex;
 	flex: 1 1;
@@ -526,47 +550,10 @@ summary {
 .chemical-bar2 {
 	background-color: var(--bg-chemical-bar);
 }
-// ! Footer
-.copyright {
-	color: var(--copyright);
-	margin-top: 20px;
-	font-size: 12px;
-	ul {
-		display: flex;
-		list-style: none;
-		align-items: center;
-		li {
-			display: inline-flex;
-			flex: none;
-			align-items: center;
-			+ li {
-				&:before {
-					display: inline-block;
-					flex: none;
-					margin: 0 10px;
-					content: "";
-					width: 4px;
-					height: 4px;
-					background-color: var(--copyright);
-					border-radius: 50%;
-				}
-			}
-		}
-	}
-	a {
-		display: inline-flex;
-		text-decoration: none;
-		align-items: center;
-		.ti {
-			flex: none;
-			margin-right: 3px;
-			font: {
-				size: 14px;
-			}
-		}
-	}
-}
-// ! Modal
+
+// ==========================================================================
+// 11. 모달
+// ==========================================================================
 .modal {
 	@media all and (display-mode: standalone) {
 		height: 100vh;
@@ -845,7 +832,103 @@ summary {
 	}
 }
 
+// ==========================================================================
+// 12. 푸터
+// ==========================================================================
+.copyright {
+	color: var(--copyright);
+	margin-top: 20px;
+	font-size: 12px;
+	ul {
+		display: flex;
+		list-style: none;
+		align-items: center;
+		li {
+			display: inline-flex;
+			flex: none;
+			align-items: center;
+			+ li {
+				&:before {
+					display: inline-block;
+					flex: none;
+					margin: 0 10px;
+					content: "";
+					width: 4px;
+					height: 4px;
+					background-color: var(--copyright);
+					border-radius: 50%;
+				}
+			}
+		}
+	}
+	a {
+		display: inline-flex;
+		text-decoration: none;
+		align-items: center;
+		.ti {
+			flex: none;
+			margin-right: 3px;
+			font: {
+				size: 14px;
+			}
+		}
+	}
+}
+
+// ==========================================================================
+// 13. 로딩 애니메이션
+// ==========================================================================
+.data-loading-icon {
+	--uib-size: 45px;
+	--uib-color: var(--base-color);
+	--uib-speed: 2.5s;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: var(--uib-size);
+	width: var(--uib-size);
+	margin-inline: auto;
+}
+
+.slice {
+	position: relative;
+	height: calc(var(--uib-size) / 6);
+	width: 100%;
+	&::before,
+	&::after {
+		--uib-a: calc(var(--uib-speed) / -2);
+		--uib-b: calc(var(--uib-speed) / -6);
+		content: '';
+		position: absolute;
+		top: 0;
+		left: calc(50% - var(--uib-size) / 12);
+		height: 100%;
+		width: calc(100% / 6);
+		border-radius: 50%;
+		background-color: var(--uib-color);
+		flex-shrink: 0;
+		animation: orbit var(--uib-speed) linear infinite;
+		transition: background-color 0.3s ease;
+	}
+
+	@for $i from 1 through 6 {
+		&:nth-child(#{$i}) {
+			&::before {
+				animation-delay: calc(var(--uib-b) * #{$i - 1});
+			}
+			&::after {
+				animation-delay: calc(var(--uib-a) + var(--uib-b) * #{$i - 1});
+			}
+		}
+	}
+}
+
+// ==========================================================================
+// 14. 반응형 스타일
+// ==========================================================================
 @media screen and (min-width: 1280px) {
+	// Desktop Styles
 	#wrap {
 		@media all and (display-mode: standalone) {
 			min-height: 100vh;
@@ -1047,6 +1130,7 @@ summary {
 }
 
 @media (max-width: 1279px) {
+	// Tablet Styles
 	#contents {
 		padding: 24px calc(24px + var(--sar)) calc(24px + var(--sab)) calc(24px + var(--sal));
 	}
@@ -1239,7 +1323,9 @@ summary {
 		}
 	}
 }
+
 @media (max-width: 639px) {
+	// Mobile Styles
 	#container {
 		background-color: var(--bg-contents);
 	}
@@ -1426,52 +1512,9 @@ summary {
 	}
 }
 
-.data-loading-icon {
-	--uib-size: 45px;
-	--uib-color: var(--base-color);
-	--uib-speed: 2.5s;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	height: var(--uib-size);
-	width: var(--uib-size);
-	margin-inline: auto;
-}
-
-.slice {
-	position: relative;
-	height: calc(var(--uib-size) / 6);
-	width: 100%;
-	&::before,
-	&::after {
-		--uib-a: calc(var(--uib-speed) / -2);
-		--uib-b: calc(var(--uib-speed) / -6);
-		content: '';
-		position: absolute;
-		top: 0;
-		left: calc(50% - var(--uib-size) / 12);
-		height: 100%;
-		width: calc(100% / 6);
-		border-radius: 50%;
-		background-color: var(--uib-color);
-		flex-shrink: 0;
-		animation: orbit var(--uib-speed) linear infinite;
-		transition: background-color 0.3s ease;
-	}
-
-	@for $i from 1 through 6 {
-		&:nth-child(#{$i}) {
-			&::before {
-				animation-delay: calc(var(--uib-b) * #{$i - 1});
-			}
-			&::after {
-				animation-delay: calc(var(--uib-a) + var(--uib-b) * #{$i - 1});
-			}
-		}
-	}
-}
-
+// ==========================================================================
+// 15. 애니메이션 키프레임
+// ==========================================================================
 @keyframes orbit {
 	0% {
 		transform: translateX(calc(var(--uib-size) * 0.25)) scale(0.73684);
