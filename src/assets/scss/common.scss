@@ -284,12 +284,19 @@ summary {
 		content: none;
 	}
 }
-.stop-scroll {
+.hidden-scroll {
 	@media all and (display-mode: standalone) {
 		max-height: 100vh;
 	}
 	max-height: 100dvh;
 	overflow-y: hidden;
+	#container {
+		max-height: 100vh;
+		overflow-y: hidden;
+	}
+}
+.sr-only {
+	display: none;
 }
 .ti {
 	display: inline-flex;
@@ -998,10 +1005,15 @@ summary {
 // 14. 반응형 스타일
 // ==========================================================================
 @include desktop {
+	body {
+		min-height: 700px;
+		overflow-y: auto;
+	}
 	#wrap {
 		@include flex-center;
 		position: relative;
 		min-height: 100dvh;
+		padding: 20px;
 		background: {
 			position: 50% 50%;
 			size: cover;
@@ -1054,6 +1066,7 @@ summary {
 	#contents {
 		height: 65vh;
 		max-height: 700px;
+		min-height: 600px;
 	}
 
 	.tab-header {

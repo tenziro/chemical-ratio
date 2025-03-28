@@ -181,7 +181,7 @@ const updateResetButtonState = () => {
 // ! 모달창 제어 함수
 // 스크롤 잠금 상태 관리
 const updateBodyScrollLock = isActive => {
-	document.documentElement.classList.toggle("stop-scroll", isActive);
+	document.body.classList.toggle("hidden-scroll", isActive);
 };
 
 // 모달 상태 토글 처리
