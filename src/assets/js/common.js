@@ -716,35 +716,3 @@ const getActiveTabInputSelector = () => {
 	if (!activeTab) return null;
 	return activeTab.dataset.tab === 'tab1' ? '#dilutionRatio' : '#dilutionRatio2';
 };
-
-// iOS 버전 확인 함수
-const getIOSVersion = () => {
-	const agent = window.navigator.userAgent;
-	const start = agent.indexOf('OS ');
-	if ((agent.includes('iPhone') || agent.includes('iPad')) && start > -1) {
-		return parseFloat(agent.substring(start + 3, start + 6).replace('_', '.'));
-	}
-	return 0; // iOS가 아닌 경우
-};
-
-// Android 버전 확인 함수
-const getAndroidVersion = () => {
-	const agent = window.navigator.userAgent;
-	const match = agent.match(/Android\s([0-9\.]*)/);
-	return match ? parseFloat(match[1]) : 0; // Android가 아닌 경우
-};
-
-// iOS 및 Android 버전 체크 후 경고 메시지 출력
-const checkOSVersion = () => {
-	const iosVersion = getIOSVersion();
-	const androidVersion = getAndroidVersion();
-
-	if (iosVersion > 0 && iosVersion < 12.2) {
-		alert(`iOS 버전(${iosVersion})이 너무 낮습니다. 업데이트가 필요합니다.`);
-	} else if (androidVersion > 0 && androidVersion < 5) {
-		alert(`Android 버전(${androidVersion})이 너무 낮습니다. 업데이트가 필요합니다.`);
-	}
-};
-
-// 페이지 로드 시 실행
-window.onload = checkOSVersion;
