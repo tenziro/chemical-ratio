@@ -78,15 +78,14 @@ $breakpoint-mobile: 639px;
 // 루트 변수
 :root {
 	--tab-speed: 280ms;
-	--sat: env(safe-area-inset-top, 0px);
-	--sar: env(safe-area-inset-right, 0px);
-	--sab: env(safe-area-inset-bottom, 0px);
-	--sal: env(safe-area-inset-left, 0px);
+	--sat: env(safe-area-inset-top);
+	--sar: env(safe-area-inset-right);
+	--sab: env(safe-area-inset-bottom);
+	--sal: env(safe-area-inset-left);
 	--bg-total-bar: #0094378b;
 	--bg-water-bar: #1984ff8b;
 	--bg-chemical-bar: #ff5e198b;
 	--globalnav-backdrop-filter: saturate(180%) blur(20px);
-	--vh: 1vh; // dvh 폴리필을 위한 변수
 }
 
 // ==========================================================================
@@ -289,12 +288,7 @@ summary {
 	@media all and (display-mode: standalone) {
 		max-height: 100vh;
 	}
-	@supports (height: 100dvh) {
-		max-height: 100dvh;
-	}
-	@supports not (height: 100dvh) {
-		max-height: calc(var(--vh, 1vh) * 100);
-	}
+	max-height: 100dvh;
 	overflow-y: hidden;
 	#container {
 		max-height: 100vh;
@@ -1818,38 +1812,5 @@ summary {
 	50% {
 		-webkit-transform: rotate(8deg);
 		transform: rotate(8deg);
-	}
-}
-
-// backdrop-filter 폴리필을 위한 스타일
-.globalnav-background {
-	@supports (backdrop-filter: blur(20px)) {
-		backdrop-filter: var(--globalnav-backdrop-filter);
-	}
-	@supports not (backdrop-filter: blur(20px)) {
-		background-color: var(--globalnav-background);
-	}
-}
-
-// gap 속성 폴리필을 위한 스타일
-.gap-fallback {
-	@supports (gap: 1px) {
-		gap: 1px;
-	}
-	@supports not (gap: 1px) {
-		margin: -0.5px;
-		> * {
-			margin: 0.5px;
-		}
-	}
-}
-
-// display-mode: standalone 폴리필을 위한 스타일
-.standalone {
-	#container {
-		max-height: 100vh;
-	}
-	.product-list {
-		max-height: 50vh;
 	}
 }
