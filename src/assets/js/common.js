@@ -13,7 +13,7 @@ const Config = {
 			Radio: "#contents-tab1",
 			Bodies: ".tab-body",
 			Line: ".tab-line",
-			Radios: 'input[name="calculation"]' // HTML과 일치하도록 선택자 수정
+			Radios: 'input[name="calculation"]'
 		},
 		Inputs: {
 			Tab1: {
@@ -32,7 +32,8 @@ const Config = {
 			QuickRatio: ".btn-dilution-ratio, .btn-capacity-ratio",
 			ModalClose: ".btn-modal-close",
 			Search: ".btn-search",
-			Info: ".btn-information"
+			Info: ".btn-information",
+			ModalDilution: ".btn-modal-dilution"
 		},
 		Modals: {
 			Trigger: "[data-open-modal]",
@@ -53,19 +54,29 @@ const Config = {
 			Inner: ".inner"
 		},
 		Graph: {
-			Bar: ".graph-bg > div", // 일반 선택자
+			Bar: ".graph-bg > div",
 			Text: ".graph-item dl dt span:last-child",
 			Result: ".graph-item dl dd"
+		},
+		Alert: {
+			Box: ".selected-brand-alert"
 		}
 	},
 	Data: {
 		Url: "src/data/data.json",
 		StorageKey: "productData",
-		InstallPromptKey: "hideInstallModalUntil"
+		InstallPromptKey: "hideInstallModalUntil",
+		ExpirationTime: 24 * 60 * 60 * 1000 // 24시간
 	},
 	Animation: {
 		Duration: 1000,
-		Ease: "cubic-bezier(0.06, 0.38, 0.13, 1)"
+		Ease: "cubic-bezier(0.06, 0.38, 0.13, 1)",
+		AlertDuration: 3000,
+		AlertFade: 500
+	},
+	Constants: {
+		TabIds: { Tab1: 'tab1', Tab2: 'tab2' },
+		Modes: { Water: 'water', Total: 'total' }
 	}
 };
 
@@ -91,28 +102,6 @@ class Utils {
 	 */
 	static selectAll(selector, parent = document) {
 		return parent.querySelectorAll(selector);
-	}
-
-	/**
-	 * 이벤트 리스너를 추가합니다.
-	 * @param {Element} element - 이벤트를 추가할 요소
-	 * @param {string} event - 이벤트 이름
-	 * @param {Function} handler - 이벤트 핸들러
-	 */
-	static addEvent(element, event, handler) {
-		if (element) {
-			element.addEventListener(event, handler);
-		}
-	}
-
-	/**
-	 * 여러 요소에 이벤트 리스너를 추가합니다.
-	 * @param {NodeList|Array} elements - 이벤트를 추가할 요소 목록
-	 * @param {string} event - 이벤트 이름
-	 * @param {Function} handler - 이벤트 핸들러
-	 */
-	static addEventAll(elements, event, handler) {
-		elements.forEach(el => el.addEventListener(event, handler));
 	}
 
 	/**
@@ -178,6 +167,21 @@ class Utils {
 	static isStandalone() {
 		return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 	}
+
+	/**
+	 * HTML 문자열을 이스케이프하여 XSS를 방지합니다.
+	 * @param {string} str - 입력 문자열
+	 * @returns {string} 이스케이프된 문자열
+	 */
+	static escapeHtml(str) {
+		if (!str) return '';
+		return str
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#039;");
+	}
 }
 
 /**
@@ -185,44 +189,6 @@ class Utils {
  * 희석 계산을 위한 순수 로직
  */
 class Calculator {
-	/**
-	 * 물 용량 기준으로 케미컬 용량을 계산합니다.
-	 * @param {number} dilutionRatio - 희석비
-	 * @param {number} waterVolume - 물 용량
-	 * @returns {Object} 계산된 결과 (케미컬, 물, 전체)
-	 */
-	static calculateChemical(dilutionRatio, waterVolume) {
-		if (!dilutionRatio || !waterVolume) return { chemical: 0, water: 0, total: 0 };
-
-		const chemical = waterVolume / dilutionRatio;
-		const total = chemical + waterVolume;
-
-		return {
-			chemical: this.sanitize(chemical),
-			water: this.sanitize(waterVolume),
-			total: this.sanitize(total)
-		};
-	}
-
-	/**
-	 * 전체 용량 기준으로 케미컬 용량을 계산합니다.
-	 * @param {number} dilutionRatio - 희석비
-	 * @param {number} totalVolume - 전체 용량
-	 * @returns {Object} 계산된 결과 (케미컬, 물, 전체)
-	 */
-	static calculateTotal(dilutionRatio, totalVolume) {
-		if (!dilutionRatio || !totalVolume) return { chemical: 0, water: 0, total: 0 };
-
-		const chemical = totalVolume / (dilutionRatio + 1);
-		const water = totalVolume - chemical;
-
-		return {
-			chemical: this.sanitize(chemical),
-			water: this.sanitize(waterVolume), // 물 용량이어야 함
-			total: this.sanitize(totalVolume)
-		};
-	}
-
 	/**
 	 * 모드에 따라 용량을 계산합니다.
 	 * @param {string} mode - 계산 모드 ('water' 또는 'total')
@@ -235,7 +201,7 @@ class Calculator {
 
 		let chemical, water, total;
 
-		if (mode === 'water') { // 탭 1: 물 용량 기준
+		if (mode === Config.Constants.Modes.Water) { // 탭 1: 물 용량 기준
 			chemical = volume / ratio;
 			water = volume;
 			total = chemical + water;
@@ -284,14 +250,33 @@ class DataManager {
 
 	/**
 	 * 로컬 스토리지 또는 서버에서 데이터를 로드합니다.
+	 * 만료 시간을 체크하여 데이터 갱신을 수행합니다.
 	 * @returns {Promise<Array>} 데이터 배열
 	 */
 	static async loadData() {
-		let data = JSON.parse(localStorage.getItem(Config.Data.StorageKey));
-		if (!data) {
-			data = await this.fetchData();
-			localStorage.setItem(Config.Data.StorageKey, JSON.stringify(data));
+		const storedData = localStorage.getItem(Config.Data.StorageKey);
+		const now = Date.now();
+
+		if (storedData) {
+			try {
+				const parsed = JSON.parse(storedData);
+				// 데이터 구조가 { timestamp: number, data: Array } 형태라고 가정하거나
+				// 하위 호환성을 위해 체크
+				if (parsed.timestamp && (now - parsed.timestamp < Config.Data.ExpirationTime)) {
+					return parsed.data;
+				}
+			} catch (e) {
+				console.warn("Data parsing error, fetching new data.");
+			}
 		}
+
+		// 데이터가 없거나 만료되었거나 파싱 오류 시 새로 가져옴
+		const data = await this.fetchData();
+		const storageItem = {
+			timestamp: now,
+			data: data
+		};
+		localStorage.setItem(Config.Data.StorageKey, JSON.stringify(storageItem));
 		return data;
 	}
 
@@ -306,7 +291,8 @@ class DataManager {
 		const lowerTerm = term.toLowerCase();
 		return data.filter(item =>
 			item.brand.toLowerCase().includes(lowerTerm) ||
-			item.product.toLowerCase().includes(lowerTerm)
+			item.product.toLowerCase().includes(lowerTerm) ||
+			(item.label && item.label.toLowerCase().includes(lowerTerm))
 		);
 	}
 }
@@ -332,9 +318,6 @@ class UIManager {
 		// 초기 설정
 		window.addEventListener("resize", () => this.updateQuickAreaScroll());
 		this.updateQuickAreaScroll();
-
-		// HTML의 인라인 onclick을 지원하기 위해 showTab을 전역으로 노출
-		window.showTab = () => this.handleTabChange();
 	}
 
 	/**
@@ -348,7 +331,8 @@ class UIManager {
 			resetBtns: Utils.selectAll(Config.Selectors.Buttons.Reset),
 			quickAreas: Utils.selectAll(`${Config.Selectors.QuickArea.Container} ${Config.Selectors.QuickArea.Inner}`),
 			inputs: Utils.selectAll("input[type='tel']"),
-			modals: Utils.selectAll(Config.Selectors.Modals.Container)
+			modals: Utils.selectAll(Config.Selectors.Modals.Container),
+			alertBox: Utils.select(Config.Selectors.Alert.Box)
 		};
 	}
 
@@ -419,7 +403,7 @@ class UIManager {
 		}
 
 		// 모달 내 희석비 선택
-		const dilutionBtn = target.closest('.btn-modal-dilution');
+		const dilutionBtn = target.closest(Config.Selectors.Buttons.ModalDilution);
 		if (dilutionBtn) {
 			this.handleDilutionSelect(dilutionBtn);
 			return;
@@ -430,32 +414,25 @@ class UIManager {
 	 * 탭 초기 설정을 수행합니다.
 	 */
 	setupTabs() {
-		// 로드 시 올바른 탭이 표시되도록 확인
 		this.handleTabChange();
 	}
 
 	/**
 	 * 탭 변경 시 UI를 업데이트합니다.
 	 */
-	/**
-	 * 탭 변경 시 UI를 업데이트합니다.
-	 */
 	handleTabChange() {
-		const activeTabId = Utils.select("#contents-tab1").checked ? "tab1" : "tab2";
+		const activeTabId = this.getCurrentTabId();
 
 		this.elements.tabs.forEach(tab => {
 			tab.classList.toggle("active", tab.dataset.tab === activeTabId);
 		});
 
 		if (this.elements.tabLine) {
-			this.elements.tabLine.style.transform = `translateX(${activeTabId === "tab1" ? 0 : 100}%)`;
+			this.elements.tabLine.style.transform = `translateX(${activeTabId === Config.Constants.TabIds.Tab1 ? 0 : 100}%)`;
 		}
 
 		this.resetQuickAreaScroll();
 		this.resetAll();
-		// 사용자 상호작용에 의해 트리거된 경우에만 상단으로 스크롤? 
-		// 원본 코드는 항상 스크롤했음.
-		// window.scrollTo({ top: 0, behavior: "smooth" });
 	}
 
 	/**
@@ -463,7 +440,7 @@ class UIManager {
 	 * @returns {string} 'tab1' 또는 'tab2'
 	 */
 	getCurrentTabId() {
-		return Utils.select("#contents-tab1").checked ? "tab1" : "tab2";
+		return Utils.select(Config.Selectors.Tabs.Radio).checked ? Config.Constants.TabIds.Tab1 : Config.Constants.TabIds.Tab2;
 	}
 
 	/**
@@ -490,7 +467,7 @@ class UIManager {
 	 */
 	updateCalculation() {
 		const tabId = this.getCurrentTabId();
-		const isTab1 = tabId === "tab1";
+		const isTab1 = tabId === Config.Constants.TabIds.Tab1;
 
 		const selectors = isTab1 ? Config.Selectors.Inputs.Tab1 : Config.Selectors.Inputs.Tab2;
 		const ratio = Utils.getNumericValue(selectors.Dilution);
@@ -498,7 +475,7 @@ class UIManager {
 
 		if (ratio === null || volume === null) return;
 
-		const result = Calculator.calculate(isTab1 ? 'water' : 'total', ratio, volume);
+		const result = Calculator.calculate(isTab1 ? Config.Constants.Modes.Water : Config.Constants.Modes.Total, ratio, volume);
 		this.renderResults(tabId, result, ratio);
 	}
 
@@ -517,15 +494,15 @@ class UIManager {
 
 		if (chemicalRatioText) chemicalRatioText.innerText = `(희석비 - 1:${Utils.formatNumber(ratio)})`;
 		if (totalRatioText) {
-			totalRatioText.innerText = tabId === 'tab1'
-				? `(물 용량 - ${Utils.formatNumber(result.water)}ml)`
-				: `(전체 용량 - ${Utils.formatNumber(result.total)}ml)`;
+			totalRatioText.innerText = tabId === Config.Constants.TabIds.Tab1
+				? `(전체 용량 - ${Utils.formatNumber(result.total)}ml)`
+				: `(물 용량 - ${Utils.formatNumber(result.water)}ml)`;
 		}
 
 		// 숫자 애니메이션
 		this.animateNumber(container.querySelector(".chemical-result"), result.chemical);
-		this.animateNumber(container.querySelector(tabId === 'tab1' ? ".water-result" : ".total-result"),
-			tabId === 'tab1' ? result.water : result.total);
+		this.animateNumber(container.querySelector(tabId === Config.Constants.TabIds.Tab1 ? ".water-result" : ".total-result"),
+			tabId === Config.Constants.TabIds.Tab1 ? result.water : result.total);
 
 		// 그래프 업데이트
 		this.updateGraph(container, result, ratio, tabId);
@@ -539,25 +516,25 @@ class UIManager {
 	 * @param {string} tabId - 탭 ID
 	 */
 	updateGraph(container, result, ratio, tabId) {
-		const bars = container.querySelectorAll(".graph-bg > div");
+		const bars = container.querySelectorAll(Config.Selectors.Graph.Bar);
 		if (bars.length < 2) return;
 
 		let chemicalPct, otherPct;
-		const totalBase = tabId === 'tab1' ? result.water : result.total;
+		const totalBase = tabId === Config.Constants.TabIds.Tab1 ? result.water : result.total;
 
 		if (totalBase > 0) {
 			const baseChemicalPct = (result.chemical / totalBase) * 100;
-			// 시각적 효과를 위해 비율을 조정 (기존 5배 -> 10배로 증가, 낮은 비율도 5배로 증가)
-			const adjustedPct = ratio >= 10 ? baseChemicalPct * 200 : baseChemicalPct * 200;
-			chemicalPct = Math.min(adjustedPct, 100); // 100%를 넘지 않도록 제한
+			// 시각적 효과를 위해 비율을 조정
+			const adjustedPct = baseChemicalPct * 200;
+			chemicalPct = Math.min(adjustedPct, 100);
 			otherPct = 100;
 		} else {
 			chemicalPct = 0;
 			otherPct = 0;
 		}
 
-		const chemicalBar = container.querySelector(tabId === 'tab1' ? ".chemical-bar" : ".chemical-bar2");
-		const otherBar = container.querySelector(tabId === 'tab1' ? ".water-bar" : ".total-bar");
+		const chemicalBar = container.querySelector(tabId === Config.Constants.TabIds.Tab1 ? ".chemical-bar" : ".chemical-bar2");
+		const otherBar = container.querySelector(tabId === Config.Constants.TabIds.Tab1 ? ".water-bar" : ".total-bar");
 
 		this.animateBar(otherBar, otherPct);
 		this.animateBar(chemicalBar, chemicalPct);
@@ -571,7 +548,6 @@ class UIManager {
 	animateBar(element, percentage) {
 		if (!element) return;
 
-		// 애니메이션 효과를 위해 초기화
 		element.style.transition = 'none';
 		element.style.height = '0%';
 		element.offsetHeight; // 리플로우 트리거
@@ -579,7 +555,6 @@ class UIManager {
 		element.style.transition = `height ${Config.Animation.Duration}ms ${Config.Animation.Ease}`;
 		element.style.willChange = 'height';
 
-		// 트랜지션이 트리거되도록 requestAnimationFrame 사용
 		requestAnimationFrame(() => {
 			element.style.height = `${percentage}%`;
 		});
@@ -598,7 +573,7 @@ class UIManager {
 		}
 
 		const start = performance.now();
-		const duration = 1000;
+		const duration = Config.Animation.Duration;
 
 		const animate = (time) => {
 			const timeFraction = (time - start) / duration;
@@ -628,7 +603,7 @@ class UIManager {
 		const tabId = tabBody.dataset.tab;
 		const isDilution = button.classList.contains('btn-dilution-ratio');
 
-		const selectors = tabId === 'tab1' ? Config.Selectors.Inputs.Tab1 : Config.Selectors.Inputs.Tab2;
+		const selectors = tabId === Config.Constants.TabIds.Tab1 ? Config.Selectors.Inputs.Tab1 : Config.Selectors.Inputs.Tab2;
 		const targetSelector = isDilution ? selectors.Dilution : selectors.Volume;
 		const input = Utils.select(targetSelector);
 
@@ -638,7 +613,6 @@ class UIManager {
 			const newVal = currentVal + addVal;
 			input.value = Utils.addCommas(newVal);
 
-			// 이벤트 트리거
 			this.updateCalculation();
 			this.updateResetButtonState();
 		}
@@ -661,7 +635,7 @@ class UIManager {
 
 		const { scrollWidth, clientWidth, scrollLeft } = area;
 		const isScrollable = scrollWidth > clientWidth;
-		const isAtEnd = scrollWidth - scrollLeft <= clientWidth + 1; // 서브픽셀 안전을 위해 +1
+		const isAtEnd = scrollWidth - scrollLeft <= clientWidth + 1;
 
 		parent.classList.toggle("hide-after", !isScrollable || isAtEnd);
 	}
@@ -696,9 +670,9 @@ class UIManager {
 		this.elements.inputs.forEach(input => input.value = "");
 
 		// 그래프 및 텍스트 초기화
-		Utils.selectAll(".graph-bg > div").forEach(bar => bar.style.height = "0%");
-		Utils.selectAll(".graph-item dd").forEach(dd => dd.textContent = "0ml");
-		Utils.selectAll(".graph-item dt span:last-child").forEach(span => span.textContent = "");
+		Utils.selectAll(Config.Selectors.Graph.Bar).forEach(bar => bar.style.height = "0%");
+		Utils.selectAll(Config.Selectors.Graph.Result).forEach(dd => dd.textContent = "0ml");
+		Utils.selectAll(Config.Selectors.Graph.Text).forEach(span => span.textContent = "");
 
 		this.updateResetButtonState();
 		window.scrollTo({ top: 0, behavior: "smooth" });
@@ -733,7 +707,7 @@ class UIManager {
 		if (type === 'search') {
 			const input = Utils.select(Config.Selectors.Modals.Search.Input);
 			if (input) input.value = '';
-		} else if (type === 'install') {
+		} else if (type === Config.Selectors.Modals.Install.Type) {
 			this.deferInstallPrompt();
 		}
 	}
@@ -747,7 +721,7 @@ class UIManager {
 
 		const hideUntil = localStorage.getItem(Config.Data.InstallPromptKey);
 		if (!hideUntil || Date.now() > parseInt(hideUntil, 10)) {
-			this.openModal('install');
+			this.openModal(Config.Selectors.Modals.Install.Type);
 		}
 	}
 
@@ -772,8 +746,7 @@ class UIManager {
 		if (loading) loading.classList.add('active');
 
 		try {
-			// 원본 코드에 따른 UX를 위한 인위적 지연
-			await new Promise(r => setTimeout(r, 500));
+			await new Promise(r => setTimeout(r, Config.Animation.AlertFade)); // 인위적 지연
 
 			const data = await DataManager.loadData();
 			this.renderProductList(data);
@@ -811,14 +784,19 @@ class UIManager {
 		if (!list) return;
 
 		list.innerHTML = data.map(product => {
+			// XSS 방지를 위해 이스케이프 처리
+			const brand = Utils.escapeHtml(product.brand);
+			const prodName = Utils.escapeHtml(product.product);
+			const label = Utils.escapeHtml(product.label);
+
 			const buttons = Array.isArray(product.dilution)
 				? product.dilution.map((d, i) => this.createDilutionBtn(d, product.etc[i])).join('')
 				: this.createDilutionBtn(product.dilution, product.etc);
 
 			return `
                 <div class="product-item">
-                    <p class="brand ${product.label}">
-                        <span><strong>${product.brand}</strong> - ${product.product}</span>
+                    <p class="brand ${label}">
+                        <span><strong>${brand}</strong> - ${prodName}</span>
                     </p>
                     <div class="dilution-buttons">${buttons}</div>
                 </div>
@@ -833,8 +811,9 @@ class UIManager {
 	 * @returns {string} 버튼 HTML 문자열
 	 */
 	createDilutionBtn(dilution, etc) {
+		const safeEtc = Utils.escapeHtml(etc);
 		return `<button type="button" class="btn-modal-dilution" data-value="${dilution}">
-            <strong>1:${dilution}</strong> <span>(${etc})</span>
+            <strong>1:${dilution}</strong> <span>(${safeEtc})</span>
         </button>`;
 	}
 
@@ -845,7 +824,7 @@ class UIManager {
 	handleDilutionSelect(button) {
 		const value = button.dataset.value;
 		const tabId = this.getCurrentTabId();
-		const selector = tabId === 'tab1' ? Config.Selectors.Inputs.Tab1.Dilution : Config.Selectors.Inputs.Tab2.Dilution;
+		const selector = tabId === Config.Constants.TabIds.Tab1 ? Config.Selectors.Inputs.Tab1.Dilution : Config.Selectors.Inputs.Tab2.Dilution;
 
 		const input = Utils.select(selector);
 		if (input) {
@@ -864,10 +843,17 @@ class UIManager {
 	 * @param {number} value - 희석비 값
 	 */
 	showSelectedBrandAlert(button, value) {
-		const alertBox = Utils.select('.selected-brand-alert');
-		const brandHtml = button.closest('.product-item').querySelector('.brand').innerHTML;
-
+		const alertBox = this.elements.alertBox;
 		if (!alertBox) return;
+
+		// 기존 타이머가 있다면 취소 (연속 클릭 시 문제 방지)
+		if (this.alertTimer) {
+			clearTimeout(this.alertTimer);
+			alertBox.classList.remove('active');
+			alertBox.style.opacity = '0';
+		}
+
+		const brandHtml = button.closest('.product-item').querySelector('.brand').innerHTML;
 
 		alertBox.innerHTML = `
             <div class="inner">
@@ -881,17 +867,23 @@ class UIManager {
             </div>
         `;
 
-		alertBox.classList.add('active');
-		alertBox.style.opacity = '1';
+		// 리플로우를 위해 잠시 대기 후 활성화
+		requestAnimationFrame(() => {
+			alertBox.classList.add('active');
+			alertBox.style.opacity = '1';
+		});
 
-		setTimeout(() => {
-			alertBox.style.transition = 'opacity 500ms';
+		this.alertTimer = setTimeout(() => {
+			alertBox.style.transition = `opacity ${Config.Animation.AlertFade}ms`;
 			alertBox.style.opacity = '0';
-			setTimeout(() => {
+
+			const onTransitionEnd = () => {
 				alertBox.classList.remove('active');
 				alertBox.style.transition = '';
-			}, 500);
-		}, 3000);
+				alertBox.removeEventListener('transitionend', onTransitionEnd);
+			};
+			alertBox.addEventListener('transitionend', onTransitionEnd);
+		}, Config.Animation.AlertDuration);
 	}
 }
 
