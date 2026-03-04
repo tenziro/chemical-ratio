@@ -1,307 +1,13 @@
-/**
- * (R)atio - 세차용품 희석비 계산기
- * 모듈성, 가독성, 재사용성을 높이기 위해 리팩토링됨.
- */
-
-/**
- * 설정 및 상수
- */
-const Config = {
-	Selectors: {
-		Tabs: {
-			HeaderItems: ".tab-header .radio-label",
-			Radio: "#contents-tab1",
-			Bodies: ".tab-body",
-			Line: ".tab-line",
-			Radios: 'input[name="calculation"]'
-		},
-		Inputs: {
-			Tab1: {
-				Dilution: "#dilutionRatio",
-				Volume: "#waterVolume",
-				Container: "[data-tab='tab1']"
-			},
-			Tab2: {
-				Dilution: "#dilutionRatio2",
-				Volume: "#totalCapacity",
-				Container: "[data-tab='tab2']"
-			}
-		},
-		Buttons: {
-			Reset: ".btn-reset",
-			QuickRatio: ".btn-dilution-ratio, .btn-capacity-ratio",
-			ModalClose: ".btn-modal-close",
-			Search: ".btn-search",
-			Info: ".btn-information",
-			ModalDilution: ".btn-modal-dilution"
-		},
-		Modals: {
-			Trigger: "[data-open-modal]",
-			Container: ".modal",
-			Search: {
-				Id: "searchModal",
-				Input: "#searchInput",
-				List: ".product-list",
-				NoData: "#nodata",
-				Loading: "#result-data"
-			},
-			Install: {
-				Type: "install"
-			}
-		},
-		QuickArea: {
-			Container: ".quick-area",
-			Inner: ".inner"
-		},
-		Graph: {
-			Bar: ".graph-bg > div",
-			Text: ".graph-item dl dt span:last-child",
-			Result: ".graph-item dl dd"
-		},
-		Alert: {
-			Box: ".selected-brand-alert"
-		}
-	},
-	Data: {
-		Url: "src/data/data.json",
-		StorageKey: "productData",
-		InstallPromptKey: "hideInstallModalUntil",
-		ExpirationTime: 24 * 60 * 60 * 1000 // 24시간
-	},
-	Animation: {
-		Duration: 1000,
-		Ease: "cubic-bezier(0.06, 0.38, 0.13, 1)",
-		AlertDuration: 3000,
-		AlertFade: 500
-	},
-	Constants: {
-		TabIds: { Tab1: 'tab1', Tab2: 'tab2' },
-		Modes: { Water: 'water', Total: 'total' }
-	}
-};
-
-/**
- * 유틸리티 함수
- */
-class Utils {
-	/**
-	 * DOM 요소를 선택합니다.
-	 * @param {string} selector - CSS 선택자
-	 * @param {Element} parent - 검색할 부모 요소 (기본값: document)
-	 * @returns {Element} 선택된 요소
-	 */
-	static select(selector, parent = document) {
-		return parent.querySelector(selector);
-	}
-
-	/**
-	 * 모든 DOM 요소를 선택합니다.
-	 * @param {string} selector - CSS 선택자
-	 * @param {Element} parent - 검색할 부모 요소 (기본값: document)
-	 * @returns {NodeList} 선택된 요소 목록
-	 */
-	static selectAll(selector, parent = document) {
-		return parent.querySelectorAll(selector);
-	}
-
-	/**
-	 * 숫자를 포맷팅합니다 (최대 소수점 1자리).
-	 * @param {number} num - 포맷팅할 숫자
-	 * @returns {string} 포맷팅된 문자열
-	 */
-	static formatNumber(num) {
-		return num.toLocaleString('en-US', { maximumFractionDigits: 1 });
-	}
-
-	/**
-	 * 숫자에 천 단위 콤마를 추가합니다.
-	 * @param {number} num - 포맷팅할 숫자
-	 * @returns {string} 콤마가 추가된 문자열
-	 */
-	static addCommas(num) {
-		return num.toLocaleString('en-US');
-	}
-
-	/**
-	 * 문자열에서 콤마를 제거합니다.
-	 * @param {string} str - 콤마를 제거할 문자열
-	 * @returns {string} 콤마가 제거된 문자열
-	 */
-	static removeCommas(str) {
-		return str.replace(/,/g, '');
-	}
-
-	/**
-	 * 유효한 숫자인지 확인합니다.
-	 * @param {any} value - 확인할 값
-	 * @returns {boolean} 유효한 숫자 여부
-	 */
-	static isValidNumber(value) {
-		return typeof value === 'number' && isFinite(value);
-	}
-
-	/**
-	 * 입력 필드에서 숫자 값을 가져옵니다.
-	 * @param {string} selector - 입력 필드 선택자
-	 * @returns {number|null} 숫자 값 또는 null
-	 */
-	static getNumericValue(selector) {
-		const input = Utils.select(selector);
-		if (!input) return null;
-		const value = parseFloat(Utils.removeCommas(input.value));
-		return isNaN(value) ? null : value;
-	}
-
-	/**
-	 * 모바일 디바이스인지 확인합니다.
-	 * @returns {boolean} 모바일 여부
-	 */
-	static isMobile() {
-		return /iphone|ipad|android/i.test(navigator.userAgent);
-	}
-
-	/**
-	 * PWA 스탠드얼론 모드인지 확인합니다.
-	 * @returns {boolean} 스탠드얼론 모드 여부
-	 */
-	static isStandalone() {
-		return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-	}
-
-	/**
-	 * HTML 문자열을 이스케이프하여 XSS를 방지합니다.
-	 * @param {string} str - 입력 문자열
-	 * @returns {string} 이스케이프된 문자열
-	 */
-	static escapeHtml(str) {
-		if (!str) return '';
-		return str
-			.replace(/&/g, "&amp;")
-			.replace(/</g, "&lt;")
-			.replace(/>/g, "&gt;")
-			.replace(/"/g, "&quot;")
-			.replace(/'/g, "&#039;");
-	}
-}
-
-/**
- * 계산기 로직
- * 희석 계산을 위한 순수 로직
- */
-class Calculator {
-	/**
-	 * 모드에 따라 용량을 계산합니다.
-	 * @param {string} mode - 계산 모드 ('water' 또는 'total')
-	 * @param {number} ratio - 희석비
-	 * @param {number} volume - 입력 용량
-	 * @returns {Object} 계산된 결과
-	 */
-	static calculate(mode, ratio, volume) {
-		if (ratio <= 0 || volume <= 0) return { chemical: 0, water: 0, total: 0 };
-
-		let chemical, water, total;
-
-		if (mode === Config.Constants.Modes.Water) { // 탭 1: 물 용량 기준
-			chemical = volume / ratio;
-			water = volume;
-			total = chemical + water;
-		} else { // 탭 2: 전체 용량 기준
-			chemical = volume / (ratio + 1);
-			water = volume - chemical;
-			total = volume;
-		}
-
-		return {
-			chemical: this.sanitize(chemical),
-			water: this.sanitize(water),
-			total: this.sanitize(total)
-		};
-	}
-
-	/**
-	 * 숫자를 안전한 값으로 변환합니다 (무한대/NaN 처리).
-	 * @param {number} num - 입력 숫자
-	 * @returns {number} 안전한 숫자 (유효하지 않으면 0)
-	 */
-	static sanitize(num) {
-		return isFinite(num) ? num : 0;
-	}
-}
-
-/**
- * 데이터 관리자
- * 데이터 가져오기 및 저장 처리
- */
-class DataManager {
-	/**
-	 * 서버에서 데이터를 가져옵니다.
-	 * @returns {Promise<Array>} 데이터 배열
-	 */
-	static async fetchData() {
-		try {
-			const response = await fetch(Config.Data.Url);
-			if (!response.ok) throw new Error('Network response was not ok');
-			return await response.json();
-		} catch (error) {
-			console.error('Failed to fetch data:', error);
-			throw error;
-		}
-	}
-
-	/**
-	 * 로컬 스토리지 또는 서버에서 데이터를 로드합니다.
-	 * 만료 시간을 체크하여 데이터 갱신을 수행합니다.
-	 * @returns {Promise<Array>} 데이터 배열
-	 */
-	static async loadData() {
-		const storedData = localStorage.getItem(Config.Data.StorageKey);
-		const now = Date.now();
-
-		if (storedData) {
-			try {
-				const parsed = JSON.parse(storedData);
-				// 데이터 구조가 { timestamp: number, data: Array } 형태라고 가정하거나
-				// 하위 호환성을 위해 체크
-				if (parsed.timestamp && (now - parsed.timestamp < Config.Data.ExpirationTime)) {
-					return parsed.data;
-				}
-			} catch (e) {
-				console.warn("Data parsing error, fetching new data.");
-			}
-		}
-
-		// 데이터가 없거나 만료되었거나 파싱 오류 시 새로 가져옴
-		const data = await this.fetchData();
-		const storageItem = {
-			timestamp: now,
-			data: data
-		};
-		localStorage.setItem(Config.Data.StorageKey, JSON.stringify(storageItem));
-		return data;
-	}
-
-	/**
-	 * 검색어로 데이터를 필터링합니다.
-	 * @param {Array} data - 전체 데이터
-	 * @param {string} term - 검색어
-	 * @returns {Array} 필터링된 데이터
-	 */
-	static filterData(data, term) {
-		if (!term) return data;
-		const lowerTerm = term.toLowerCase();
-		return data.filter(item =>
-			item.brand.toLowerCase().includes(lowerTerm) ||
-			item.product.toLowerCase().includes(lowerTerm) ||
-			(item.label && item.label.toLowerCase().includes(lowerTerm))
-		);
-	}
-}
+import { Config } from './Config.js';
+import { Utils } from './Utils.js';
+import { Calculator } from './Calculator.js';
+import { DataManager } from './DataManager.js';
 
 /**
  * UI 관리자
  * DOM 조작 및 이벤트 처리
  */
-class UIManager {
+export class UIManager {
 	constructor () {
 		this.init();
 	}
@@ -550,6 +256,7 @@ class UIManager {
 
 		element.style.transition = 'none';
 		element.style.height = '0%';
+		element.classList.remove('has-liquid');
 		element.offsetHeight; // 리플로우 트리거
 
 		element.style.transition = `height ${Config.Animation.Duration}ms ${Config.Animation.Ease}`;
@@ -557,6 +264,9 @@ class UIManager {
 
 		requestAnimationFrame(() => {
 			element.style.height = `${percentage}%`;
+			if (percentage > 0) {
+				element.classList.add('has-liquid');
+			}
 		});
 	}
 
@@ -670,7 +380,10 @@ class UIManager {
 		this.elements.inputs.forEach(input => input.value = "");
 
 		// 그래프 및 텍스트 초기화
-		Utils.selectAll(Config.Selectors.Graph.Bar).forEach(bar => bar.style.height = "0%");
+		Utils.selectAll(Config.Selectors.Graph.Bar).forEach(bar => {
+			bar.style.height = "0%";
+			bar.classList.remove('has-liquid');
+		});
 		Utils.selectAll(Config.Selectors.Graph.Result).forEach(dd => dd.textContent = "0ml");
 		Utils.selectAll(Config.Selectors.Graph.Text).forEach(span => span.textContent = "");
 
@@ -886,10 +599,3 @@ class UIManager {
 		}, Config.Animation.AlertDuration);
 	}
 }
-
-/**
- * 앱 초기화
- */
-document.addEventListener("DOMContentLoaded", () => {
-	new UIManager();
-});

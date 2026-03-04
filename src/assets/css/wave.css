@@ -1,0 +1,109 @@
+/* 찰랑거리는 물결(Wave) 애니메이션 효과 css */
+.water-bar,
+.chemical-bar,
+.chemical-bar2,
+.total-bar {
+	position: relative;
+}
+
+.water-bar::before,
+.chemical-bar::before,
+.chemical-bar2::before,
+.total-bar::before {
+	content: "";
+	position: absolute;
+	top: -12px;
+	left: 0;
+	width: 200%;
+	height: 12px;
+	-webkit-mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 12" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,6 C25,12 25,0 50,6 C75,12 75,0 100,6 L100,12 L0,12 Z"/></svg>') repeat-x;
+	mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 12" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,6 C25,12 25,0 50,6 C75,12 75,0 100,6 L100,12 L0,12 Z"/></svg>') repeat-x;
+	-webkit-mask-size: 50px 12px;
+	mask-size: 50px 12px;
+	animation: wave-animation 1.5s linear infinite;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.3s;
+}
+
+/* .has-liquid 클래스가 추가되었을 때 물결 애니메이션 부드럽게 표시 */
+.water-bar.has-liquid::before,
+.chemical-bar.has-liquid::before,
+.chemical-bar2.has-liquid::before,
+.total-bar.has-liquid::before {
+	opacity: 1;
+}
+
+.water-bar.has-liquid::after,
+.chemical-bar.has-liquid::after,
+.chemical-bar2.has-liquid::after,
+.total-bar.has-liquid::after {
+	opacity: 0.5;
+}
+
+.water-bar::before {
+	background-color: var(--bg-water-bar);
+}
+
+.chemical-bar::before,
+.chemical-bar2::before {
+	background-color: var(--bg-chemical-bar);
+}
+
+.total-bar::before {
+	background-color: var(--bg-total-bar);
+}
+
+@keyframes wave-animation {
+	0% {
+		transform: translateX(0);
+	}
+
+	100% {
+		transform: translateX(-50px);
+	}
+}
+
+/* 약간의 입체감을 위해 이중 물결 레이어(after) 추가 */
+.water-bar::after,
+.chemical-bar::after,
+.chemical-bar2::after,
+.total-bar::after {
+	content: "";
+	position: absolute;
+	top: -15px;
+	left: -40px;
+	width: 200%;
+	height: 15px;
+	-webkit-mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 15" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,7.5 C25,15 25,0 50,7.5 C75,15 75,0 100,7.5 L100,15 L0,15 Z"/></svg>') repeat-x;
+	mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 15" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,7.5 C25,15 25,0 50,7.5 C75,15 75,0 100,7.5 L100,15 L0,15 Z"/></svg>') repeat-x;
+	-webkit-mask-size: 60px 15px;
+	mask-size: 60px 15px;
+	animation: wave-animation-reverse 2s linear infinite;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity 0.3s;
+}
+
+.water-bar::after {
+	background-color: var(--bg-water-bar);
+}
+
+.chemical-bar::after,
+.chemical-bar2::after {
+	background-color: var(--bg-chemical-bar);
+}
+
+.total-bar::after {
+	background-color: var(--bg-total-bar);
+}
+
+@keyframes wave-animation-reverse {
+	0% {
+		transform: translateX(-30px);
+	}
+
+	100% {
+		transform: translateX(30px);
+	}
+}

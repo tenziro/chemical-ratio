@@ -82,9 +82,9 @@ $breakpoint-mobile: 639px;
 	--sar: env(safe-area-inset-right);
 	--sab: env(safe-area-inset-bottom);
 	--sal: env(safe-area-inset-left);
-	--bg-total-bar: #0094378b;
-	--bg-water-bar: #1984ff8b;
-	--bg-chemical-bar: #ff5e198b;
+	--bg-total-bar: #79d39b;
+	--bg-water-bar: #74AFF2;
+	--bg-chemical-bar: #f7995a;
 	--globalnav-backdrop-filter: saturate(180%) blur(20px);
 }
 
@@ -606,11 +606,6 @@ summary {
 	flex-direction: column;
 	justify-content: flex-end;
 	padding-top: 20px;
-	> div {
-		&:nth-child(1) {
-			border-radius: 10px 10px 0 0;
-		}
-	}
 }
 .total-bar, .chemical-bar, .chemical-bar2, .water-bar {
 	flex: none;
