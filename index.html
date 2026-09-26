@@ -4,7 +4,7 @@
 <head>
 	<!-- 기본 메타 정보 -->
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 	<meta name="theme-color" content="#5F7FFF">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-title" content="(R)atio">
@@ -14,7 +14,6 @@
 	<!-- SEO 메타 태그 -->
 	<title>(R)atio - 세차용품 희석비 계산기</title>
 	<meta name="description" content="세차환자를 위한 세차용품 희석비 계산기입니다. 프리워시, 카샴푸 등 세차용품의 정확한 희석비를 쉽게 계산할 수 있습니다." />
-	<meta name="keywords" content="자동차, 세차, 세차환자, 세린이, 세차용품, 희석비, 케미컬, 프리워시, 카샴푸, 희석비 계산기, 세차 계산기, 세차용품 희석비, 세차용품 계산기">
 	<meta name="author" content="tenziro">
 	<meta name="robots" content="index, follow">
 	<meta name="language" content="Korean">
@@ -37,10 +36,15 @@
 	<meta property="twitter:description" content="세차환자를 위한 세차용품 희석비 계산기입니다. 프리워시, 카샴푸 등 세차용품의 정확한 희석비를 쉽게 계산할 수 있습니다." />
 	<meta property="twitter:image" content="https://ratio.tenziro.net/src/assets/images/img-meta-2025.png" />
 
+	<!-- 리소스 힌트 -->
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 	<!-- 리소스 링크 -->
-	<link rel="stylesheet" href="src/assets/css/common.css?v=2025032801" as="style">
-	<link rel="stylesheet" href="src/assets/css/wave.css?v=2025032801" as="style">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" as="style">
+	<link rel="stylesheet" href="src/assets/css/common.css?v=2026041901">
+	<link rel="stylesheet" href="src/assets/css/wave.css?v=2026041901">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.24.0/dist/tabler-icons.min.css">
 
 	<!-- 파비콘 -->
 	<link rel="icon" type="image/png" sizes="192x192" href="src/assets/images/android-icon-192x192.png">
@@ -163,11 +167,11 @@
 					<div class="inner"></div>
 				</div>
 				<div class="tab-body" data-tab="tab1" role="tabpanel" aria-labelledby="contents-tab1" id="tab1">
-					<form class="form" role="form" aria-label="물 용량 대비 계산" method="post" action="#">
+					<form class="form" aria-label="물 용량 대비 계산" onsubmit="return false">
 						<dl>
 							<dt><label for="dilutionRatio" id="dilutionRatioLabel"><sup>희석 비율</sup></label></dt>
 							<dd>
-								<input type="tel" id="dilutionRatio" placeholder="비율 입력" maxlength="5" aria-labelledby="dilutionRatioLabel" aria-describedby="dilutionRatioDesc">
+								<input type="tel" id="dilutionRatio" inputmode="numeric" placeholder="예: 1:30 → 30 입력" maxlength="5" aria-labelledby="dilutionRatioLabel" aria-describedby="dilutionRatioDesc">
 								<div class="quick-area" id="dilutionRatioDesc" aria-hidden="true">
 									<div class="inner">
 										<button type="button" class="btn-quick btn-dilution-ratio" data-value="10" aria-label="희석 비율 10 추가">+10</button>
@@ -182,7 +186,7 @@
 						<dl>
 							<dt><label for="waterVolume" id="waterVolumeLabel"><sup>물 용량(ml)</sup></label></dt>
 							<dd>
-								<input type="tel" id="waterVolume" placeholder="용량(ml) 입력" maxlength="7" aria-labelledby="waterVolumeLabel">
+								<input type="tel" id="waterVolume" inputmode="numeric" placeholder="용량(ml) 입력" maxlength="7" aria-labelledby="waterVolumeLabel">
 								<div class="quick-area">
 									<div class="inner">
 										<button type="button" class="btn-quick btn-capacity-ratio" data-value="100" aria-label="물 용량 100ml 추가">+100ml</button>
@@ -223,11 +227,11 @@
 					</div>
 				</div>
 				<div class="tab-body" data-tab="tab2" role="tabpanel" aria-labelledby="contents-tab2" id="tab2">
-					<form class="form" role="form" aria-label="전체 용량 대비 계산" method="post" action="#">
+					<form class="form" aria-label="전체 용량 대비 계산" onsubmit="return false">
 						<dl>
 							<dt><label for="dilutionRatio2" id="dilutionRatio2Label"><sup>희석 비율</sup></label></dt>
 							<dd>
-								<input type="tel" id="dilutionRatio2" placeholder="비율 입력" maxlength="5" aria-labelledby="dilutionRatio2Label">
+								<input type="tel" id="dilutionRatio2" inputmode="numeric" placeholder="예: 1:30 → 30 입력" maxlength="5" aria-labelledby="dilutionRatio2Label">
 								<div class="quick-area">
 									<div class="inner">
 										<button type="button" class="btn-quick btn-dilution-ratio" data-value="10" aria-label="희석 비율 10 추가">+10</button>
@@ -242,7 +246,7 @@
 						<dl>
 							<dt><label for="totalCapacity" id="totalCapacityLabel"><sup>전체 용량(ml)</sup></label></dt>
 							<dd>
-								<input type="tel" id="totalCapacity" placeholder="용량(ml) 입력" maxlength="7" aria-labelledby="totalCapacityLabel">
+								<input type="tel" id="totalCapacity" inputmode="numeric" placeholder="용량(ml) 입력" maxlength="7" aria-labelledby="totalCapacityLabel">
 								<div class="quick-area">
 									<div class="inner">
 										<button type="button" class="btn-quick btn-capacity-ratio" data-value="100" aria-label="전체 용량 100ml 추가">+100ml</button>
@@ -315,8 +319,9 @@
 				<button class="btn-modal-close ti ti-x" aria-label="검색 모달 닫기"></button>
 				<div class="modal-contents">
 					<h1 id="searchModalTitle">제품 검색 💁🏻</h1>
-					<input type="text" id="searchInput" placeholder="검색어를 입력하고 엔터키를 누르세요." aria-label="제품 검색어 입력">
-					<div id="result-data" class="result-msg" role="status">
+					<input type="search" id="searchInput" placeholder="브랜드·제품·용도(예: 폼랜스)로 검색" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="제품 검색" aria-describedby="searchHint">
+					<p id="searchHint" class="sr-only">입력 즉시 결과가 필터링됩니다. 엔터를 눌러 즉시 검색할 수도 있습니다.</p>
+					<div id="result-data" class="result-msg" role="status" aria-live="polite">
 						<div class="data-loading-icon" role="presentation">
 							<div class="slice"></div>
 							<div class="slice"></div>
@@ -327,10 +332,10 @@
 						</div>
 						<p class="msg">데이터를 불러오는 중입니다.</p>
 					</div>
-					<div class="product-list" role="list"></div>
-					<div id="nodata" class="result-msg" role="alert">
+					<div class="product-list" role="list" aria-live="polite"></div>
+					<div id="nodata" class="result-msg" role="status">
 						<i class="ti ti-alert-triangle-filled" aria-hidden="true"></i>
-						<p class="msg">검색결과가 없습니다.</p>
+						<p class="msg">검색결과가 없습니다. 다른 키워드를 시도해 보세요.</p>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -386,7 +391,7 @@
 			</div>
 		</div>
 	</div>
-	<script type="module" src="src/assets/js/app.js?v=2026030401"></script>
+	<script type="module" src="src/assets/js/app.js?v=2026041901"></script>
 </body>
 
 </html>

@@ -5,31 +5,33 @@ import { DataManager } from './DataManager.js';
 
 /**
  * UI 관리자
- * DOM 조작 및 이벤트 처리
+ * DOM 조작, 이벤트 처리, 상태 동기화
  */
 export class UIManager {
-	constructor () {
+	constructor() {
+		this.searchDebounceId = null;
+		this.numberRaf = new WeakMap();
+		this.alertTimer = null;
+		this.alertTransitionHandler = null;
+		this.lastFocusedBeforeModal = null;
+		this.firstCalcDone = !!Utils.storageGet(Config.Data.InstallSeenKey);
 		this.init();
 	}
 
-	/**
-	 * UI 관리자를 초기화합니다.
-	 */
 	init() {
 		this.cacheElements();
+		this.syncTabAria();
 		this.bindEvents();
-		this.setupTabs();
-		this.checkInstallModal();
-
-		// 초기 설정
-		window.addEventListener("resize", () => this.updateQuickAreaScroll());
+		this.handleTabChange({ resetInputs: false });
 		this.updateQuickAreaScroll();
 	}
 
-	/**
-	 * 주요 DOM 요소를 캐싱합니다.
-	 */
+	// ---------------------------------------------------------------------
+	// 초기 캐싱
+	// ---------------------------------------------------------------------
 	cacheElements() {
+		const containerOf = (tabId) => Utils.select(`[data-tab='${tabId}']`);
+
 		this.elements = {
 			tabRadios: Utils.selectAll(Config.Selectors.Tabs.Radios),
 			tabLine: Utils.select(Config.Selectors.Tabs.Line),
@@ -38,77 +40,112 @@ export class UIManager {
 			quickAreas: Utils.selectAll(`${Config.Selectors.QuickArea.Container} ${Config.Selectors.QuickArea.Inner}`),
 			inputs: Utils.selectAll("input[type='tel']"),
 			modals: Utils.selectAll(Config.Selectors.Modals.Container),
-			alertBox: Utils.select(Config.Selectors.Alert.Box)
+			alertBox: Utils.select(Config.Selectors.Alert.Box),
+			searchInput: Utils.select(Config.Selectors.Modals.Search.Input)
+		};
+
+		const tab1Container = containerOf(Config.Constants.TabIds.Tab1);
+		const tab2Container = containerOf(Config.Constants.TabIds.Tab2);
+
+		this.perTab = {
+			[Config.Constants.TabIds.Tab1]: {
+				container: tab1Container,
+				chemicalRatioText: tab1Container?.querySelector('.chemical-ratio'),
+				totalRatioText: tab1Container?.querySelector('.total-ratio'),
+				chemicalResult: tab1Container?.querySelector('.chemical-result'),
+				otherResult: tab1Container?.querySelector('.water-result'),
+				chemicalBar: tab1Container?.querySelector('.chemical-bar'),
+				otherBar: tab1Container?.querySelector('.water-bar')
+			},
+			[Config.Constants.TabIds.Tab2]: {
+				container: tab2Container,
+				chemicalRatioText: tab2Container?.querySelector('.chemical-ratio'),
+				totalRatioText: tab2Container?.querySelector('.total-ratio'),
+				chemicalResult: tab2Container?.querySelector('.chemical-result'),
+				otherResult: tab2Container?.querySelector('.total-result'),
+				chemicalBar: tab2Container?.querySelector('.chemical-bar2'),
+				otherBar: tab2Container?.querySelector('.total-bar')
+			}
 		};
 	}
 
-	/**
-	 * 이벤트 리스너를 바인딩합니다.
-	 */
+	// ---------------------------------------------------------------------
+	// 이벤트 바인딩
+	// ---------------------------------------------------------------------
 	bindEvents() {
-		// 전역 클릭 위임
-		document.addEventListener("click", (e) => this.handleGlobalClick(e));
+		document.addEventListener('click', (e) => this.handleGlobalClick(e));
+		document.addEventListener('keydown', (e) => this.handleGlobalKeydown(e));
 
-		// 입력 포맷팅 및 계산
 		this.elements.inputs.forEach(input => {
-			input.addEventListener("input", (e) => this.handleInput(e));
+			input.addEventListener('input', (e) => this.handleInput(e));
 		});
 
-		// 탭 전환
 		this.elements.tabRadios.forEach(radio => {
-			radio.addEventListener("change", () => this.handleTabChange());
+			radio.addEventListener('change', () => this.handleTabChange({ resetInputs: false }));
 		});
 
-		// 퀵 영역 스크롤
 		this.elements.quickAreas.forEach(area => {
-			area.addEventListener("scroll", () => this.updateQuickAreaScrollState(area));
+			area.addEventListener('scroll', () => this.updateQuickAreaScrollState(area));
 		});
 
-		// 검색 입력
-		const searchInput = Utils.select(Config.Selectors.Modals.Search.Input);
-		if (searchInput) {
-			searchInput.addEventListener("keyup", (e) => {
-				if (e.key === 'Enter') this.handleSearch(e.target.value);
+		if (this.elements.searchInput) {
+			// 실시간 필터 (디바운스) + Enter 시 즉시 실행
+			this.elements.searchInput.addEventListener('input', (e) => {
+				window.clearTimeout(this.searchDebounceId);
+				this.searchDebounceId = window.setTimeout(() => this.handleSearch(e.target.value), 120);
+			});
+			this.elements.searchInput.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+					window.clearTimeout(this.searchDebounceId);
+					this.handleSearch(e.target.value);
+				}
 			});
 		}
+
+		// 배경 클릭으로 모달 닫기
+		this.elements.modals.forEach(modal => {
+			modal.addEventListener('click', (e) => {
+				if (e.target === modal) this.closeModal(modal);
+			});
+		});
+
+		window.addEventListener('resize', () => this.updateQuickAreaScroll());
 	}
 
-	/**
-	 * 전역 클릭 이벤트를 처리합니다 (위임 패턴).
-	 * @param {Event} e - 클릭 이벤트 객체
-	 */
 	handleGlobalClick(e) {
 		const target = e.target;
 
-		// 모달 열기
 		const modalTrigger = target.closest(Config.Selectors.Modals.Trigger);
 		if (modalTrigger) {
-			this.openModal(modalTrigger.dataset.openModal);
+			this.openModal(modalTrigger.dataset.openModal, modalTrigger);
 			return;
 		}
 
-		// 모달 닫기
 		const closeBtn = target.closest(Config.Selectors.Buttons.ModalClose);
 		if (closeBtn) {
 			this.closeModal(closeBtn.closest(Config.Selectors.Modals.Container));
 			return;
 		}
 
-		// 초기화
-		const resetBtn = target.closest(Config.Selectors.Buttons.Reset);
-		if (resetBtn) {
-			this.resetAll();
+		const alertClose = target.closest(Config.Selectors.Buttons.AlertClose);
+		if (alertClose) {
+			this.hideBrandAlert();
 			return;
 		}
 
-		// 빠른 비율 버튼
+		const resetBtn = target.closest(Config.Selectors.Buttons.Reset);
+		if (resetBtn) {
+			this.resetAll({ scroll: false });
+			return;
+		}
+
 		const quickBtn = target.closest(Config.Selectors.Buttons.QuickRatio);
 		if (quickBtn) {
 			this.handleQuickRatioClick(quickBtn);
 			return;
 		}
 
-		// 모달 내 희석비 선택
 		const dilutionBtn = target.closest(Config.Selectors.Buttons.ModalDilution);
 		if (dilutionBtn) {
 			this.handleDilutionSelect(dilutionBtn);
@@ -116,195 +153,209 @@ export class UIManager {
 		}
 	}
 
-	/**
-	 * 탭 초기 설정을 수행합니다.
-	 */
-	setupTabs() {
-		this.handleTabChange();
+	handleGlobalKeydown(e) {
+		if (e.key === 'Escape') {
+			const openModal = Utils.select(Config.Selectors.Modals.Backdrop);
+			if (openModal) {
+				this.closeModal(openModal);
+				return;
+			}
+			if (this.elements.alertBox?.classList.contains('active')) {
+				this.hideBrandAlert();
+			}
+		}
 	}
 
-	/**
-	 * 탭 변경 시 UI를 업데이트합니다.
-	 */
-	handleTabChange() {
+	// ---------------------------------------------------------------------
+	// 탭
+	// ---------------------------------------------------------------------
+	handleTabChange({ resetInputs = false } = {}) {
 		const activeTabId = this.getCurrentTabId();
 
 		this.elements.tabs.forEach(tab => {
-			tab.classList.toggle("active", tab.dataset.tab === activeTabId);
+			const active = tab.dataset.tab === activeTabId;
+			tab.classList.toggle('active', active);
 		});
 
+		this.syncTabAria();
+
 		if (this.elements.tabLine) {
-			this.elements.tabLine.style.transform = `translateX(${activeTabId === Config.Constants.TabIds.Tab1 ? 0 : 100}%)`;
+			const offset = activeTabId === Config.Constants.TabIds.Tab1 ? 0 : 100;
+			this.elements.tabLine.style.transform = `translateX(${offset}%)`;
 		}
 
 		this.resetQuickAreaScroll();
-		this.resetAll();
+		if (resetInputs) {
+			this.resetAll({ scroll: false });
+		} else {
+			// 입력 유지: 결과만 활성 탭 기준으로 다시 계산
+			this.updateCalculation();
+			this.updateResetButtonState();
+		}
 	}
 
-	/**
-	 * 현재 활성화된 탭 ID를 반환합니다.
-	 * @returns {string} 'tab1' 또는 'tab2'
-	 */
+	syncTabAria() {
+		const activeTabId = this.getCurrentTabId();
+		this.elements.tabRadios.forEach(radio => {
+			const controlledId = radio.getAttribute('aria-controls') || radio.id.replace('contents-', '');
+			radio.setAttribute('aria-selected', String(controlledId === activeTabId));
+		});
+		this.elements.tabs.forEach(tab => {
+			tab.setAttribute('aria-hidden', String(tab.dataset.tab !== activeTabId));
+		});
+	}
+
 	getCurrentTabId() {
-		return Utils.select(Config.Selectors.Tabs.Radio).checked ? Config.Constants.TabIds.Tab1 : Config.Constants.TabIds.Tab2;
+		const checked = Utils.select(Config.Selectors.Tabs.Checked);
+		if (!checked) return Config.Constants.TabIds.Tab1;
+		return checked.id === 'contents-tab2' ? Config.Constants.TabIds.Tab2 : Config.Constants.TabIds.Tab1;
 	}
 
-	/**
-	 * 입력 필드 변경 이벤트를 처리합니다.
-	 * @param {Event} e - 입력 이벤트 객체
-	 */
+	// ---------------------------------------------------------------------
+	// 입력 / 계산
+	// ---------------------------------------------------------------------
 	handleInput(e) {
 		const input = e.target;
-		let value = Utils.removeCommas(input.value);
-		const num = Number(value);
+		const raw = Utils.removeCommas(input.value);
 
-		if (num < 1 && value !== "") {
-			input.value = "";
-		} else if (Utils.isValidNumber(num)) {
-			input.value = Utils.addCommas(num);
+		if (raw === '') {
+			input.value = '';
+		} else {
+			const num = Number(raw);
+			if (Number.isNaN(num)) {
+				input.value = '';
+			} else if (num < 1) {
+				input.value = '';
+			} else if (Utils.isValidNumber(num)) {
+				input.value = Utils.addCommas(num);
+			}
 		}
 
 		this.updateCalculation();
 		this.updateResetButtonState();
 	}
 
-	/**
-	 * 현재 입력값에 따라 계산을 수행하고 결과를 업데이트합니다.
-	 */
 	updateCalculation() {
 		const tabId = this.getCurrentTabId();
 		const isTab1 = tabId === Config.Constants.TabIds.Tab1;
-
 		const selectors = isTab1 ? Config.Selectors.Inputs.Tab1 : Config.Selectors.Inputs.Tab2;
 		const ratio = Utils.getNumericValue(selectors.Dilution);
 		const volume = Utils.getNumericValue(selectors.Volume);
 
 		if (ratio === null || volume === null) return;
 
-		const result = Calculator.calculate(isTab1 ? Config.Constants.Modes.Water : Config.Constants.Modes.Total, ratio, volume);
+		const mode = isTab1 ? Config.Constants.Modes.Water : Config.Constants.Modes.Total;
+		const result = Calculator.calculate(mode, ratio, volume);
 		this.renderResults(tabId, result, ratio);
+		this.markFirstCalcIfNeeded(ratio, volume);
 	}
 
-	/**
-	 * 계산 결과를 화면에 표시합니다.
-	 * @param {string} tabId - 탭 ID
-	 * @param {Object} result - 계산 결과
-	 * @param {number} ratio - 희석비
-	 */
 	renderResults(tabId, result, ratio) {
-		const container = Utils.select(`[data-tab='${tabId}']`);
+		const refs = this.perTab[tabId];
+		if (!refs?.container) return;
+		const isTab1 = tabId === Config.Constants.TabIds.Tab1;
 
-		// 텍스트 업데이트
-		const chemicalRatioText = container.querySelector(".chemical-ratio");
-		const totalRatioText = container.querySelector(".total-ratio");
-
-		if (chemicalRatioText) chemicalRatioText.innerText = `(희석비 - 1:${Utils.formatNumber(ratio)})`;
-		if (totalRatioText) {
-			totalRatioText.innerText = tabId === Config.Constants.TabIds.Tab1
+		if (refs.chemicalRatioText) {
+			refs.chemicalRatioText.textContent = `(희석비 - 1:${Utils.formatNumber(ratio)})`;
+		}
+		if (refs.totalRatioText) {
+			refs.totalRatioText.textContent = isTab1
 				? `(전체 용량 - ${Utils.formatNumber(result.total)}ml)`
 				: `(물 용량 - ${Utils.formatNumber(result.water)}ml)`;
 		}
 
-		// 숫자 애니메이션
-		this.animateNumber(container.querySelector(".chemical-result"), result.chemical);
-		this.animateNumber(container.querySelector(tabId === Config.Constants.TabIds.Tab1 ? ".water-result" : ".total-result"),
-			tabId === Config.Constants.TabIds.Tab1 ? result.water : result.total);
-
-		// 그래프 업데이트
-		this.updateGraph(container, result, ratio, tabId);
+		this.animateNumber(refs.chemicalResult, result.chemical);
+		this.animateNumber(refs.otherResult, isTab1 ? result.water : result.total);
+		this.updateGraph(refs, result, tabId);
 	}
 
 	/**
-	 * 그래프 바를 업데이트합니다.
-	 * @param {Element} container - 컨테이너 요소
-	 * @param {Object} result - 계산 결과
-	 * @param {number} ratio - 희석비
-	 * @param {string} tabId - 탭 ID
+	 * 시각적 식별성을 위해 케미컬 바는 최소 가시 높이를 적용하되,
+	 * 실제 비율 대비 과장된 수치가 아니라는 의미로 `data-scaled` 속성에 기록합니다.
 	 */
-	updateGraph(container, result, ratio, tabId) {
-		const bars = container.querySelectorAll(Config.Selectors.Graph.Bar);
-		if (bars.length < 2) return;
-
-		let chemicalPct, otherPct;
+	updateGraph(refs, result, tabId) {
 		const totalBase = tabId === Config.Constants.TabIds.Tab1 ? result.water : result.total;
 
+		let chemicalPct = 0;
+		let otherPct = 0;
+
 		if (totalBase > 0) {
-			const baseChemicalPct = (result.chemical / totalBase) * 100;
-			// 시각적 효과를 위해 비율을 조정
-			const adjustedPct = baseChemicalPct * 200;
-			chemicalPct = Math.min(adjustedPct, 100);
+			const actualPct = (result.chemical / totalBase) * 100;
+			// 과도한 스케일링(200배) 대신, 최소 가시 높이(2%)를 보장하는 선형 보정
+			chemicalPct = Math.min(Math.max(actualPct, actualPct > 0 ? 2 : 0), 100);
 			otherPct = 100;
-		} else {
-			chemicalPct = 0;
-			otherPct = 0;
+			if (refs.chemicalBar) refs.chemicalBar.dataset.actualRatio = actualPct.toFixed(2);
 		}
 
-		const chemicalBar = container.querySelector(tabId === Config.Constants.TabIds.Tab1 ? ".chemical-bar" : ".chemical-bar2");
-		const otherBar = container.querySelector(tabId === Config.Constants.TabIds.Tab1 ? ".water-bar" : ".total-bar");
-
-		this.animateBar(otherBar, otherPct);
-		this.animateBar(chemicalBar, chemicalPct);
+		this.animateBar(refs.otherBar, otherPct);
+		this.animateBar(refs.chemicalBar, chemicalPct);
 	}
 
-	/**
-	 * 그래프 바 애니메이션을 실행합니다.
-	 * @param {Element} element - 애니메이션할 요소
-	 * @param {number} percentage - 목표 높이 퍼센트
-	 */
 	animateBar(element, percentage) {
 		if (!element) return;
+
+		if (Utils.prefersReducedMotion()) {
+			element.style.transition = 'none';
+			element.style.height = `${percentage}%`;
+			element.classList.toggle('has-liquid', percentage > 0);
+			return;
+		}
 
 		element.style.transition = 'none';
 		element.style.height = '0%';
 		element.classList.remove('has-liquid');
-		element.offsetHeight; // 리플로우 트리거
+		void element.offsetHeight; // 리플로우 트리거 (의도됨)
 
 		element.style.transition = `height ${Config.Animation.Duration}ms ${Config.Animation.Ease}`;
 		element.style.willChange = 'height';
 
 		requestAnimationFrame(() => {
 			element.style.height = `${percentage}%`;
-			if (percentage > 0) {
-				element.classList.add('has-liquid');
-			}
+			if (percentage > 0) element.classList.add('has-liquid');
 		});
 	}
 
 	/**
-	 * 숫자 카운팅 애니메이션을 실행합니다.
-	 * @param {Element} element - 표시할 요소
-	 * @param {number} target - 목표 값
+	 * 숫자 카운팅 애니메이션. 기존 RAF를 취소하여 연속 입력 시 깜빡임을 방지합니다.
 	 */
 	animateNumber(element, target) {
 		if (!element) return;
+
+		const prevRaf = this.numberRaf.get(element);
+		if (prevRaf) cancelAnimationFrame(prevRaf);
+
 		if (target <= 0) {
-			element.textContent = "0ml";
+			element.textContent = '0ml';
+			this.numberRaf.delete(element);
+			return;
+		}
+
+		if (Utils.prefersReducedMotion()) {
+			element.textContent = `${Utils.formatNumber(target)}ml`;
 			return;
 		}
 
 		const start = performance.now();
 		const duration = Config.Animation.Duration;
 
-		const animate = (time) => {
-			const timeFraction = (time - start) / duration;
-			if (timeFraction > 1) {
+		const step = (time) => {
+			const fraction = (time - start) / duration;
+			if (fraction >= 1) {
 				element.textContent = `${Utils.formatNumber(target)}ml`;
+				this.numberRaf.delete(element);
 				return;
 			}
-
-			const progress = 1 - Math.pow(1 - timeFraction, 2); // easeOutQuad
-			const current = Math.floor(target * progress);
-			element.textContent = `${Utils.formatNumber(current)}ml`;
-			requestAnimationFrame(animate);
+			const progress = 1 - Math.pow(1 - fraction, 2);
+			element.textContent = `${Utils.formatNumber(target * progress)}ml`;
+			this.numberRaf.set(element, requestAnimationFrame(step));
 		};
 
-		requestAnimationFrame(animate);
+		this.numberRaf.set(element, requestAnimationFrame(step));
 	}
 
-	/**
-	 * 빠른 비율 버튼 클릭을 처리합니다.
-	 * @param {Element} button - 클릭된 버튼
-	 */
+	// ---------------------------------------------------------------------
+	// 퀵 버튼
+	// ---------------------------------------------------------------------
 	handleQuickRatioClick(button) {
 		const value = button.dataset.value;
 		if (!value) return;
@@ -312,232 +363,247 @@ export class UIManager {
 		const tabBody = button.closest('.tab-body');
 		const tabId = tabBody.dataset.tab;
 		const isDilution = button.classList.contains('btn-dilution-ratio');
-
-		const selectors = tabId === Config.Constants.TabIds.Tab1 ? Config.Selectors.Inputs.Tab1 : Config.Selectors.Inputs.Tab2;
+		const selectors = tabId === Config.Constants.TabIds.Tab1
+			? Config.Selectors.Inputs.Tab1
+			: Config.Selectors.Inputs.Tab2;
 		const targetSelector = isDilution ? selectors.Dilution : selectors.Volume;
 		const input = Utils.select(targetSelector);
+		if (!input) return;
 
-		if (input) {
-			const currentVal = parseFloat(Utils.removeCommas(input.value)) || 0;
-			const addVal = parseFloat(value);
-			const newVal = currentVal + addVal;
-			input.value = Utils.addCommas(newVal);
+		const currentVal = parseFloat(Utils.removeCommas(input.value)) || 0;
+		const newVal = currentVal + parseFloat(value);
+		input.value = Utils.addCommas(newVal);
 
-			this.updateCalculation();
-			this.updateResetButtonState();
-		}
+		this.updateCalculation();
+		this.updateResetButtonState();
 	}
 
-	/**
-	 * 모든 퀵 영역의 스크롤 상태를 업데이트합니다.
-	 */
+	// ---------------------------------------------------------------------
+	// 퀵 영역 스크롤 상태
+	// ---------------------------------------------------------------------
 	updateQuickAreaScroll() {
 		this.elements.quickAreas.forEach(area => this.updateQuickAreaScrollState(area));
 	}
 
-	/**
-	 * 개별 퀵 영역의 스크롤 상태(그림자 표시 등)를 업데이트합니다.
-	 * @param {Element} area - 퀵 영역 요소
-	 */
 	updateQuickAreaScrollState(area) {
 		const parent = area.parentElement;
 		if (!parent) return;
-
 		const { scrollWidth, clientWidth, scrollLeft } = area;
 		const isScrollable = scrollWidth > clientWidth;
 		const isAtEnd = scrollWidth - scrollLeft <= clientWidth + 1;
-
-		parent.classList.toggle("hide-after", !isScrollable || isAtEnd);
+		parent.classList.toggle('hide-after', !isScrollable || isAtEnd);
 	}
 
-	/**
-	 * 퀵 영역 스크롤을 초기화합니다.
-	 */
 	resetQuickAreaScroll() {
 		this.elements.quickAreas.forEach(area => {
 			area.scrollLeft = 0;
-			area.parentElement.classList.remove('hide-after');
+			area.parentElement?.classList.remove('hide-after');
 			this.updateQuickAreaScrollState(area);
 		});
 	}
 
-	/**
-	 * 초기화 버튼의 활성/비활성 상태를 업데이트합니다.
-	 */
+	// ---------------------------------------------------------------------
+	// 리셋
+	// ---------------------------------------------------------------------
 	updateResetButtonState() {
 		this.elements.resetBtns.forEach(btn => {
-			const tab = btn.closest("[data-tab]");
-			const inputs = tab.querySelectorAll("input");
-			const hasValue = Array.from(inputs).some(input => input.value.trim() !== "");
+			const tab = btn.closest('[data-tab]');
+			const inputs = tab.querySelectorAll('input');
+			const hasValue = Array.from(inputs).some(input => input.value.trim() !== '');
 			btn.disabled = !hasValue;
 		});
 	}
 
 	/**
-	 * 모든 입력과 결과를 초기화합니다.
+	 * 입력/결과를 초기화합니다. 기본적으로 강제 스크롤은 하지 않습니다.
 	 */
-	resetAll() {
-		this.elements.inputs.forEach(input => input.value = "");
+	resetAll({ scroll = false } = {}) {
+		this.elements.inputs.forEach(input => { input.value = ''; });
 
-		// 그래프 및 텍스트 초기화
 		Utils.selectAll(Config.Selectors.Graph.Bar).forEach(bar => {
-			bar.style.height = "0%";
+			bar.style.height = '0%';
 			bar.classList.remove('has-liquid');
 		});
-		Utils.selectAll(Config.Selectors.Graph.Result).forEach(dd => dd.textContent = "0ml");
-		Utils.selectAll(Config.Selectors.Graph.Text).forEach(span => span.textContent = "");
+		Utils.selectAll(Config.Selectors.Graph.Result).forEach(el => { el.textContent = '0ml'; });
+		Utils.selectAll(Config.Selectors.Graph.Text).forEach(el => { el.textContent = ''; });
 
 		this.updateResetButtonState();
-		window.scrollTo({ top: 0, behavior: "smooth" });
+		if (scroll) window.scrollTo({ top: 0, behavior: 'smooth' });
 	}
 
-	/**
-	 * 모달을 엽니다.
-	 * @param {string} type - 모달 타입 ('search', 'install' 등)
-	 */
-	openModal(type) {
+	// ---------------------------------------------------------------------
+	// 모달
+	// ---------------------------------------------------------------------
+	openModal(type, trigger = null) {
 		const modal = Utils.select(`.modal[data-modal-type="${type}"]`);
-		if (modal) {
-			modal.classList.add("active");
-			document.body.classList.add("hidden-scroll");
+		if (!modal) return;
 
-			if (type === 'search') {
-				this.initSearchModal();
-			}
+		this.lastFocusedBeforeModal = trigger || document.activeElement;
+
+		modal.classList.add('active');
+		modal.setAttribute('aria-hidden', 'false');
+		document.body.classList.add('hidden-scroll');
+
+		// 트리거 버튼 aria-expanded 동기화
+		if (trigger?.hasAttribute('aria-expanded')) {
+			trigger.setAttribute('aria-expanded', 'true');
 		}
+
+		if (type === Config.Selectors.Modals.Search.Type) {
+			this.initSearchModal();
+		}
+
+		this.focusFirstElement(modal, type);
 	}
 
-	/**
-	 * 모달을 닫습니다.
-	 * @param {Element} modal - 닫을 모달 요소
-	 */
+	focusFirstElement(modal, type) {
+		// 검색 모달은 인풋으로, 그 외는 닫기 버튼으로 포커스 이동
+		requestAnimationFrame(() => {
+			if (type === Config.Selectors.Modals.Search.Type && this.elements.searchInput) {
+				this.elements.searchInput.focus();
+				return;
+			}
+			const closeBtn = modal.querySelector(Config.Selectors.Buttons.ModalClose);
+			if (closeBtn) closeBtn.focus();
+		});
+	}
+
 	closeModal(modal) {
 		if (!modal) return;
-		modal.classList.remove("active");
-		document.body.classList.remove("hidden-scroll");
+		modal.classList.remove('active');
+		modal.setAttribute('aria-hidden', 'true');
+		document.body.classList.remove('hidden-scroll');
 
 		const type = modal.dataset.modalType;
-		if (type === 'search') {
-			const input = Utils.select(Config.Selectors.Modals.Search.Input);
-			if (input) input.value = '';
+
+		// 대응하는 트리거의 aria-expanded 초기화
+		const trigger = Utils.select(`[data-open-modal="${type}"]`);
+		if (trigger?.hasAttribute('aria-expanded')) {
+			trigger.setAttribute('aria-expanded', 'false');
+		}
+
+		if (type === Config.Selectors.Modals.Search.Type) {
+			if (this.elements.searchInput) this.elements.searchInput.value = '';
 		} else if (type === Config.Selectors.Modals.Install.Type) {
 			this.deferInstallPrompt();
 		}
+
+		// 포커스 복귀
+		if (this.lastFocusedBeforeModal && typeof this.lastFocusedBeforeModal.focus === 'function') {
+			this.lastFocusedBeforeModal.focus();
+		}
+		this.lastFocusedBeforeModal = null;
 	}
 
-	/**
-	 * 설치 유도 모달 표시 여부를 확인하고 표시합니다.
-	 */
-	checkInstallModal() {
+	// ---------------------------------------------------------------------
+	// PWA 설치 유도 — 첫 계산이 완료된 이후에만 노출
+	// ---------------------------------------------------------------------
+	markFirstCalcIfNeeded(ratio, volume) {
+		if (this.firstCalcDone) return;
+		if (!(ratio > 0 && volume > 0)) return;
+
+		this.firstCalcDone = true;
+		Utils.storageSet(Config.Data.InstallSeenKey, '1');
+		this.maybeShowInstallModal();
+	}
+
+	maybeShowInstallModal() {
 		if (Utils.isStandalone()) return;
 		if (!Utils.isMobile()) return;
 
-		const hideUntil = localStorage.getItem(Config.Data.InstallPromptKey);
-		if (!hideUntil || Date.now() > parseInt(hideUntil, 10)) {
-			this.openModal(Config.Selectors.Modals.Install.Type);
-		}
+		const hideUntil = Utils.storageGet(Config.Data.InstallPromptKey);
+		if (hideUntil && Date.now() <= parseInt(hideUntil, 10)) return;
+
+		this.openModal(Config.Selectors.Modals.Install.Type);
 	}
 
-	/**
-	 * 설치 유도 모달 표시를 일주일간 연기합니다.
-	 */
 	deferInstallPrompt() {
 		const oneWeek = Date.now() + 7 * 24 * 60 * 60 * 1000;
-		localStorage.setItem(Config.Data.InstallPromptKey, oneWeek.toString());
+		Utils.storageSet(Config.Data.InstallPromptKey, oneWeek.toString());
 	}
 
-	/**
-	 * 검색 모달을 초기화하고 데이터를 로드합니다.
-	 */
+	// ---------------------------------------------------------------------
+	// 검색 모달
+	// ---------------------------------------------------------------------
 	async initSearchModal() {
 		const list = Utils.select(Config.Selectors.Modals.Search.List);
 		const loading = Utils.select(Config.Selectors.Modals.Search.Loading);
 		const noData = Utils.select(Config.Selectors.Modals.Search.NoData);
 
-		if (noData) noData.classList.remove('active');
+		noData?.classList.remove('active');
 		if (list) list.style.display = 'none';
-		if (loading) loading.classList.add('active');
+		loading?.classList.add('active');
 
 		try {
-			await new Promise(r => setTimeout(r, Config.Animation.AlertFade)); // 인위적 지연
-
 			const data = await DataManager.loadData();
 			this.renderProductList(data);
-		} catch (e) {
-			alert('데이터를 불러오는데 실패했습니다.');
-		} finally {
-			if (loading) loading.classList.remove('active');
 			if (list) list.style.display = 'block';
+		} catch (e) {
+			console.error(e);
+			this.showToast('데이터를 불러오지 못했습니다. 네트워크 상태를 확인하고 다시 시도해 주세요.');
+		} finally {
+			loading?.classList.remove('active');
 		}
 	}
 
-	/**
-	 * 검색어 입력 처리를 수행합니다.
-	 * @param {string} term - 검색어
-	 */
 	async handleSearch(term) {
-		const data = await DataManager.loadData();
-		const filtered = DataManager.filterData(data, term);
-		this.renderProductList(filtered);
-
 		const noData = Utils.select(Config.Selectors.Modals.Search.NoData);
 		const list = Utils.select(Config.Selectors.Modals.Search.List);
 
+		let data;
+		try {
+			data = await DataManager.loadData();
+		} catch (_) {
+			this.showToast('데이터를 불러오지 못했습니다.');
+			return;
+		}
+
+		const filtered = DataManager.filterData(data, term);
+		this.renderProductList(filtered);
+
 		const hasResults = filtered.length > 0;
-		if (noData) noData.classList.toggle('active', !hasResults);
+		noData?.classList.toggle('active', !hasResults);
 		if (list) list.style.display = hasResults ? 'block' : 'none';
 	}
 
-	/**
-	 * 제품 목록을 렌더링합니다.
-	 * @param {Array} data - 표시할 제품 데이터 배열
-	 */
 	renderProductList(data) {
 		const list = Utils.select(Config.Selectors.Modals.Search.List);
 		if (!list) return;
 
 		list.innerHTML = data.map(product => {
-			// XSS 방지를 위해 이스케이프 처리
 			const brand = Utils.escapeHtml(product.brand);
 			const prodName = Utils.escapeHtml(product.product);
 			const label = Utils.escapeHtml(product.label);
 
 			const buttons = Array.isArray(product.dilution)
-				? product.dilution.map((d, i) => this.createDilutionBtn(d, product.etc[i])).join('')
+				? product.dilution.map((d, i) => this.createDilutionBtn(d, product.etc?.[i])).join('')
 				: this.createDilutionBtn(product.dilution, product.etc);
 
 			return `
-                <div class="product-item">
-                    <p class="brand ${label}">
-                        <span><strong>${brand}</strong> - ${prodName}</span>
-                    </p>
-                    <div class="dilution-buttons">${buttons}</div>
-                </div>
-            `;
+				<div class="product-item" role="listitem">
+					<p class="brand ${label}">
+						<span><strong>${brand}</strong> - ${prodName}</span>
+					</p>
+					<div class="dilution-buttons">${buttons}</div>
+				</div>
+			`;
 		}).join('');
 	}
 
-	/**
-	 * 희석비 버튼 HTML을 생성합니다.
-	 * @param {number} dilution - 희석비
-	 * @param {string} etc - 추가 정보
-	 * @returns {string} 버튼 HTML 문자열
-	 */
 	createDilutionBtn(dilution, etc) {
 		const safeEtc = Utils.escapeHtml(etc);
-		return `<button type="button" class="btn-modal-dilution" data-value="${dilution}">
-            <strong>1:${dilution}</strong> <span>(${safeEtc})</span>
-        </button>`;
+		const labelAttr = Utils.escapeHtml(`희석비 1:${dilution}${etc ? ` (${etc})` : ''}`);
+		return `<button type="button" class="btn-modal-dilution" data-value="${dilution}" aria-label="${labelAttr}">
+			<strong>1:${dilution}</strong> <span>(${safeEtc})</span>
+		</button>`;
 	}
 
-	/**
-	 * 모달에서 희석비 선택 시 처리를 수행합니다.
-	 * @param {Element} button - 선택된 버튼
-	 */
 	handleDilutionSelect(button) {
 		const value = button.dataset.value;
 		const tabId = this.getCurrentTabId();
-		const selector = tabId === Config.Constants.TabIds.Tab1 ? Config.Selectors.Inputs.Tab1.Dilution : Config.Selectors.Inputs.Tab2.Dilution;
+		const selector = tabId === Config.Constants.TabIds.Tab1
+			? Config.Selectors.Inputs.Tab1.Dilution
+			: Config.Selectors.Inputs.Tab2.Dilution;
 
 		const input = Utils.select(selector);
 		if (input) {
@@ -550,52 +616,84 @@ export class UIManager {
 		this.showSelectedBrandAlert(button, value);
 	}
 
-	/**
-	 * 선택된 브랜드 알림을 표시합니다.
-	 * @param {Element} button - 선택된 버튼
-	 * @param {number} value - 희석비 값
-	 */
+	// ---------------------------------------------------------------------
+	// 알림(Alert/Toast)
+	// ---------------------------------------------------------------------
 	showSelectedBrandAlert(button, value) {
 		const alertBox = this.elements.alertBox;
 		if (!alertBox) return;
 
-		// 기존 타이머가 있다면 취소 (연속 클릭 시 문제 방지)
-		if (this.alertTimer) {
-			clearTimeout(this.alertTimer);
-			alertBox.classList.remove('active');
-			alertBox.style.opacity = '0';
-		}
+		this.clearAlertTimers();
 
-		const brandHtml = button.closest('.product-item').querySelector('.brand').innerHTML;
+		const brandHtml = button.closest('.product-item')?.querySelector('.brand')?.innerHTML ?? '';
 
 		alertBox.innerHTML = `
-            <div class="inner">
-                <i class="ti ti-circle-check"></i>
-                <div>
-                    <span class="text">선택하신 제품은 </span>
-                    ${brandHtml}
-                    <span class="text">이며,</span>
-                    <em>희석비는 <strong>1:${value}</strong>입니다.</em>
-                </div>
-            </div>
-        `;
+			<div class="inner" role="status">
+				<i class="ti ti-circle-check" aria-hidden="true"></i>
+				<div>
+					<span class="text">선택하신 제품은 </span>
+					${brandHtml}
+					<span class="text">이며,</span>
+					<em>희석비는 <strong>1:${Utils.escapeHtml(value)}</strong>입니다.</em>
+				</div>
+				<button type="button" class="btn-alert-close ti ti-x" aria-label="알림 닫기"></button>
+			</div>
+		`;
+		alertBox.classList.add('active');
+		alertBox.style.opacity = '1';
 
-		// 리플로우를 위해 잠시 대기 후 활성화
-		requestAnimationFrame(() => {
-			alertBox.classList.add('active');
-			alertBox.style.opacity = '1';
-		});
+		this.alertTimer = window.setTimeout(() => this.hideBrandAlert(), Config.Animation.AlertDuration);
+	}
 
-		this.alertTimer = setTimeout(() => {
-			alertBox.style.transition = `opacity ${Config.Animation.AlertFade}ms`;
-			alertBox.style.opacity = '0';
+	hideBrandAlert() {
+		const alertBox = this.elements.alertBox;
+		if (!alertBox) return;
 
-			const onTransitionEnd = () => {
-				alertBox.classList.remove('active');
-				alertBox.style.transition = '';
-				alertBox.removeEventListener('transitionend', onTransitionEnd);
-			};
-			alertBox.addEventListener('transitionend', onTransitionEnd);
-		}, Config.Animation.AlertDuration);
+		this.clearAlertTimers();
+
+		const finalize = () => {
+			alertBox.classList.remove('active');
+			alertBox.style.transition = '';
+			alertBox.style.opacity = '';
+			if (this.alertTransitionHandler) {
+				alertBox.removeEventListener('transitionend', this.alertTransitionHandler);
+				this.alertTransitionHandler = null;
+			}
+		};
+
+		alertBox.style.transition = `opacity ${Config.Animation.AlertFade}ms`;
+		alertBox.style.opacity = '0';
+
+		this.alertTransitionHandler = () => finalize();
+		alertBox.addEventListener('transitionend', this.alertTransitionHandler);
+
+		// 트랜지션이 발화되지 않는 경우에 대비한 fallback
+		this.alertTimer = window.setTimeout(finalize, Config.Animation.AlertFade + 100);
+	}
+
+	clearAlertTimers() {
+		if (this.alertTimer) {
+			window.clearTimeout(this.alertTimer);
+			this.alertTimer = null;
+		}
+	}
+
+	showToast(message) {
+		const alertBox = this.elements.alertBox;
+		if (!alertBox) return;
+
+		this.clearAlertTimers();
+
+		alertBox.innerHTML = `
+			<div class="inner" role="alert">
+				<i class="ti ti-alert-triangle-filled" aria-hidden="true"></i>
+				<div><em>${Utils.escapeHtml(message)}</em></div>
+				<button type="button" class="btn-alert-close ti ti-x" aria-label="알림 닫기"></button>
+			</div>
+		`;
+		alertBox.classList.add('active');
+		alertBox.style.opacity = '1';
+
+		this.alertTimer = window.setTimeout(() => this.hideBrandAlert(), Config.Animation.AlertDuration);
 	}
 }

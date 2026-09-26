@@ -528,26 +528,28 @@ summary {
 		display: block;
 		animation: modal-in-alert 580ms;
 	}
-	.ti {
-		flex: none;
-		color: var(--alert-color);
-		margin-right: 6px;
-		font: {
-			size: 18px;
-		}
-	}
 	.inner {
 		display: flex;
 		padding: 16px;
-		align-items: flex-start;
+		align-items: center;
+		gap: 10px;
 		border-radius: 10px;
 		backdrop-filter: var(--globalnav-backdrop-filter);
 		border: 1px solid var(--alert-border);
 		background: {
 			color: var(--globalnav-background);
 		}
+		> i.ti {
+			flex: none;
+			color: var(--alert-color);
+			font-size: 18px;
+			line-height: 1;
+			align-self: flex-start;
+			margin-top: 2px;
+		}
 		> div {
 			flex: 1 1;
+			min-width: 0;
 			color: var(--alert-title);
 			line-height: 140%;
 			opacity: 1;
@@ -572,6 +574,25 @@ summary {
 					}
 				}
 			}
+		}
+	}
+	.btn-alert-close {
+		flex: none;
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		color: var(--alert-color);
+		background: transparent;
+		line-height: 1;
+		font-size: 18px;
+		border-radius: 50%;
+		opacity: 0.55;
+		align-self: flex-start;
+		transition: opacity 200ms, background-color 200ms;
+		&:hover,
+		&:focus-visible {
+			opacity: 1;
+			background-color: rgba(127, 127, 127, 0.15);
 		}
 	}
 }
@@ -1835,5 +1856,69 @@ summary {
 	50% {
 		-webkit-transform: rotate(8deg);
 		transform: rotate(8deg);
+	}
+}
+
+// ==========================================================================
+// 16. 접근성 & 포커스
+// ==========================================================================
+:focus:not(:focus-visible) {
+	outline: none;
+}
+:focus-visible {
+	outline: 2px solid var(--line-color);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+.modal-container .btn-modal-close:focus-visible,
+.selected-brand-alert .btn-alert-close:focus-visible {
+	outline-offset: 1px;
+}
+input[type="tel"]:focus-visible,
+input[type="text"]:focus-visible,
+input[type="search"]:focus-visible {
+	outline-offset: 0;
+}
+
+// 모달 배경 클릭 힌트
+.modal {
+	cursor: pointer;
+	.modal-container {
+		cursor: default;
+	}
+}
+
+// ==========================================================================
+// 17. 모션 감소 선호 (접근성)
+// ==========================================================================
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+	.tab-header .tab-line,
+	.total-bar,
+	.chemical-bar,
+	.chemical-bar2,
+	.water-bar {
+		transition: none !important;
+	}
+	.btn-information .ti,
+	.modal h1 span {
+		animation: none !important;
+	}
+	.water-bar::before,
+	.chemical-bar::before,
+	.chemical-bar2::before,
+	.total-bar::before,
+	.water-bar::after,
+	.chemical-bar::after,
+	.chemical-bar2::after,
+	.total-bar::after {
+		animation: none !important;
 	}
 }
